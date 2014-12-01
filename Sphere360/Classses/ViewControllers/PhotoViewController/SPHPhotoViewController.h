@@ -6,6 +6,6 @@
 //  Copyright (c) 2014 Kirill Gorbushko. All rights reserved.
 //
 
-@interface SPHPhotoViewController : UIViewController
+@interface SPHPhotoViewController : GLKViewController
 
 @end

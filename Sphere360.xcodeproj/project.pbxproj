@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EDAC3A681A2C7F9E00EB6DE0 /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = EDAC3A661A2C7F9E00EB6DE0 /* Shader.vsh */; };
+		EDAC3A691A2C7F9E00EB6DE0 /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = EDAC3A671A2C7F9E00EB6DE0 /* Shader.fsh */; };
+		EDAC3A6D1A2C809500EB6DE0 /* GLProgram.m in Sources */ = {isa = PBXBuildFile; fileRef = EDAC3A6C1A2C809500EB6DE0 /* GLProgram.m */; };
+		EDAC3A721A2C823000EB6DE0 /* UIImage+ImageModification.m in Sources */ = {isa = PBXBuildFile; fileRef = EDAC3A711A2C823000EB6DE0 /* UIImage+ImageModification.m */; };
 		EDCFC6F51A2C671E00613D7B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDCFC6F41A2C671E00613D7B /* Foundation.framework */; };
 		EDCFC6F71A2C671E00613D7B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDCFC6F61A2C671E00613D7B /* CoreGraphics.framework */; };
 		EDCFC6F91A2C671E00613D7B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDCFC6F81A2C671E00613D7B /* UIKit.framework */; };
@@ -26,6 +30,7 @@
 		EDCFC7391A2C686900613D7B /* SPHVideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCFC7381A2C686900613D7B /* SPHVideoViewController.m */; };
 		EDCFC73C1A2C687600613D7B /* SPHLiveStreamViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCFC73B1A2C687600613D7B /* SPHLiveStreamViewController.m */; };
 		EDCFC7431A2C6A2B00613D7B /* GIR000009.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = EDCFC7421A2C6A2B00613D7B /* GIR000009.jpeg */; };
+		EDFAC6D91A2C74290059BBD0 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDFAC6D81A2C74290059BBD0 /* OpenGLES.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,6 +44,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		EDAC3A661A2C7F9E00EB6DE0 /* Shader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader.vsh; sourceTree = "<group>"; };
+		EDAC3A671A2C7F9E00EB6DE0 /* Shader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader.fsh; sourceTree = "<group>"; };
+		EDAC3A6B1A2C809500EB6DE0 /* GLProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLProgram.h; sourceTree = "<group>"; };
+		EDAC3A6C1A2C809500EB6DE0 /* GLProgram.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLProgram.m; sourceTree = "<group>"; };
+		EDAC3A701A2C823000EB6DE0 /* UIImage+ImageModification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ImageModification.h"; sourceTree = "<group>"; };
+		EDAC3A711A2C823000EB6DE0 /* UIImage+ImageModification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ImageModification.m"; sourceTree = "<group>"; };
+		EDAC3A731A2C861900EB6DE0 /* 3D.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = 3D.mp4; sourceTree = "<group>"; };
 		EDCFC6F11A2C671E00613D7B /* Sphere360.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sphere360.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EDCFC6F41A2C671E00613D7B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		EDCFC6F61A2C671E00613D7B /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -67,6 +79,8 @@
 		EDCFC73B1A2C687600613D7B /* SPHLiveStreamViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHLiveStreamViewController.m; sourceTree = "<group>"; };
 		EDCFC7411A2C69EC00613D7B /* Sphere.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sphere.h; sourceTree = "<group>"; };
 		EDCFC7421A2C6A2B00613D7B /* GIR000009.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = GIR000009.jpeg; sourceTree = "<group>"; };
+		EDFAC6D31A2C6C4B0059BBD0 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		EDFAC6D81A2C74290059BBD0 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +88,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EDFAC6D91A2C74290059BBD0 /* OpenGLES.framework in Frameworks */,
 				EDCFC72A1A2C673100613D7B /* GLKit.framework in Frameworks */,
 				EDCFC6F71A2C671E00613D7B /* CoreGraphics.framework in Frameworks */,
 				EDCFC6F91A2C671E00613D7B /* UIKit.framework in Frameworks */,
@@ -94,6 +109,50 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EDAC3A641A2C7A2F00EB6DE0 /* OpenGL */ = {
+			isa = PBXGroup;
+			children = (
+				EDAC3A6A1A2C808B00EB6DE0 /* Program */,
+				EDAC3A651A2C7A3C00EB6DE0 /* Shaders */,
+			);
+			path = OpenGL;
+			sourceTree = "<group>";
+		};
+		EDAC3A651A2C7A3C00EB6DE0 /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				EDAC3A661A2C7F9E00EB6DE0 /* Shader.vsh */,
+				EDAC3A671A2C7F9E00EB6DE0 /* Shader.fsh */,
+			);
+			path = Shaders;
+			sourceTree = "<group>";
+		};
+		EDAC3A6A1A2C808B00EB6DE0 /* Program */ = {
+			isa = PBXGroup;
+			children = (
+				EDAC3A6B1A2C809500EB6DE0 /* GLProgram.h */,
+				EDAC3A6C1A2C809500EB6DE0 /* GLProgram.m */,
+			);
+			path = Program;
+			sourceTree = "<group>";
+		};
+		EDAC3A6E1A2C820500EB6DE0 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				EDAC3A6F1A2C821A00EB6DE0 /* UIImage+ImageModification */,
+			);
+			path = Categories;
+			sourceTree = "<group>";
+		};
+		EDAC3A6F1A2C821A00EB6DE0 /* UIImage+ImageModification */ = {
+			isa = PBXGroup;
+			children = (
+				EDAC3A701A2C823000EB6DE0 /* UIImage+ImageModification.h */,
+				EDAC3A711A2C823000EB6DE0 /* UIImage+ImageModification.m */,
+			);
+			path = "UIImage+ImageModification";
+			sourceTree = "<group>";
+		};
 		EDCFC6E81A2C671E00613D7B = {
 			isa = PBXGroup;
 			children = (
@@ -116,6 +175,7 @@
 		EDCFC6F31A2C671E00613D7B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EDFAC6D81A2C74290059BBD0 /* OpenGLES.framework */,
 				EDCFC7291A2C673100613D7B /* GLKit.framework */,
 				EDCFC6F41A2C671E00613D7B /* Foundation.framework */,
 				EDCFC6F61A2C671E00613D7B /* CoreGraphics.framework */,
@@ -142,6 +202,7 @@
 		EDCFC6FB1A2C671E00613D7B /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				EDFAC6D21A2C6C3D0059BBD0 /* Constants */,
 				EDCFC6FC1A2C671E00613D7B /* Sphere360-Info.plist */,
 				EDCFC6FD1A2C671E00613D7B /* InfoPlist.strings */,
 				EDCFC7001A2C671E00613D7B /* main.m */,
@@ -171,7 +232,8 @@
 		EDCFC72B1A2C674E00613D7B /* Classses */ = {
 			isa = PBXGroup;
 			children = (
-				EDFAC6D11A2C6AC60059BBD0 /* OpenGL */,
+				EDAC3A6E1A2C820500EB6DE0 /* Categories */,
+				EDAC3A641A2C7A2F00EB6DE0 /* OpenGL */,
 				EDCFC72C1A2C675800613D7B /* ViewControllers */,
 			);
 			path = Classses;
@@ -245,15 +307,17 @@
 			isa = PBXGroup;
 			children = (
 				EDCFC7421A2C6A2B00613D7B /* GIR000009.jpeg */,
+				EDAC3A731A2C861900EB6DE0 /* 3D.mp4 */,
 			);
 			path = TestResourses;
 			sourceTree = "<group>";
 		};
-		EDFAC6D11A2C6AC60059BBD0 /* OpenGL */ = {
+		EDFAC6D21A2C6C3D0059BBD0 /* Constants */ = {
 			isa = PBXGroup;
 			children = (
+				EDFAC6D31A2C6C4B0059BBD0 /* Constants.h */,
 			);
-			path = OpenGL;
+			path = Constants;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -333,10 +397,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EDAC3A691A2C7F9E00EB6DE0 /* Shader.fsh in Resources */,
 				EDCFC70D1A2C671E00613D7B /* Images.xcassets in Resources */,
 				EDCFC7431A2C6A2B00613D7B /* GIR000009.jpeg in Resources */,
 				EDCFC6FF1A2C671E00613D7B /* InfoPlist.strings in Resources */,
 				EDCFC7081A2C671E00613D7B /* Main.storyboard in Resources */,
+				EDAC3A681A2C7F9E00EB6DE0 /* Shader.vsh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -355,8 +421,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EDAC3A6D1A2C809500EB6DE0 /* GLProgram.m in Sources */,
 				EDCFC7051A2C671E00613D7B /* SPHAppDelegate.m in Sources */,
 				EDCFC7301A2C67F100613D7B /* SPHMainViewController.m in Sources */,
+				EDAC3A721A2C823000EB6DE0 /* UIImage+ImageModification.m in Sources */,
 				EDCFC7011A2C671E00613D7B /* main.m in Sources */,
 				EDCFC7391A2C686900613D7B /* SPHVideoViewController.m in Sources */,
 				EDCFC73C1A2C687600613D7B /* SPHLiveStreamViewController.m in Sources */,

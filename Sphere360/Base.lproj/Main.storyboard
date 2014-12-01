@@ -65,7 +65,7 @@
                         <viewControllerLayoutGuide type="top" id="NDu-Nw-tXh"/>
                         <viewControllerLayoutGuide type="bottom" id="3dq-tS-dpL"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="Ioj-vX-K9Q">
+                    <view key="view" contentMode="scaleToFill" id="Ioj-vX-K9Q" customClass="GLKView">
                         <rect key="frame" x="0.0" y="0.0" width="568" height="320"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -107,7 +107,7 @@
                         <viewControllerLayoutGuide type="top" id="buR-ZE-qyY"/>
                         <viewControllerLayoutGuide type="bottom" id="z1l-cW-7oV"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="Zji-pn-ovp">
+                    <view key="view" contentMode="scaleToFill" id="Zji-pn-ovp" customClass="GLKView">
                         <rect key="frame" x="0.0" y="0.0" width="568" height="320"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
