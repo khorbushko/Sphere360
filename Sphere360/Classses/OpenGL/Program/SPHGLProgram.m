@@ -19,7 +19,7 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#import "GLProgram.h"
+#import "SPHGLProgram.h"
 
 #pragma mark - Function Pointer Definitions
 
@@ -28,7 +28,7 @@ typedef void (*GLLogFunction) (GLuint program, GLsizei bufsize, GLsizei* length,
 
 #pragma mark - Logic GL
 
-@implementation GLProgram
+@implementation SPHGLProgram
 
 - (id)initWithVertexShaderFilename:(NSString *)vShaderFilename fragmentShaderFilename:(NSString *)fShaderFilename;
 {

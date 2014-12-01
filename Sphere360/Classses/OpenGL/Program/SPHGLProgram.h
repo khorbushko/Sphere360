@@ -23,7 +23,7 @@
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
 
-@interface GLProgram : NSObject 
+@interface SPHGLProgram : NSObject 
 {
     NSMutableArray  *attributes;
     NSMutableArray  *uniforms;

@@ -68,11 +68,48 @@
                     <view key="view" contentMode="scaleToFill" id="Ioj-vX-K9Q" customClass="GLKView">
                         <rect key="frame" x="0.0" y="0.0" width="568" height="320"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="byI-VA-AZC">
+                                <rect key="frame" x="0.0" y="260" width="568" height="60"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Pl4-fH-F2s" userLabel="Gyroscope - UIButton">
+                                        <rect key="frame" x="473" y="15" width="75" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="oPS-yD-n5J"/>
+                                        </constraints>
+                                        <state key="normal" title="Gyroscope">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="gyroscopeButtonPress:" destination="Ayf-fH-v40" eventType="touchUpInside" id="jrP-xg-Xrr"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" red="0.97254901960784312" green="0.97254901960784312" blue="0.97254901960784312" alpha="0.84999999999999998" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="Pl4-fH-F2s" secondAttribute="bottom" constant="15" id="Dcu-tq-Btp"/>
+                                    <constraint firstAttribute="height" constant="60" id="FXt-HW-XyK"/>
+                                    <constraint firstAttribute="trailing" secondItem="Pl4-fH-F2s" secondAttribute="trailing" constant="20" id="Trd-d1-TOu"/>
+                                    <constraint firstItem="Pl4-fH-F2s" firstAttribute="top" secondItem="byI-VA-AZC" secondAttribute="top" constant="15" id="tS1-ST-dVh"/>
+                                </constraints>
+                            </view>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="byI-VA-AZC" firstAttribute="leading" secondItem="Ioj-vX-K9Q" secondAttribute="leading" id="4QD-Ux-B4H"/>
+                            <constraint firstAttribute="trailing" secondItem="byI-VA-AZC" secondAttribute="trailing" id="MVL-MA-AMs"/>
+                            <constraint firstItem="3dq-tS-dpL" firstAttribute="top" secondItem="byI-VA-AZC" secondAttribute="bottom" id="sNF-uY-cVE"/>
+                        </constraints>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
                     <navigationItem key="navigationItem" id="6ky-1W-VR1"/>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
+                    <connections>
+                        <outlet property="bottomView" destination="byI-VA-AZC" id="XXf-uJ-NUs"/>
+                        <outlet property="heightBottomViewConstraint" destination="FXt-HW-XyK" id="4Ri-1X-hMP"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2Z9-op-JqD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -123,7 +160,7 @@
         <!--Navigation Controller-->
         <scene sceneID="D23-0J-SXy">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="yxc-AD-c7O" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="yxc-AD-c7O" customClass="SPHNavigationController" sceneMemberID="viewController">
                     <toolbarItems/>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="w7y-Ix-SOW">

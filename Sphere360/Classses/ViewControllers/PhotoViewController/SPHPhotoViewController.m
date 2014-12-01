@@ -8,14 +8,14 @@
 
 #import "SPHPhotoViewController.h"
 #import "Sphere.h"
-#import "GLProgram.h"
+#import "SPHGLProgram.h"
+#import "SPHAnimationProvider.h"
 
-static CGFloat const defStartY = -1.8;
-static CGFloat const defStartX = -3.;
-
-static CGFloat const minZoomDegree = 20.;
-static CGFloat const maxZoomDegree = 130.;
-static CGFloat const defaultZoomDegree = 90;
+static CGFloat const kDefStartY = -1.8;
+static CGFloat const kDefStartX = -3.;
+static CGFloat const kMinimumZoomDegree = 20.;
+static CGFloat const kMaximumZoomDegree = 130.;
+static CGFloat const kDefaultZoomDegree = 90;
 
 enum {
     UNIFORM_MVPMATRIX,
@@ -37,12 +37,16 @@ GLint uniforms[NUM_UNIFORMS];
     float _rotationY;
 }
 
-@property (strong, nonatomic) GLProgram *program;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *heightBottomViewConstraint;
+@property (weak, nonatomic) IBOutlet UIView *bottomView;
+
+@property (strong, nonatomic) SPHGLProgram *program;
 @property (strong, nonatomic) EAGLContext *context;
 @property (strong, nonatomic) GLKTextureInfo *texture;
 
 @property (strong, nonatomic) NSMutableArray *currentTouches;
 @property (assign, nonatomic) CGFloat zoomValueCurrent;
+@property (assign, nonatomic) BOOL isHyroscopeActive;
 
 @end
 
@@ -57,8 +61,10 @@ GLint uniforms[NUM_UNIFORMS];
     [self setStartPosition];
     
     [self setupContext];
-    [self addPinchGesture];
     [self setupGL];
+    
+    [self addPinchGesture];
+    [self addTapGesture];
 }
 
 - (void)dealloc
@@ -114,8 +120,8 @@ GLint uniforms[NUM_UNIFORMS];
     GLKMatrix4 modelViewMatrix = GLKMatrix4Identity;
     modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotationX, 1.0f, 0.0f, 0.0f);
     modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotationY, 0.0f, 1.0f, 0.0f);
-    
     _modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
+
 }
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
@@ -135,7 +141,7 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (void)buildProgram
 {
-    _program = [[GLProgram alloc] initWithVertexShaderFilename:@"Shader" fragmentShaderFilename:@"Shader"];
+    _program = [[SPHGLProgram alloc] initWithVertexShaderFilename:@"Shader" fragmentShaderFilename:@"Shader"];
     [_program addAttribute:@"a_position"];
     [_program addAttribute:@"a_textureCoord"];
     if (![_program link])
@@ -196,16 +202,51 @@ GLint uniforms[NUM_UNIFORMS];
 - (void)pinchForZoom:(UIGestureRecognizer *)sender
 {
     CGFloat scaleValue = [(UIPinchGestureRecognizer*)sender scale];
-    if (defaultZoomDegree * scaleValue > maxZoomDegree) {
-        self.zoomValueCurrent = maxZoomDegree;
-    } else if (defaultZoomDegree * scaleValue < minZoomDegree) {
-        self.zoomValueCurrent = minZoomDegree;
+    if (kDefaultZoomDegree * scaleValue > kMaximumZoomDegree) {
+        self.zoomValueCurrent = kMaximumZoomDegree;
+    } else if (kDefaultZoomDegree * scaleValue < kMinimumZoomDegree) {
+        self.zoomValueCurrent = kMinimumZoomDegree;
     } else {
-        self.zoomValueCurrent  = defaultZoomDegree * scaleValue;
+        self.zoomValueCurrent  = kDefaultZoomDegree * scaleValue;
     }
 }
 
+- (void)tapGesture
+{
+    [self hideNavigationBar];
+    [self hideBottomBar];
+}
+
+#pragma mark - IBActions
+
+- (IBAction)gyroscopeButtonPress:(id)sender
+{
+    [self tapGesture];
+    self.isHyroscopeActive = !self.isHyroscopeActive;
+}
+
 #pragma mark - Private
+
+- (void)hideBottomBar
+{
+    CGPoint toValue = self.bottomView.center;
+    CGPoint fromValue = self.bottomView.center;
+    CABasicAnimation *animation;
+    if (self.navigationController.navigationBarHidden) {
+        toValue.y += self.bottomView.bounds.size.height;
+        animation = [SPHAnimationProvider animationForMovingViewFromValue:[NSValue valueWithCGPoint:fromValue] toValue:[NSValue valueWithCGPoint:toValue]  withDuration:0.3];
+    } else {
+        animation = [SPHAnimationProvider animationForMovingViewFromValue:[NSValue valueWithCGPoint:fromValue] toValue:[NSValue valueWithCGPoint:toValue]  withDuration:0.9];
+    }
+    
+    [self.bottomView.layer addAnimation:animation forKey:nil];
+    self.bottomView.layer.position = toValue;
+}
+
+- (void)hideNavigationBar
+{
+    [self.navigationController setNavigationBarHidden:!self.navigationController.navigationBarHidden animated:YES];
+}
 
 - (void)setupContext
 {
@@ -221,14 +262,20 @@ GLint uniforms[NUM_UNIFORMS];
 - (void)addPinchGesture
 {
     UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchForZoom:)];
-    [(GLKView *)self.view addGestureRecognizer:pinch];
+    [self.view addGestureRecognizer:pinch];
+}
+
+- (void)addTapGesture
+{
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGesture)];
+    [self.view addGestureRecognizer:tapGesture];
 }
 
 - (void)setStartPosition
 {
-    _rotationX = defStartX;
-    _rotationY = defStartY;
-    self.zoomValueCurrent = defaultZoomDegree;
+    _rotationX = kDefStartX;
+    _rotationY = kDefStartY;
+    self.zoomValueCurrent = kDefaultZoomDegree;
 }
 
 #pragma mark - Cleanup
