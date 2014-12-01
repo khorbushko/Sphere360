@@ -1,0 +1,472 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		EDCFC6F51A2C671E00613D7B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDCFC6F41A2C671E00613D7B /* Foundation.framework */; };
+		EDCFC6F71A2C671E00613D7B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDCFC6F61A2C671E00613D7B /* CoreGraphics.framework */; };
+		EDCFC6F91A2C671E00613D7B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDCFC6F81A2C671E00613D7B /* UIKit.framework */; };
+		EDCFC6FF1A2C671E00613D7B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EDCFC6FD1A2C671E00613D7B /* InfoPlist.strings */; };
+		EDCFC7011A2C671E00613D7B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCFC7001A2C671E00613D7B /* main.m */; };
+		EDCFC7051A2C671E00613D7B /* SPHAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCFC7041A2C671E00613D7B /* SPHAppDelegate.m */; };
+		EDCFC7081A2C671E00613D7B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EDCFC7061A2C671E00613D7B /* Main.storyboard */; };
+		EDCFC70B1A2C671E00613D7B /* SPHViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCFC70A1A2C671E00613D7B /* SPHViewController.m */; };
+		EDCFC70D1A2C671E00613D7B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EDCFC70C1A2C671E00613D7B /* Images.xcassets */; };
+		EDCFC7141A2C671E00613D7B /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDCFC7131A2C671E00613D7B /* XCTest.framework */; };
+		EDCFC7151A2C671E00613D7B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDCFC6F41A2C671E00613D7B /* Foundation.framework */; };
+		EDCFC7161A2C671E00613D7B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDCFC6F81A2C671E00613D7B /* UIKit.framework */; };
+		EDCFC71E1A2C671F00613D7B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EDCFC71C1A2C671F00613D7B /* InfoPlist.strings */; };
+		EDCFC7201A2C671F00613D7B /* Sphere360Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCFC71F1A2C671F00613D7B /* Sphere360Tests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		EDCFC7171A2C671F00613D7B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EDCFC6E91A2C671E00613D7B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EDCFC6F01A2C671E00613D7B;
+			remoteInfo = Sphere360;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		EDCFC6F11A2C671E00613D7B /* Sphere360.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sphere360.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		EDCFC6F41A2C671E00613D7B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		EDCFC6F61A2C671E00613D7B /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		EDCFC6F81A2C671E00613D7B /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		EDCFC6FC1A2C671E00613D7B /* Sphere360-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Sphere360-Info.plist"; sourceTree = "<group>"; };
+		EDCFC6FE1A2C671E00613D7B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		EDCFC7001A2C671E00613D7B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		EDCFC7021A2C671E00613D7B /* Sphere360-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Sphere360-Prefix.pch"; sourceTree = "<group>"; };
+		EDCFC7031A2C671E00613D7B /* SPHAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPHAppDelegate.h; sourceTree = "<group>"; };
+		EDCFC7041A2C671E00613D7B /* SPHAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SPHAppDelegate.m; sourceTree = "<group>"; };
+		EDCFC7071A2C671E00613D7B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		EDCFC7091A2C671E00613D7B /* SPHViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPHViewController.h; sourceTree = "<group>"; };
+		EDCFC70A1A2C671E00613D7B /* SPHViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SPHViewController.m; sourceTree = "<group>"; };
+		EDCFC70C1A2C671E00613D7B /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		EDCFC7121A2C671E00613D7B /* Sphere360Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Sphere360Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		EDCFC7131A2C671E00613D7B /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		EDCFC71B1A2C671F00613D7B /* Sphere360Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Sphere360Tests-Info.plist"; sourceTree = "<group>"; };
+		EDCFC71D1A2C671F00613D7B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		EDCFC71F1A2C671F00613D7B /* Sphere360Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Sphere360Tests.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		EDCFC6EE1A2C671E00613D7B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EDCFC6F71A2C671E00613D7B /* CoreGraphics.framework in Frameworks */,
+				EDCFC6F91A2C671E00613D7B /* UIKit.framework in Frameworks */,
+				EDCFC6F51A2C671E00613D7B /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EDCFC70F1A2C671E00613D7B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EDCFC7141A2C671E00613D7B /* XCTest.framework in Frameworks */,
+				EDCFC7161A2C671E00613D7B /* UIKit.framework in Frameworks */,
+				EDCFC7151A2C671E00613D7B /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		EDCFC6E81A2C671E00613D7B = {
+			isa = PBXGroup;
+			children = (
+				EDCFC6FA1A2C671E00613D7B /* Sphere360 */,
+				EDCFC7191A2C671F00613D7B /* Sphere360Tests */,
+				EDCFC6F31A2C671E00613D7B /* Frameworks */,
+				EDCFC6F21A2C671E00613D7B /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		EDCFC6F21A2C671E00613D7B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EDCFC6F11A2C671E00613D7B /* Sphere360.app */,
+				EDCFC7121A2C671E00613D7B /* Sphere360Tests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		EDCFC6F31A2C671E00613D7B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				EDCFC6F41A2C671E00613D7B /* Foundation.framework */,
+				EDCFC6F61A2C671E00613D7B /* CoreGraphics.framework */,
+				EDCFC6F81A2C671E00613D7B /* UIKit.framework */,
+				EDCFC7131A2C671E00613D7B /* XCTest.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		EDCFC6FA1A2C671E00613D7B /* Sphere360 */ = {
+			isa = PBXGroup;
+			children = (
+				EDCFC7031A2C671E00613D7B /* SPHAppDelegate.h */,
+				EDCFC7041A2C671E00613D7B /* SPHAppDelegate.m */,
+				EDCFC7061A2C671E00613D7B /* Main.storyboard */,
+				EDCFC7091A2C671E00613D7B /* SPHViewController.h */,
+				EDCFC70A1A2C671E00613D7B /* SPHViewController.m */,
+				EDCFC70C1A2C671E00613D7B /* Images.xcassets */,
+				EDCFC6FB1A2C671E00613D7B /* Supporting Files */,
+			);
+			path = Sphere360;
+			sourceTree = "<group>";
+		};
+		EDCFC6FB1A2C671E00613D7B /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				EDCFC6FC1A2C671E00613D7B /* Sphere360-Info.plist */,
+				EDCFC6FD1A2C671E00613D7B /* InfoPlist.strings */,
+				EDCFC7001A2C671E00613D7B /* main.m */,
+				EDCFC7021A2C671E00613D7B /* Sphere360-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		EDCFC7191A2C671F00613D7B /* Sphere360Tests */ = {
+			isa = PBXGroup;
+			children = (
+				EDCFC71F1A2C671F00613D7B /* Sphere360Tests.m */,
+				EDCFC71A1A2C671F00613D7B /* Supporting Files */,
+			);
+			path = Sphere360Tests;
+			sourceTree = "<group>";
+		};
+		EDCFC71A1A2C671F00613D7B /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				EDCFC71B1A2C671F00613D7B /* Sphere360Tests-Info.plist */,
+				EDCFC71C1A2C671F00613D7B /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		EDCFC6F01A2C671E00613D7B /* Sphere360 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EDCFC7231A2C671F00613D7B /* Build configuration list for PBXNativeTarget "Sphere360" */;
+			buildPhases = (
+				EDCFC6ED1A2C671E00613D7B /* Sources */,
+				EDCFC6EE1A2C671E00613D7B /* Frameworks */,
+				EDCFC6EF1A2C671E00613D7B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Sphere360;
+			productName = Sphere360;
+			productReference = EDCFC6F11A2C671E00613D7B /* Sphere360.app */;
+			productType = "com.apple.product-type.application";
+		};
+		EDCFC7111A2C671E00613D7B /* Sphere360Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EDCFC7261A2C671F00613D7B /* Build configuration list for PBXNativeTarget "Sphere360Tests" */;
+			buildPhases = (
+				EDCFC70E1A2C671E00613D7B /* Sources */,
+				EDCFC70F1A2C671E00613D7B /* Frameworks */,
+				EDCFC7101A2C671E00613D7B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EDCFC7181A2C671F00613D7B /* PBXTargetDependency */,
+			);
+			name = Sphere360Tests;
+			productName = Sphere360Tests;
+			productReference = EDCFC7121A2C671E00613D7B /* Sphere360Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		EDCFC6E91A2C671E00613D7B /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = SPH;
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = "Kirill Gorbushko";
+				TargetAttributes = {
+					EDCFC7111A2C671E00613D7B = {
+						TestTargetID = EDCFC6F01A2C671E00613D7B;
+					};
+				};
+			};
+			buildConfigurationList = EDCFC6EC1A2C671E00613D7B /* Build configuration list for PBXProject "Sphere360" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = EDCFC6E81A2C671E00613D7B;
+			productRefGroup = EDCFC6F21A2C671E00613D7B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				EDCFC6F01A2C671E00613D7B /* Sphere360 */,
+				EDCFC7111A2C671E00613D7B /* Sphere360Tests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		EDCFC6EF1A2C671E00613D7B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EDCFC70D1A2C671E00613D7B /* Images.xcassets in Resources */,
+				EDCFC6FF1A2C671E00613D7B /* InfoPlist.strings in Resources */,
+				EDCFC7081A2C671E00613D7B /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EDCFC7101A2C671E00613D7B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EDCFC71E1A2C671F00613D7B /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		EDCFC6ED1A2C671E00613D7B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EDCFC70B1A2C671E00613D7B /* SPHViewController.m in Sources */,
+				EDCFC7051A2C671E00613D7B /* SPHAppDelegate.m in Sources */,
+				EDCFC7011A2C671E00613D7B /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EDCFC70E1A2C671E00613D7B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EDCFC7201A2C671F00613D7B /* Sphere360Tests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		EDCFC7181A2C671F00613D7B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EDCFC6F01A2C671E00613D7B /* Sphere360 */;
+			targetProxy = EDCFC7171A2C671F00613D7B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		EDCFC6FD1A2C671E00613D7B /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				EDCFC6FE1A2C671E00613D7B /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		EDCFC7061A2C671E00613D7B /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				EDCFC7071A2C671E00613D7B /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		EDCFC71C1A2C671F00613D7B /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				EDCFC71D1A2C671F00613D7B /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		EDCFC7211A2C671F00613D7B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		EDCFC7221A2C671F00613D7B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		EDCFC7241A2C671F00613D7B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Sphere360/Sphere360-Prefix.pch";
+				INFOPLIST_FILE = "Sphere360/Sphere360-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		EDCFC7251A2C671F00613D7B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Sphere360/Sphere360-Prefix.pch";
+				INFOPLIST_FILE = "Sphere360/Sphere360-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		EDCFC7271A2C671F00613D7B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Sphere360.app/Sphere360";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Sphere360/Sphere360-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "Sphere360Tests/Sphere360Tests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		EDCFC7281A2C671F00613D7B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Sphere360.app/Sphere360";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Sphere360/Sphere360-Prefix.pch";
+				INFOPLIST_FILE = "Sphere360Tests/Sphere360Tests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		EDCFC6EC1A2C671E00613D7B /* Build configuration list for PBXProject "Sphere360" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EDCFC7211A2C671F00613D7B /* Debug */,
+				EDCFC7221A2C671F00613D7B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EDCFC7231A2C671F00613D7B /* Build configuration list for PBXNativeTarget "Sphere360" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EDCFC7241A2C671F00613D7B /* Debug */,
+				EDCFC7251A2C671F00613D7B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		EDCFC7261A2C671F00613D7B /* Build configuration list for PBXNativeTarget "Sphere360Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EDCFC7271A2C671F00613D7B /* Debug */,
+				EDCFC7281A2C671F00613D7B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = EDCFC6E91A2C671E00613D7B /* Project object */;
+}
