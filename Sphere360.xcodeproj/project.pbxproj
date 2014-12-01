@@ -16,6 +16,7 @@
 		EDAC3A921A2CAC7700EB6DE0 /* SPHNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = EDAC3A911A2CAC7700EB6DE0 /* SPHNavigationController.m */; };
 		EDAC3A941A2CAE8600EB6DE0 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDAC3A931A2CAE8600EB6DE0 /* AVFoundation.framework */; };
 		EDAC3A961A2CAE8E00EB6DE0 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDAC3A951A2CAE8E00EB6DE0 /* CoreAudio.framework */; };
+		EDAC3A971A2CBA3100EB6DE0 /* 3D.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = EDAC3A731A2C861900EB6DE0 /* 3D.mp4 */; };
 		EDCFC6F51A2C671E00613D7B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDCFC6F41A2C671E00613D7B /* Foundation.framework */; };
 		EDCFC6F71A2C671E00613D7B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDCFC6F61A2C671E00613D7B /* CoreGraphics.framework */; };
 		EDCFC6F91A2C671E00613D7B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDCFC6F81A2C671E00613D7B /* UIKit.framework */; };
@@ -454,6 +455,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EDAC3A971A2CBA3100EB6DE0 /* 3D.mp4 in Resources */,
 				EDAC3A691A2C7F9E00EB6DE0 /* Shader.fsh in Resources */,
 				EDCFC70D1A2C671E00613D7B /* Images.xcassets in Resources */,
 				EDCFC7431A2C6A2B00613D7B /* GIR000009.jpeg in Resources */,
@@ -613,10 +615,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Sphere360/Sphere360-Prefix.pch";
 				INFOPLIST_FILE = "Sphere360/Sphere360-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "4e189d42-91b3-4f69-92bf-30d1fa444b9a";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -626,10 +630,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Sphere360/Sphere360-Prefix.pch";
 				INFOPLIST_FILE = "Sphere360/Sphere360-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "4e189d42-91b3-4f69-92bf-30d1fa444b9a";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

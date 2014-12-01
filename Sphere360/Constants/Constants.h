@@ -13,3 +13,7 @@
 #pragma mark - Resourses
 
 static NSString *const kTestImage = @"GIR000009";
+static NSString *const kTestImageType = @"jpeg";
+
+static NSString *const kTestVideo = @"3D";
+static NSString *const kTestVideoType = @"mp4";

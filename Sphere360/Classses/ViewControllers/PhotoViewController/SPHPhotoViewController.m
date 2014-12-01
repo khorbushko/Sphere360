@@ -10,6 +10,8 @@
 #import "Sphere.h"
 #import "SPHGLProgram.h"
 #import "SPHAnimationProvider.h"
+#import <AVFoundation/AVFoundation.h>
+#import "SPHTextureProvider.h"
 
 static CGFloat const kDefStartY = -1.8;
 static CGFloat const kDefStartX = -3.;
@@ -24,7 +26,7 @@ enum {
 };
 GLint uniforms[NUM_UNIFORMS];
 
-@interface SPHPhotoViewController () {
+@interface SPHPhotoViewController () <AVAssetResourceLoaderDelegate> {
     GLuint _vertexArrayID;
     GLuint _vertexBufferID;
     GLuint _vertexTexCoordID;
@@ -35,6 +37,8 @@ GLint uniforms[NUM_UNIFORMS];
     
     float _rotationX;
     float _rotationY;
+    
+    AVAssetReader *movieReader;
 }
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *heightBottomViewConstraint;
@@ -65,6 +69,8 @@ GLint uniforms[NUM_UNIFORMS];
     
     [self addPinchGesture];
     [self addTapGesture];
+    
+    [self readAssetWithURL:nil];
 }
 
 - (void)dealloc
@@ -95,16 +101,25 @@ GLint uniforms[NUM_UNIFORMS];
     glEnableVertexAttribArray(_vertexTexCoordAttributeIndex);
     glVertexAttribPointer(_vertexTexCoordAttributeIndex, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, NULL);
     
-    [self setupTexture];
-}
-
-- (void)setupTexture
-{
-    NSString *textureFile = [[NSBundle mainBundle] pathForResource:kTestImage ofType:@"jpeg"];
+    //start picture
+    NSString *textureFile = [[NSBundle mainBundle] pathForResource:kTestImage ofType:kTestImageType];
     UIImage *sourceImage = [UIImage imageWithContentsOfFile:textureFile];
     UIImage* flippedImage = [UIImage flipAndMirrorImageHorizontally:sourceImage];
+    
+    [self setupTextureWithImage:flippedImage];
+}
+
+#pragma mark - Textures
+
+- (void)setupTextureWithImage:(UIImage *)image
+{
+    if (_texture.name) {
+        GLuint textureName = _texture.name;
+        glDeleteTextures(1, &textureName);
+    }
+    
     NSError *error;
-    _texture = [GLKTextureLoader textureWithCGImage:flippedImage.CGImage options:nil error:&error];
+    _texture = [GLKTextureLoader textureWithCGImage:image.CGImage options:nil error:&error];
     if (error) {
         NSLog(@"Error during loading texture: %@", error);
     }
@@ -114,6 +129,7 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (void)update
 {
+    [self readNextMovieFrame];
     float aspect = fabsf(self.view.bounds.size.width / self.view.bounds.size.height);
     GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(self.zoomValueCurrent), aspect, 0.1f, 100.0f);
     
@@ -125,7 +141,7 @@ GLint uniforms[NUM_UNIFORMS];
 }
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
-{
+{    
     [_program use];
     
     glBindVertexArrayOES(_vertexArrayID);
@@ -256,7 +272,7 @@ GLint uniforms[NUM_UNIFORMS];
     }
     GLKView *view = (GLKView *)self.view;
     view.context = self.context;
-    self.preferredFramesPerSecond = 10.0;
+    self.preferredFramesPerSecond = 24.0;
 }
 
 - (void)addPinchGesture
@@ -290,6 +306,102 @@ GLint uniforms[NUM_UNIFORMS];
     _program = nil;
     _texture = nil;
 }
+
+#pragma mark - Video
+
+- (void)readAssetWithURL:(NSURL *)assetURL
+{
+    NSString *path = [[NSBundle mainBundle] pathForResource:kTestVideo ofType:kTestVideoType];
+    NSURL *urlToFile = [NSURL fileURLWithPath:path];
+    AVURLAsset *avAsset = [[AVURLAsset alloc] initWithURL:urlToFile options:nil];
+    [avAsset loadValuesAsynchronouslyForKeys:@[@"tracks"] completionHandler:^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            AVAssetTrack *videoTrack = nil;
+            NSArray *tracks = [avAsset tracksWithMediaType:AVMediaTypeVideo];
+            if (tracks.count) {
+                videoTrack = tracks[0];
+                NSError *error;
+                movieReader = [[AVAssetReader alloc] initWithAsset:avAsset error:&error];
+                if (error) {
+                    NSLog(@"Error - cant read Video - %@", error.localizedDescription);
+                } else {
+
+                    NSDictionary *videoSetting = @{
+                                                   (NSString *)kCVPixelBufferPixelFormatTypeKey : [NSNumber numberWithUnsignedInt:kCVPixelFormatType_32BGRA]
+                                                   };
+
+                    [movieReader addOutput:[AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:videoTrack outputSettings:videoSetting]];
+                    [movieReader startReading];
+                }
+            }
+        });
+    }];
+}
+
+- (void)readNextMovieFrame
+{
+    if (movieReader.status == AVAssetReaderStatusReading) {
+        AVAssetReaderTrackOutput *output = [movieReader.outputs objectAtIndex:0];
+        CMSampleBufferRef samplerBuffer = [output copyNextSampleBuffer];
+        if (samplerBuffer) {
+            CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(samplerBuffer);
+            
+            [self setupTextureWithImage:[UIImage flipAndMirrorImageHorizontally:[SPHTextureProvider imageWithCVImageBuffer:imageBuffer]]];
+            
+            CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
+            CFRelease(samplerBuffer);
+        }
+    }
+}
+
+#pragma mark - Audio
+
+- (void)readAudioWithUrl:(NSURL *)aassetURL
+{
+    NSURL *url = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:kTestVideo ofType:kTestVideoType]];
+    AVURLAsset *avasset = [[AVURLAsset alloc] initWithURL:url options:nil];
+    AVAssetTrack *track1 = [[avasset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
+    
+    NSMutableDictionary *dic2 = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:kAudioFormatLinearPCM], AVFormatIDKey,  [NSNumber numberWithInt:16],AVLinearPCMBitDepthKey,
+                                 [NSNumber numberWithBool:NO],AVLinearPCMIsBigEndianKey,
+                                 [NSNumber numberWithBool:NO],AVLinearPCMIsFloatKey,
+                                 [NSNumber numberWithBool:NO],AVLinearPCMIsNonInterleaved, nil];
+    
+    AVAssetReaderTrackOutput *audioReaderTrackOutput = [[AVAssetReaderTrackOutput alloc] initWithTrack:track1 outputSettings:dic2];
+    
+    AVAssetReader *audioReader = [[AVAssetReader alloc] initWithAsset:avasset error:nil];
+    
+    [audioReader addOutput:audioReaderTrackOutput];
+    [audioReader startReading];
+    [self playAudioWithOutput:audioReaderTrackOutput];
+}
+
+- (void)playAudioWithOutput:(AVAssetReaderTrackOutput *)audioReaderTrackOutput
+{
+    CMSampleBufferRef sample = [audioReaderTrackOutput copyNextSampleBuffer];
+    CMBlockBufferRef blockBufferRef = CMSampleBufferGetDataBuffer(sample);
+    
+    size_t length = CMBlockBufferGetDataLength(blockBufferRef);
+    UInt8 buffer[length];
+    CMBlockBufferCopyDataBytes(blockBufferRef, 0, length, buffer);
+    
+    NSData * data = [[NSData alloc] initWithBytes:buffer length:length];
+    NSString *docDirPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString *filePath = [NSString stringWithFormat:@"%@/test.mp3", docDirPath];
+    [data writeToFile:filePath atomically:YES];
+    
+    NSError *error;
+    NSURL *fileURL = [NSURL fileURLWithPath:filePath];
+    AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:&error];
+    player.numberOfLoops = 0;
+    [player play];
+}
+
+
+
+
+
+
 
 
 @end

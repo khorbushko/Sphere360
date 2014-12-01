@@ -7,10 +7,13 @@
 //
 
 #import "SPHTextureProvider.h"
+#import <AVFoundation/AVFoundation.h>
 
 @implementation SPHTextureProvider
 
 #pragma mark - Public
+
+#pragma mark - Image Operations
 
 + (GLuint)getPoinerToTextureFrom:(UIImage *)image
 {
@@ -53,6 +56,37 @@
     return texturePointer;
 }
 
++ (UIImage *)imageWithCVImageBuffer:(CVImageBufferRef)imageBuffer
+{
+    /*Lock the image buffer*/
+    CVPixelBufferLockBaseAddress(imageBuffer,0);
+    /*Get information about the image*/
+    uint8_t *baseAddress = (uint8_t *)CVPixelBufferGetBaseAddress(imageBuffer);
+    size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
+    size_t width = CVPixelBufferGetWidth(imageBuffer);
+    size_t height = CVPixelBufferGetHeight(imageBuffer);
+    
+    /*We unlock the  image buffer*/
+    CVPixelBufferUnlockBaseAddress(imageBuffer,0);
+    
+    /*Create a CGImageRef from the CVImageBufferRef*/
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef newContext = CGBitmapContextCreate(baseAddress, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+    CGImageRef newImage = CGBitmapContextCreateImage(newContext);
+    
+    /*We release some components*/
+    CGContextRelease(newContext);
+    CGColorSpaceRelease(colorSpace);
+    
+    /*We display the result on the image view (We need to change the orientation of the image so that the video is displayed correctly)*/
+    UIImage *image= [UIImage imageWithCGImage:newImage scale:1.0 orientation:UIImageOrientationRight];
+    /*We relase the CGImageRef*/
+    CGImageRelease(newImage);
+    return image;
+}
+
+#pragma mark - Video Operations
+
 #pragma mark - Private
 
 GLuint newTexture(GLsizei width, GLsizei height, const GLvoid *data)
@@ -77,6 +111,5 @@ GLuint newTexture(GLsizei width, GLsizei height, const GLvoid *data)
 	
 	return newTexture;
 }
-
 
 @end

@@ -11,5 +11,6 @@
 @interface SPHTextureProvider : NSObject
 
 + (GLuint)getPoinerToTextureFrom:(UIImage *)image;
++ (UIImage *)imageWithCVImageBuffer:(CVImageBufferRef)imageBuffer;
 
 @end
