@@ -14,13 +14,18 @@
 		EDCFC7011A2C671E00613D7B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCFC7001A2C671E00613D7B /* main.m */; };
 		EDCFC7051A2C671E00613D7B /* SPHAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCFC7041A2C671E00613D7B /* SPHAppDelegate.m */; };
 		EDCFC7081A2C671E00613D7B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EDCFC7061A2C671E00613D7B /* Main.storyboard */; };
-		EDCFC70B1A2C671E00613D7B /* SPHViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCFC70A1A2C671E00613D7B /* SPHViewController.m */; };
 		EDCFC70D1A2C671E00613D7B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EDCFC70C1A2C671E00613D7B /* Images.xcassets */; };
 		EDCFC7141A2C671E00613D7B /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDCFC7131A2C671E00613D7B /* XCTest.framework */; };
 		EDCFC7151A2C671E00613D7B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDCFC6F41A2C671E00613D7B /* Foundation.framework */; };
 		EDCFC7161A2C671E00613D7B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDCFC6F81A2C671E00613D7B /* UIKit.framework */; };
 		EDCFC71E1A2C671F00613D7B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EDCFC71C1A2C671F00613D7B /* InfoPlist.strings */; };
 		EDCFC7201A2C671F00613D7B /* Sphere360Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCFC71F1A2C671F00613D7B /* Sphere360Tests.m */; };
+		EDCFC72A1A2C673100613D7B /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDCFC7291A2C673100613D7B /* GLKit.framework */; };
+		EDCFC7301A2C67F100613D7B /* SPHMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCFC72F1A2C67F100613D7B /* SPHMainViewController.m */; };
+		EDCFC7361A2C685D00613D7B /* SPHPhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCFC7351A2C685D00613D7B /* SPHPhotoViewController.m */; };
+		EDCFC7391A2C686900613D7B /* SPHVideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCFC7381A2C686900613D7B /* SPHVideoViewController.m */; };
+		EDCFC73C1A2C687600613D7B /* SPHLiveStreamViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCFC73B1A2C687600613D7B /* SPHLiveStreamViewController.m */; };
+		EDCFC7431A2C6A2B00613D7B /* GIR000009.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = EDCFC7421A2C6A2B00613D7B /* GIR000009.jpeg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,14 +50,23 @@
 		EDCFC7031A2C671E00613D7B /* SPHAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPHAppDelegate.h; sourceTree = "<group>"; };
 		EDCFC7041A2C671E00613D7B /* SPHAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SPHAppDelegate.m; sourceTree = "<group>"; };
 		EDCFC7071A2C671E00613D7B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		EDCFC7091A2C671E00613D7B /* SPHViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPHViewController.h; sourceTree = "<group>"; };
-		EDCFC70A1A2C671E00613D7B /* SPHViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SPHViewController.m; sourceTree = "<group>"; };
 		EDCFC70C1A2C671E00613D7B /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		EDCFC7121A2C671E00613D7B /* Sphere360Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Sphere360Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EDCFC7131A2C671E00613D7B /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		EDCFC71B1A2C671F00613D7B /* Sphere360Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Sphere360Tests-Info.plist"; sourceTree = "<group>"; };
 		EDCFC71D1A2C671F00613D7B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EDCFC71F1A2C671F00613D7B /* Sphere360Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Sphere360Tests.m; sourceTree = "<group>"; };
+		EDCFC7291A2C673100613D7B /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
+		EDCFC72E1A2C67F100613D7B /* SPHMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHMainViewController.h; sourceTree = "<group>"; };
+		EDCFC72F1A2C67F100613D7B /* SPHMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHMainViewController.m; sourceTree = "<group>"; };
+		EDCFC7341A2C685D00613D7B /* SPHPhotoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHPhotoViewController.h; sourceTree = "<group>"; };
+		EDCFC7351A2C685D00613D7B /* SPHPhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHPhotoViewController.m; sourceTree = "<group>"; };
+		EDCFC7371A2C686900613D7B /* SPHVideoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHVideoViewController.h; sourceTree = "<group>"; };
+		EDCFC7381A2C686900613D7B /* SPHVideoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHVideoViewController.m; sourceTree = "<group>"; };
+		EDCFC73A1A2C687600613D7B /* SPHLiveStreamViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHLiveStreamViewController.h; sourceTree = "<group>"; };
+		EDCFC73B1A2C687600613D7B /* SPHLiveStreamViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHLiveStreamViewController.m; sourceTree = "<group>"; };
+		EDCFC7411A2C69EC00613D7B /* Sphere.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sphere.h; sourceTree = "<group>"; };
+		EDCFC7421A2C6A2B00613D7B /* GIR000009.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = GIR000009.jpeg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +74,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EDCFC72A1A2C673100613D7B /* GLKit.framework in Frameworks */,
 				EDCFC6F71A2C671E00613D7B /* CoreGraphics.framework in Frameworks */,
 				EDCFC6F91A2C671E00613D7B /* UIKit.framework in Frameworks */,
 				EDCFC6F51A2C671E00613D7B /* Foundation.framework in Frameworks */,
@@ -101,6 +116,7 @@
 		EDCFC6F31A2C671E00613D7B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EDCFC7291A2C673100613D7B /* GLKit.framework */,
 				EDCFC6F41A2C671E00613D7B /* Foundation.framework */,
 				EDCFC6F61A2C671E00613D7B /* CoreGraphics.framework */,
 				EDCFC6F81A2C671E00613D7B /* UIKit.framework */,
@@ -112,11 +128,11 @@
 		EDCFC6FA1A2C671E00613D7B /* Sphere360 */ = {
 			isa = PBXGroup;
 			children = (
+				EDCFC73D1A2C699B00613D7B /* Resourses */,
+				EDCFC72B1A2C674E00613D7B /* Classses */,
 				EDCFC7031A2C671E00613D7B /* SPHAppDelegate.h */,
 				EDCFC7041A2C671E00613D7B /* SPHAppDelegate.m */,
 				EDCFC7061A2C671E00613D7B /* Main.storyboard */,
-				EDCFC7091A2C671E00613D7B /* SPHViewController.h */,
-				EDCFC70A1A2C671E00613D7B /* SPHViewController.m */,
 				EDCFC70C1A2C671E00613D7B /* Images.xcassets */,
 				EDCFC6FB1A2C671E00613D7B /* Supporting Files */,
 			);
@@ -150,6 +166,94 @@
 				EDCFC71C1A2C671F00613D7B /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		EDCFC72B1A2C674E00613D7B /* Classses */ = {
+			isa = PBXGroup;
+			children = (
+				EDFAC6D11A2C6AC60059BBD0 /* OpenGL */,
+				EDCFC72C1A2C675800613D7B /* ViewControllers */,
+			);
+			path = Classses;
+			sourceTree = "<group>";
+		};
+		EDCFC72C1A2C675800613D7B /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				EDCFC7331A2C685200613D7B /* LiveStreamViewController */,
+				EDCFC7321A2C684300613D7B /* VideoViewController */,
+				EDCFC7311A2C683500613D7B /* PhotoViewController */,
+				EDCFC72D1A2C676500613D7B /* MainViewController */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		EDCFC72D1A2C676500613D7B /* MainViewController */ = {
+			isa = PBXGroup;
+			children = (
+				EDCFC72E1A2C67F100613D7B /* SPHMainViewController.h */,
+				EDCFC72F1A2C67F100613D7B /* SPHMainViewController.m */,
+			);
+			path = MainViewController;
+			sourceTree = "<group>";
+		};
+		EDCFC7311A2C683500613D7B /* PhotoViewController */ = {
+			isa = PBXGroup;
+			children = (
+				EDCFC7341A2C685D00613D7B /* SPHPhotoViewController.h */,
+				EDCFC7351A2C685D00613D7B /* SPHPhotoViewController.m */,
+			);
+			path = PhotoViewController;
+			sourceTree = "<group>";
+		};
+		EDCFC7321A2C684300613D7B /* VideoViewController */ = {
+			isa = PBXGroup;
+			children = (
+				EDCFC7371A2C686900613D7B /* SPHVideoViewController.h */,
+				EDCFC7381A2C686900613D7B /* SPHVideoViewController.m */,
+			);
+			path = VideoViewController;
+			sourceTree = "<group>";
+		};
+		EDCFC7331A2C685200613D7B /* LiveStreamViewController */ = {
+			isa = PBXGroup;
+			children = (
+				EDCFC73A1A2C687600613D7B /* SPHLiveStreamViewController.h */,
+				EDCFC73B1A2C687600613D7B /* SPHLiveStreamViewController.m */,
+			);
+			path = LiveStreamViewController;
+			sourceTree = "<group>";
+		};
+		EDCFC73D1A2C699B00613D7B /* Resourses */ = {
+			isa = PBXGroup;
+			children = (
+				EDCFC73F1A2C69C000613D7B /* TestResourses */,
+				EDCFC73E1A2C69A500613D7B /* Model */,
+			);
+			path = Resourses;
+			sourceTree = "<group>";
+		};
+		EDCFC73E1A2C69A500613D7B /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				EDCFC7411A2C69EC00613D7B /* Sphere.h */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		EDCFC73F1A2C69C000613D7B /* TestResourses */ = {
+			isa = PBXGroup;
+			children = (
+				EDCFC7421A2C6A2B00613D7B /* GIR000009.jpeg */,
+			);
+			path = TestResourses;
+			sourceTree = "<group>";
+		};
+		EDFAC6D11A2C6AC60059BBD0 /* OpenGL */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = OpenGL;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -230,6 +334,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EDCFC70D1A2C671E00613D7B /* Images.xcassets in Resources */,
+				EDCFC7431A2C6A2B00613D7B /* GIR000009.jpeg in Resources */,
 				EDCFC6FF1A2C671E00613D7B /* InfoPlist.strings in Resources */,
 				EDCFC7081A2C671E00613D7B /* Main.storyboard in Resources */,
 			);
@@ -250,9 +355,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EDCFC70B1A2C671E00613D7B /* SPHViewController.m in Sources */,
 				EDCFC7051A2C671E00613D7B /* SPHAppDelegate.m in Sources */,
+				EDCFC7301A2C67F100613D7B /* SPHMainViewController.m in Sources */,
 				EDCFC7011A2C671E00613D7B /* main.m in Sources */,
+				EDCFC7391A2C686900613D7B /* SPHVideoViewController.m in Sources */,
+				EDCFC73C1A2C687600613D7B /* SPHLiveStreamViewController.m in Sources */,
+				EDCFC7361A2C685D00613D7B /* SPHPhotoViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -457,6 +565,7 @@
 				EDCFC7251A2C671F00613D7B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		EDCFC7261A2C671F00613D7B /* Build configuration list for PBXNativeTarget "Sphere360Tests" */ = {
 			isa = XCConfigurationList;
@@ -465,6 +574,7 @@
 				EDCFC7281A2C671F00613D7B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
