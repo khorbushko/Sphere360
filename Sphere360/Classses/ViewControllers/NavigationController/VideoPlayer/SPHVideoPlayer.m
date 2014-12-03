@@ -50,16 +50,28 @@ static const NSString *ItemStatusContext;
 - (void)seekPositionAtProgress:(CGFloat)progressValue
 {
     [self.assetPlayer seekToTime:CMTimeMakeWithSeconds(self.assetDuration * progressValue, NSEC_PER_SEC)];
+    [self.assetPlayer play];
 }
 
 - (void)setPlayerVolume:(CGFloat)volume
 {
-    self.assetPlayer.volume = volume;
+    self.assetPlayer.volume = volume > .0 ? volume : 0.0f;
+    [self.assetPlayer play];
+}
+
+- (void)setPlayerRate:(CGFloat)rate
+{
+    self.assetPlayer.rate = rate > .0 ? rate : 0.0f;
 }
 
 - (void)stop
 {
-    self.assetPlayer.rate = 0.0f;
+    self.assetPlayer.rate = .0f;
+}
+
+- (BOOL)isPlayerPlayVideo
+{
+    return self.assetPlayer.rate > 0 ? YES : NO;
 }
 
 #pragma mark - Private
@@ -149,7 +161,8 @@ static const NSString *ItemStatusContext;
         NSLog(@"Failed to load video");
     } else if (status == AVPlayerItemStatusReadyToPlay) {
         NSLog(@"Player ready to play");
-        [self play];
+        self.volume = self.assetPlayer.volume;
+        [self.delegate isReadyToPlayVideo];
     } else {
         return;
     }
@@ -165,11 +178,9 @@ static const NSString *ItemStatusContext;
     for (NSValue *value in ranges) {
         CMTimeRange range;
         [value getValue:&range];
-        
         if (CMTimeRangeContainsTime(range, time)) {
             loadedRangesContainsCurrentTime = YES;
-        }
-        
+        }        
         NSTimeInterval currentMax = CMTimeGetSeconds(range.start) + CMTimeGetSeconds(range.duration);
         if (currentMax > max) {
             max = currentMax;
@@ -188,7 +199,7 @@ static const NSString *ItemStatusContext;
 
 - (void)didFailedToPlayToEnd
 {
-    
+    NSLog(@"Failed play video to the end");
 }
 
 - (void)addPeriodicalObserver
@@ -202,7 +213,26 @@ static const NSString *ItemStatusContext;
 
 - (void)playerTimeDidChange:(CMTime)time
 {
-    [self.delegate progressChangedToTime:time];
+    double timeNow = CMTimeGetSeconds(self.assetPlayer.currentTime);
+    [self.delegate progressUpdateToTime:(CGFloat) (timeNow / self.assetDuration)];
+}
+
+#pragma mark - Notification
+
+- (void)setupAppNotification
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEnterBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willEnterForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
+}
+
+- (void)didEnterBackground
+{
+    self.assetPlayer.rate = 0.0f;
+}
+
+- (void)willEnterForeground
+{
+    self.assetPlayer.rate = 1.0f;
 }
 
 #pragma mark - GetImagesFromVideoPlayer
@@ -214,12 +244,13 @@ static const NSString *ItemStatusContext;
 
 - (UIImage *)getCurrentFramePicture
 {
+    /* uncomment for log progress review
     CMTime outputItemTime = self.playerItem.currentTime;
     CMTime assetDuration = self.playerItem.duration;
     NSLog(@"Video : %f/%f - speed : %f", (float)outputItemTime.value / (float)outputItemTime.timescale, (float)assetDuration.value / (float)assetDuration.timescale, self.assetPlayer.rate);
+     */
 
     CMTime currentTime = [self.videoOutput itemTimeForHostTime:CACurrentMediaTime()];
-    
     if (![self.videoOutput hasNewPixelBufferForItemTime:currentTime]) {
         return nil;
     }

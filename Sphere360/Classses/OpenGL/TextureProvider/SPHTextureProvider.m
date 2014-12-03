@@ -28,8 +28,8 @@
     
     cgImage = [image CGImage];
     
-    _width = CGImageGetWidth(cgImage);
-    _height = CGImageGetHeight(cgImage);
+    _width = (int)CGImageGetWidth(cgImage);
+    _height = (int)CGImageGetHeight(cgImage);
     
     colorSpace = CGColorSpaceCreateDeviceRGB();
     _data = malloc(_width * _height * 4);
@@ -91,14 +91,14 @@
     return image;
 }
 
-//must Be faster `10 times than "imageWithCVPixelBuffer:(CVPixelBufferRef)pixelBuffer"
+//must Be faster `10 times than "imageWithCVPixelBuffer:(CVPixelBufferRef)pixelBuffer" -> stackoverflow
 + (UIImage *)imageWithCVPixelBufferUsingUIGraphicsContext:(CVPixelBufferRef)pixelBuffer
 {
     CVPixelBufferLockBaseAddress(pixelBuffer, 0);
     
-    int w = CVPixelBufferGetWidth(pixelBuffer);
-    int h = CVPixelBufferGetHeight(pixelBuffer);
-    int r = CVPixelBufferGetBytesPerRow(pixelBuffer);
+    int w = (int)CVPixelBufferGetWidth(pixelBuffer);
+    int h = (int)CVPixelBufferGetHeight(pixelBuffer);
+    int r = (int)CVPixelBufferGetBytesPerRow(pixelBuffer);
     int bytesPerPixel = r/w;
     
     unsigned char *bufferU = CVPixelBufferGetBaseAddress(pixelBuffer);

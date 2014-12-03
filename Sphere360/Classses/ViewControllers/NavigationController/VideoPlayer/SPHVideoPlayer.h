@@ -9,26 +9,32 @@
 
 @protocol SPHVideoPlayerDelegate
 
-@required
+@optional
 - (void)progressUpdateToTime:(CGFloat)progress;
 - (void)progressChangedToTime:(CMTime)time;
+- (void)isReadyToPlayVideo;
 
 @end
 
 @interface SPHVideoPlayer : NSObject
 
 @property (weak, nonatomic) id <SPHVideoPlayerDelegate> delegate;
+@property (assign, nonatomic) CGFloat volume;
 
 - (instancetype)initVideoPlayerWithURL:(NSURL *)urlAsset;
 - (void)prepareToPlay;
 
 - (void)play;
 - (void)pause;
+- (void)stop;
 - (void)seekPositionAtProgress:(CGFloat)progressValue;
 - (void)setPlayerVolume:(CGFloat)volume;
-- (void)stop;
+- (void)setPlayerRate:(CGFloat)rate;
+- (BOOL)isPlayerPlayVideo;
 
 - (BOOL)canProvideFrame;
 - (UIImage *)getCurrentFramePicture;
+
+- (void)removeObserversFromPlayer;
 
 @end

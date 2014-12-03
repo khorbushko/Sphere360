@@ -1,12 +1,12 @@
 //
-//  SPHPhotoViewController.m
+//  SPHUniversalViewController
 //  Sphere360
 //
 //  Created by Kirill on 12/1/14.
 //  Copyright (c) 2014 Kirill Gorbushko. All rights reserved.
 //
 
-#import "SPHPhotoViewController.h"
+#import "SPHUniversalViewController.h"
 #import "Sphere.h"
 #import "SPHGLProgram.h"
 #import "SPHAnimationProvider.h"
@@ -28,29 +28,26 @@ enum {
 };
 GLint uniforms[NUM_UNIFORMS];
 
-@interface SPHPhotoViewController () <AVAssetResourceLoaderDelegate, SPHVideoPlayerDelegate> {
+@interface SPHUniversalViewController () <AVAssetResourceLoaderDelegate, SPHVideoPlayerDelegate> {
     GLuint _vertexArrayID;
     GLuint _vertexBufferID;
     GLuint _vertexTexCoordID;
     GLuint _vertexTexCoordAttributeIndex;
     GLKMatrix4 _modelViewProjectionMatrix;
     
-    GLuint texturePointer;
-    
     float _rotationX;
     float _rotationY;
-    
-    //video
-    AVAssetReader *movieReader;
 }
 
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *heightBottomViewConstraint;
 @property (weak, nonatomic) IBOutlet UIView *bottomView;
+@property (weak, nonatomic) IBOutlet UIButton *playStopButton;
+@property (weak, nonatomic) IBOutlet UISlider *videoProgressSlider;
+@property (weak, nonatomic) IBOutlet UISlider *volumeSlider;
+@property (weak, nonatomic) IBOutlet UIButton *gyroscopeButton;
 
 @property (strong, nonatomic) SPHGLProgram *program;
 @property (strong, nonatomic) EAGLContext *context;
 @property (strong, nonatomic) GLKTextureInfo *texture;
-
 @property (strong, nonatomic) NSMutableArray *currentTouches;
 @property (assign, nonatomic) CGFloat zoomValueCurrent;
 @property (assign, nonatomic) BOOL isHyroscopeActive;
@@ -58,12 +55,11 @@ GLint uniforms[NUM_UNIFORMS];
 //video prop
 @property (assign, nonatomic) CGFloat urlAssetDuration;
 @property (strong, nonatomic) AVURLAsset *urlAsset;
-
 @property (strong, nonatomic) SPHVideoPlayer *videoPlayer;
 
 @end
 
-@implementation SPHPhotoViewController
+@implementation SPHUniversalViewController
 
 #pragma mark - LifeCycle
 
@@ -79,36 +75,14 @@ GLint uniforms[NUM_UNIFORMS];
     [self addPinchGesture];
     [self addTapGesture];
     
-    //video
-    //[self readAsset];
-    
-    NSString *path = [[NSBundle mainBundle] pathForResource:kTestVideo ofType:kTestVideoType];
-    NSURL *urlToFile = [NSURL fileURLWithPath:path];
-    self.videoPlayer = [[SPHVideoPlayer alloc] initVideoPlayerWithURL:urlToFile];
-    [self.videoPlayer prepareToPlay];
-    self.videoPlayer.delegate = self;
+    [self setupVideoPlayer];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    [self.videoPlayer stop];
-}
-
-- (void)dealloc
-{
+    [self clearPlayer];
     [self tearDownGL];
-}
-
-#pragma mark - SPHVideoPlayerDelegate - TEMP
-
--(void)progressUpdateToTime:(CGFloat)progress
-{
-}
-
-- (void)progressChangedToTime:(CMTime)time
-{
-    
 }
 
 #pragma mark - OpenGL Setup
@@ -134,15 +108,18 @@ GLint uniforms[NUM_UNIFORMS];
     glEnableVertexAttribArray(_vertexTexCoordAttributeIndex);
     glVertexAttribPointer(_vertexTexCoordAttributeIndex, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, NULL);
     
-    [self applyImageTexture];
+    if (self.selectedController == VideoViewController) {
+        [self setEmptyImage];
+        [self setupSlider];
+    } else if (self.selectedController == PhotoViewController) {
+        [self applyImageTexture];
+    }
 }
 
 - (void)applyImageTexture
 {
-    NSString *textureFile = [[NSBundle mainBundle] pathForResource:kTestImage ofType:kTestImageType];
-    UIImage *sourceImage = [UIImage imageWithContentsOfFile:textureFile];
+    UIImage *sourceImage = [UIImage imageWithContentsOfFile:self.sourceURL];
     UIImage* flippedImage = [UIImage flipAndMirrorImageHorizontally:sourceImage];
-    
     [self setupTextureWithImage:flippedImage];
 }
 
@@ -150,16 +127,6 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (void)setupTextureWithImage:(UIImage *)image
 {
-//    if (_texture.name) {
-//        GLuint textureName = _texture.name;
-//        glDeleteTextures(1, &textureName);
-//    }
-//    NSError *error;
-//    NSLog(@"GL Error = %u", glGetError());
-//    _texture = [GLKTextureLoader textureWithCGImage:image.CGImage options:nil error:&error];
-//    if (error) {
-//        NSLog(@"Error during loading texture: %@", error);
-//    }
     GLKTextureLoader *textureloader = [[GLKTextureLoader alloc] initWithSharegroup:self.context.sharegroup];
     [textureloader textureWithCGImage:image.CGImage options:nil queue:nil completionHandler:^(GLKTextureInfo *textureInfo, NSError *outError) {
         if (_texture.name) {
@@ -178,9 +145,9 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (void)update
 {
-   // [self readNextMovieFrame]; //video
-
-    [self setNewTextureFromVideoPlayer];
+    if (self.selectedController == VideoViewController && [self.videoPlayer isPlayerPlayVideo]) {
+        [self setNewTextureFromVideoPlayer];
+    }
     
     float aspect = fabsf(self.view.bounds.size.width / self.view.bounds.size.height);
     GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(self.zoomValueCurrent), aspect, 0.1f, 60.0f);
@@ -193,7 +160,6 @@ GLint uniforms[NUM_UNIFORMS];
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
 {    
     [_program use];
-    
     [self drawArrayOfData];
 }
 
@@ -233,7 +199,6 @@ GLint uniforms[NUM_UNIFORMS];
     uniforms[UNIFORM_SAMPLER] = [_program uniformIndex:@"u_Sampler"];
 }
 
-
 #pragma mark - Touches
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
@@ -251,8 +216,8 @@ GLint uniforms[NUM_UNIFORMS];
     UITouch *touch = [touches anyObject];
     float distX = [touch locationInView:touch.view].x - [touch previousLocationInView:touch.view].x;
     float distY = [touch locationInView:touch.view].y - [touch previousLocationInView:touch.view].y;
-    distX *= -0.015;
-    distY *= 0.015;
+    distX *= -0.003;
+    distY *= 0.003;
     _rotationX += -distY;
     _rotationY += -distX;
 }
@@ -297,7 +262,72 @@ GLint uniforms[NUM_UNIFORMS];
     self.isHyroscopeActive = !self.isHyroscopeActive;
 }
 
+- (IBAction)playStopButtonPress:(id)sender
+{
+    if ([self.videoPlayer isPlayerPlayVideo]) {
+        [self.playStopButton setTitle:@"Play" forState:UIControlStateNormal];
+        [self.videoPlayer pause];
+    } else {
+        [self.playStopButton setTitle:@"Stop" forState:UIControlStateNormal];
+        [self.videoPlayer play];
+        self.volumeSlider.value = self.videoPlayer.volume;
+    }
+}
+
+#pragma mark - Video
+
+- (void)setupVideoPlayer
+{
+    if (self.selectedController == VideoViewController) {
+        NSURL *urlToFile = [NSURL fileURLWithPath:self.sourceURL];
+        self.videoPlayer = [[SPHVideoPlayer alloc] initVideoPlayerWithURL:urlToFile];
+        [self.videoPlayer prepareToPlay];
+        self.videoPlayer.delegate = self;
+    }
+}
+
+- (void)setNewTextureFromVideoPlayer
+{
+    if (self.videoPlayer) {
+        if ([self.videoPlayer canProvideFrame]) {
+            UIImage *image = [self.videoPlayer getCurrentFramePicture];
+            [self setupTextureWithImage:[UIImage flipAndMirrorImageHorizontally:image]];
+        }
+    }
+    [self drawArrayOfData];
+}
+
+- (void)clearPlayer
+{
+    [self.videoPlayer stop];
+    [self.videoPlayer removeObserversFromPlayer];
+    self.videoPlayer.delegate = nil;
+    self.videoPlayer = nil;
+}
+
+#pragma mark - SPHVideoPlayerDelegate
+
+- (void)isReadyToPlayVideo
+{
+    self.playStopButton.enabled = YES;
+    self.videoProgressSlider.enabled = YES;
+    self.gyroscopeButton.enabled = YES;
+    self.volumeSlider.enabled = YES;
+}
+
+- (void)progressUpdateToTime:(CGFloat)progress
+{
+    if ([self.videoPlayer isPlayerPlayVideo]) {
+        self.videoProgressSlider.value = progress;
+    }
+}
+
 #pragma mark - Private
+
+- (void)setEmptyImage
+{
+    [self setupTextureWithImage:[[UIImage alloc] init]];
+}
 
 - (void)hideBottomBar
 {
@@ -350,6 +380,33 @@ GLint uniforms[NUM_UNIFORMS];
     _rotationY = kDefStartY;
     self.zoomValueCurrent = kDefaultZoomDegree;
 }
+#pragma mark - UIConfiguration
+
+- (void)setupSlider
+{
+    [self.videoProgressSlider addTarget:self action:@selector(progressSliderTouchedDown) forControlEvents:UIControlEventTouchDown];
+    [self.videoProgressSlider addTarget:self action:@selector(progressSliderTouchedUp) forControlEvents:UIControlEventTouchUpInside];
+    [self.volumeSlider addTarget:self action:@selector(volumeSliderTouchedUp) forControlEvents:UIControlEventTouchUpInside];
+}
+
+#pragma mark - Slider
+
+- (void)progressSliderTouchedDown
+{
+    if ([self.videoPlayer isPlayerPlayVideo]) {
+        [self.videoPlayer pause];
+    }
+}
+
+- (void)progressSliderTouchedUp
+{
+    [self.videoPlayer seekPositionAtProgress:self.videoProgressSlider.value];
+}
+
+- (void)volumeSliderTouchedUp
+{
+    [self.videoPlayer setPlayerVolume:self.volumeSlider.value];
+}
 
 #pragma mark - Cleanup
 
@@ -361,82 +418,17 @@ GLint uniforms[NUM_UNIFORMS];
     glDeleteVertexArraysOES(1, &_vertexArrayID);
     glDeleteBuffers(1, &_vertexTexCoordID);
     _program = nil;
+    if (_texture.name) {
+        GLuint textureName = _texture.name;
+        glDeleteTextures(1, &textureName);
+    }
     _texture = nil;
 }
 
-#pragma mark - TEMPContent
-
-- (void)readAsset
+- (void)dealloc
 {
-    self.urlAsset = [self setupURLAssetWithURL:nil];
-
-    [self.urlAsset loadValuesAsynchronouslyForKeys:@[@"tracks"] completionHandler:^{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            AVAssetTrack *videoTrack = nil;
-            NSArray *tracks = [self.urlAsset tracksWithMediaType:AVMediaTypeVideo];
-            if (tracks.count) {
-                videoTrack = tracks[0];
-                NSError *error;
-                movieReader = [[AVAssetReader alloc] initWithAsset:self.urlAsset error:&error];
-                if (error) {
-                    NSLog(@"Error - cant read Video - %@", error.localizedDescription);
-                } else {
-                    NSDictionary *videoSetting = @{
-                                                   (NSString *)kCVPixelBufferPixelFormatTypeKey : [NSNumber numberWithUnsignedInt:kCVPixelFormatType_32BGRA]
-                                                   };
-                    [movieReader addOutput:[AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:videoTrack outputSettings:videoSetting]];
-                    [movieReader startReading];
-                }
-            }
-        });
-    }];
-}
-
-- (void)readNextMovieFrame
-{
-    if (movieReader.status == AVAssetReaderStatusReading) {
-        AVAssetReaderTrackOutput *output = [movieReader.outputs objectAtIndex:0];
-        CMSampleBufferRef samplerBuffer = [output copyNextSampleBuffer];
-        if (samplerBuffer) {
-            CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(samplerBuffer);
-            
-            [self setupTextureWithImage:[UIImage flipAndMirrorImageHorizontally:[SPHTextureProvider imageWithCVImageBuffer:imageBuffer]]];
-            
-            CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
-            CFRelease(samplerBuffer);
-        }
-    }
-}
-
-- (AVURLAsset *)setupURLAssetWithURL:(NSURL *)assetURL
-{
-    NSString *path = [[NSBundle mainBundle] pathForResource:kTestVideo ofType:kTestVideoType];
-    NSURL *urlToFile = [NSURL fileURLWithPath:path];
-    
-    NSDictionary *assetOptions = @{
-                                   AVURLAssetPreferPreciseDurationAndTimingKey : @YES
-                                   };
-    
-    AVURLAsset *avAsset = [[AVURLAsset alloc] initWithURL:urlToFile options:assetOptions];
-    return avAsset;
-}
-
-- (CGFloat )getAssetDurationFromAVURLAsset:(AVURLAsset *)urlAsset
-{
-    CMTime duration = self.urlAsset.duration;
-    CGFloat seconds = CMTimeGetSeconds(duration);
-    return seconds;
-}
-
-- (void)setNewTextureFromVideoPlayer
-{
-    if (self.videoPlayer) {
-        if ([self.videoPlayer canProvideFrame]) {
-            UIImage *image = [self.videoPlayer getCurrentFramePicture];
-            [self setupTextureWithImage:[UIImage flipAndMirrorImageHorizontally:image]];
-        }
-    }
-    [self drawArrayOfData];
+    [self clearPlayer];
+    [self tearDownGL];
 }
 
 @end
