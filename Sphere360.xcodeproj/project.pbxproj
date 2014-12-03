@@ -17,6 +17,7 @@
 		EDAC3A941A2CAE8600EB6DE0 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDAC3A931A2CAE8600EB6DE0 /* AVFoundation.framework */; };
 		EDAC3A961A2CAE8E00EB6DE0 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDAC3A951A2CAE8E00EB6DE0 /* CoreAudio.framework */; };
 		EDAC3A971A2CBA3100EB6DE0 /* 3D.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = EDAC3A731A2C861900EB6DE0 /* 3D.mp4 */; };
+		EDCFA2D61A2EF16800803941 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDCFA2D51A2EF16700803941 /* CoreImage.framework */; };
 		EDCFC6F51A2C671E00613D7B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDCFC6F41A2C671E00613D7B /* Foundation.framework */; };
 		EDCFC6F71A2C671E00613D7B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDCFC6F61A2C671E00613D7B /* CoreGraphics.framework */; };
 		EDCFC6F91A2C671E00613D7B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDCFC6F81A2C671E00613D7B /* UIKit.framework */; };
@@ -36,6 +37,8 @@
 		EDCFC7391A2C686900613D7B /* SPHVideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCFC7381A2C686900613D7B /* SPHVideoViewController.m */; };
 		EDCFC73C1A2C687600613D7B /* SPHLiveStreamViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCFC73B1A2C687600613D7B /* SPHLiveStreamViewController.m */; };
 		EDCFC7431A2C6A2B00613D7B /* GIR000009.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = EDCFC7421A2C6A2B00613D7B /* GIR000009.jpeg */; };
+		EDEFC8C51A2DAD7100E01E11 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDEFC8C41A2DAD7100E01E11 /* CoreMedia.framework */; };
+		EDEFC8C91A2DB7B600E01E11 /* SPHVideoPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = EDEFC8C81A2DB7B600E01E11 /* SPHVideoPlayer.m */; };
 		EDFAC6D91A2C74290059BBD0 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDFAC6D81A2C74290059BBD0 /* OpenGLES.framework */; };
 /* End PBXBuildFile section */
 
@@ -67,6 +70,7 @@
 		EDAC3A911A2CAC7700EB6DE0 /* SPHNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHNavigationController.m; sourceTree = "<group>"; };
 		EDAC3A931A2CAE8600EB6DE0 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		EDAC3A951A2CAE8E00EB6DE0 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+		EDCFA2D51A2EF16700803941 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
 		EDCFC6F11A2C671E00613D7B /* Sphere360.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sphere360.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EDCFC6F41A2C671E00613D7B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		EDCFC6F61A2C671E00613D7B /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -94,6 +98,9 @@
 		EDCFC73A1A2C687600613D7B /* SPHLiveStreamViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHLiveStreamViewController.h; sourceTree = "<group>"; };
 		EDCFC73B1A2C687600613D7B /* SPHLiveStreamViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHLiveStreamViewController.m; sourceTree = "<group>"; };
 		EDCFC7421A2C6A2B00613D7B /* GIR000009.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = GIR000009.jpeg; sourceTree = "<group>"; };
+		EDEFC8C41A2DAD7100E01E11 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		EDEFC8C71A2DB7B600E01E11 /* SPHVideoPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHVideoPlayer.h; sourceTree = "<group>"; };
+		EDEFC8C81A2DB7B600E01E11 /* SPHVideoPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHVideoPlayer.m; sourceTree = "<group>"; };
 		EDFAC6D31A2C6C4B0059BBD0 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		EDFAC6D81A2C74290059BBD0 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -103,6 +110,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EDCFA2D61A2EF16800803941 /* CoreImage.framework in Frameworks */,
+				EDEFC8C51A2DAD7100E01E11 /* CoreMedia.framework in Frameworks */,
 				EDAC3A961A2CAE8E00EB6DE0 /* CoreAudio.framework in Frameworks */,
 				EDAC3A941A2CAE8600EB6DE0 /* AVFoundation.framework in Frameworks */,
 				EDFAC6D91A2C74290059BBD0 /* OpenGLES.framework in Frameworks */,
@@ -184,6 +193,7 @@
 		EDAC3A851A2CA4F400EB6DE0 /* Others */ = {
 			isa = PBXGroup;
 			children = (
+				EDEFC8C61A2DB79300E01E11 /* VideoPlayer */,
 			);
 			path = Others;
 			sourceTree = "<group>";
@@ -228,6 +238,8 @@
 		EDCFC6F31A2C671E00613D7B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EDCFA2D51A2EF16700803941 /* CoreImage.framework */,
+				EDEFC8C41A2DAD7100E01E11 /* CoreMedia.framework */,
 				EDAC3A951A2CAE8E00EB6DE0 /* CoreAudio.framework */,
 				EDAC3A931A2CAE8600EB6DE0 /* AVFoundation.framework */,
 				EDFAC6D81A2C74290059BBD0 /* OpenGLES.framework */,
@@ -370,6 +382,16 @@
 			path = TestResourses;
 			sourceTree = "<group>";
 		};
+		EDEFC8C61A2DB79300E01E11 /* VideoPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				EDEFC8C71A2DB7B600E01E11 /* SPHVideoPlayer.h */,
+				EDEFC8C81A2DB7B600E01E11 /* SPHVideoPlayer.m */,
+			);
+			name = VideoPlayer;
+			path = Sphere360/Classses/ViewControllers/NavigationController/VideoPlayer;
+			sourceTree = SOURCE_ROOT;
+		};
 		EDFAC6D21A2C6C3D0059BBD0 /* Constants */ = {
 			isa = PBXGroup;
 			children = (
@@ -490,6 +512,7 @@
 				EDAC3A781A2C94F800EB6DE0 /* SPHAnimationProvider.m in Sources */,
 				EDCFC73C1A2C687600613D7B /* SPHLiveStreamViewController.m in Sources */,
 				EDCFC7361A2C685D00613D7B /* SPHPhotoViewController.m in Sources */,
+				EDEFC8C91A2DB7B600E01E11 /* SPHVideoPlayer.m in Sources */,
 				EDAC3A8E1A2CA91300EB6DE0 /* UIImage+ImageModification.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -620,7 +643,7 @@
 				GCC_PREFIX_HEADER = "Sphere360/Sphere360-Prefix.pch";
 				INFOPLIST_FILE = "Sphere360/Sphere360-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "4e189d42-91b3-4f69-92bf-30d1fa444b9a";
+				PROVISIONING_PROFILE = "ddc61d99-a3d2-4a9d-9789-723da9a689d9";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -635,7 +658,7 @@
 				GCC_PREFIX_HEADER = "Sphere360/Sphere360-Prefix.pch";
 				INFOPLIST_FILE = "Sphere360/Sphere360-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "4e189d42-91b3-4f69-92bf-30d1fa444b9a";
+				PROVISIONING_PROFILE = "ddc61d99-a3d2-4a9d-9789-723da9a689d9";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

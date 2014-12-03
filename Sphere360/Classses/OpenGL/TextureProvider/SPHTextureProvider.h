@@ -6,11 +6,11 @@
 //  Copyright (c) 2014 Kirill Gorbushko. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-
 @interface SPHTextureProvider : NSObject
 
 + (GLuint)getPoinerToTextureFrom:(UIImage *)image;
 + (UIImage *)imageWithCVImageBuffer:(CVImageBufferRef)imageBuffer;
++ (UIImage *)imageWithCVPixelBuffer:(CVPixelBufferRef)pixelBuffer;
++ (UIImage *)imageWithCVPixelBufferUsingUIGraphicsContext:(CVPixelBufferRef)pixelBuffer;
 
 @end
