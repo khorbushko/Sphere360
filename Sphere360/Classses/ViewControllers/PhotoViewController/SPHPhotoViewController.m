@@ -150,23 +150,35 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (void)setupTextureWithImage:(UIImage *)image
 {
-    if (_texture.name) {
-        GLuint textureName = _texture.name;
-        glDeleteTextures(1, &textureName);
-    }
-
-    NSError *error;
-    _texture = [GLKTextureLoader textureWithCGImage:image.CGImage options:nil error:&error];
-    if (error) {
-        NSLog(@"Error during loading texture: %@", error);
-    }
+//    if (_texture.name) {
+//        GLuint textureName = _texture.name;
+//        glDeleteTextures(1, &textureName);
+//    }
+//    NSError *error;
+//    NSLog(@"GL Error = %u", glGetError());
+//    _texture = [GLKTextureLoader textureWithCGImage:image.CGImage options:nil error:&error];
+//    if (error) {
+//        NSLog(@"Error during loading texture: %@", error);
+//    }
+    GLKTextureLoader *textureloader = [[GLKTextureLoader alloc] initWithSharegroup:self.context.sharegroup];
+    [textureloader textureWithCGImage:image.CGImage options:nil queue:nil completionHandler:^(GLKTextureInfo *textureInfo, NSError *outError) {
+        if (_texture.name) {
+            GLuint textureName = _texture.name;
+            glDeleteTextures(1, &textureName);
+        }
+        [EAGLContext setCurrentContext:self.context];
+        _texture = textureInfo;
+        if (outError){
+            NSLog(@"GL Error = %u", glGetError());
+        }
+    }];
 }
 
 #pragma mark - Draw & update methods
 
 - (void)update
 {
-    //[self readNextMovieFrame]; //video
+   // [self readNextMovieFrame]; //video
 
     [self setNewTextureFromVideoPlayer];
     
@@ -182,6 +194,11 @@ GLint uniforms[NUM_UNIFORMS];
 {    
     [_program use];
     
+    [self drawArrayOfData];
+}
+
+- (void)drawArrayOfData
+{
     glBindVertexArrayOES(_vertexArrayID);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -306,6 +323,7 @@ GLint uniforms[NUM_UNIFORMS];
 - (void)setupContext
 {
     self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+    [EAGLContext setCurrentContext:self.context];
     if (!self.context) {
         NSLog(@"Failed to create ES context");
     }
@@ -414,10 +432,11 @@ GLint uniforms[NUM_UNIFORMS];
 {
     if (self.videoPlayer) {
         if ([self.videoPlayer canProvideFrame]) {
-            UIImage *image = [UIImage flipAndMirrorImageHorizontally:[self.videoPlayer getCurrentFramePicture]];
-            [self setupTextureWithImage:image];
+            UIImage *image = [self.videoPlayer getCurrentFramePicture];
+            [self setupTextureWithImage:[UIImage flipAndMirrorImageHorizontally:image]];
         }
     }
+    [self drawArrayOfData];
 }
 
 @end
