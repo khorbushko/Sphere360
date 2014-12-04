@@ -114,21 +114,21 @@
             </objects>
             <point key="canvasLocation" x="955" y="349"/>
         </scene>
-        <!--Live Stream View Controller-->
+        <!--Universal View Controller - Live-->
         <scene sceneID="y2O-ak-mRh">
             <objects>
-                <viewController id="X96-17-0wW" customClass="SPHLiveStreamViewController" sceneMemberID="viewController">
+                <viewController id="X96-17-0wW" customClass="SPHUniversalViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="gen-1W-U8M"/>
                         <viewControllerLayoutGuide type="bottom" id="RcH-Ci-wre"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="1sW-HI-nd3">
+                    <view key="view" contentMode="scaleToFill" id="1sW-HI-nd3" customClass="GLKView">
                         <rect key="frame" x="0.0" y="0.0" width="568" height="320"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
-                    <navigationItem key="navigationItem" id="v8A-hZ-Az9"/>
+                    <navigationItem key="navigationItem" title="Live" id="v8A-hZ-Az9"/>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="deY-Va-HBq" userLabel="First Responder" sceneMemberID="firstResponder"/>

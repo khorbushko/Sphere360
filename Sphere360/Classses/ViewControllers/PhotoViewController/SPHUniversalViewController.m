@@ -17,8 +17,8 @@
 
 static CGFloat const kDefStartY = -1.8;
 static CGFloat const kDefStartX = -3.;
-static CGFloat const kMinimumZoomDegree = 40.;
-static CGFloat const kMaximumZoomDegree = 130.;
+static CGFloat const kMinimumZoomValue = 0.1f;
+static CGFloat const kMaximumZoomValue = 1.45f;
 static CGFloat const kDefaultZoomDegree = 90;
 
 enum {
@@ -28,7 +28,7 @@ enum {
 };
 GLint uniforms[NUM_UNIFORMS];
 
-@interface SPHUniversalViewController () <AVAssetResourceLoaderDelegate, SPHVideoPlayerDelegate> {
+@interface SPHUniversalViewController () <AVAssetResourceLoaderDelegate, SPHVideoPlayerDelegate, UIGestureRecognizerDelegate> {
     GLuint _vertexArrayID;
     GLuint _vertexBufferID;
     GLuint _vertexTexCoordID;
@@ -50,6 +50,7 @@ GLint uniforms[NUM_UNIFORMS];
 @property (strong, nonatomic) GLKTextureInfo *texture;
 @property (strong, nonatomic) NSMutableArray *currentTouches;
 @property (assign, nonatomic) CGFloat zoomValueCurrent;
+@property (assign, nonatomic) CGFloat zoomValueLast;
 @property (assign, nonatomic) BOOL isHyroscopeActive;
 
 //video prop
@@ -67,15 +68,16 @@ GLint uniforms[NUM_UNIFORMS];
 {
     [super viewDidLoad];
     
-    [self setStartPosition];
+    [self setInitialParameters];
     
     [self setupContext];
     [self setupGL];
     
+    [self setupUI];
     [self addPinchGesture];
     [self addTapGesture];
     
-    [self setupVideoPlayer];
+    [self setupVideoPlayerIfNeeded];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -107,13 +109,6 @@ GLint uniforms[NUM_UNIFORMS];
     glBufferData(GL_ARRAY_BUFFER, sizeof(SphereTexCoords), SphereTexCoords, GL_STATIC_DRAW);
     glEnableVertexAttribArray(_vertexTexCoordAttributeIndex);
     glVertexAttribPointer(_vertexTexCoordAttributeIndex, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, NULL);
-    
-    if (self.selectedController == VideoViewController) {
-        [self setEmptyImage];
-        [self setupSlider];
-    } else if (self.selectedController == PhotoViewController) {
-        [self applyImageTexture];
-    }
 }
 
 - (void)applyImageTexture
@@ -239,19 +234,32 @@ GLint uniforms[NUM_UNIFORMS];
 - (void)pinchForZoom:(UIGestureRecognizer *)sender
 {
     CGFloat scaleValue = [(UIPinchGestureRecognizer*)sender scale];
-    if (kDefaultZoomDegree * scaleValue > kMaximumZoomDegree) {
-        self.zoomValueCurrent = kMaximumZoomDegree;
-    } else if (kDefaultZoomDegree * scaleValue < kMinimumZoomDegree) {
-        self.zoomValueCurrent = kMinimumZoomDegree;
-    } else {
-        self.zoomValueCurrent  = kDefaultZoomDegree * scaleValue;
+    CGFloat zoom = self.zoomValueLast * scaleValue;
+    
+    if (zoom > kMaximumZoomValue) {
+        zoom = kMaximumZoomValue;
+    } else if (zoom < kMinimumZoomValue) {
+        zoom = kMinimumZoomValue;
     }
+    self.zoomValueLast = zoom;
+    self.zoomValueCurrent = zoom * kDefaultZoomDegree;
 }
 
 - (void)tapGesture
 {
-    [self hideNavigationBar];
+    [self hideShowNavigationBar];
     [self hideBottomBar];
+}
+
+#pragma mark - UIGestureRecognizerDelegate
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+    if ([touch.view isKindOfClass:[GLKView class]]) {
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
 #pragma mark - IBActions
@@ -276,7 +284,7 @@ GLint uniforms[NUM_UNIFORMS];
 
 #pragma mark - Video
 
-- (void)setupVideoPlayer
+- (void)setupVideoPlayerIfNeeded
 {
     if (self.selectedController == VideoViewController) {
         NSURL *urlToFile = [NSURL fileURLWithPath:self.sourceURL];
@@ -322,6 +330,44 @@ GLint uniforms[NUM_UNIFORMS];
     }
 }
 
+#pragma mark - UIConfiguration
+
+- (void)setupSlider
+{
+    [self.videoProgressSlider addTarget:self action:@selector(progressSliderTouchedDown) forControlEvents:UIControlEventTouchDown];
+    [self.videoProgressSlider addTarget:self action:@selector(progressSliderTouchedUp) forControlEvents:UIControlEventTouchUpInside];
+    [self.volumeSlider addTarget:self action:@selector(volumeSliderTouchedUp) forControlEvents:UIControlEventTouchUpInside];
+}
+
+- (void)setupUI
+{
+    if (self.selectedController == VideoViewController) {
+        [self setEmptyImage];
+        [self setupSlider];
+    } else if (self.selectedController == PhotoViewController) {
+        [self applyImageTexture];
+    }
+}
+
+#pragma mark - Slider
+
+- (void)progressSliderTouchedDown
+{
+    if ([self.videoPlayer isPlayerPlayVideo]) {
+        [self.videoPlayer pause];
+    }
+}
+
+- (void)progressSliderTouchedUp
+{
+    [self.videoPlayer seekPositionAtProgress:self.videoProgressSlider.value];
+}
+
+- (void)volumeSliderTouchedUp
+{
+    [self.videoPlayer setPlayerVolume:self.volumeSlider.value];
+}
+
 #pragma mark - Private
 
 - (void)setEmptyImage
@@ -345,7 +391,7 @@ GLint uniforms[NUM_UNIFORMS];
     self.bottomView.layer.position = toValue;
 }
 
-- (void)hideNavigationBar
+- (void)hideShowNavigationBar
 {
     [self.navigationController setNavigationBarHidden:!self.navigationController.navigationBarHidden animated:YES];
 }
@@ -371,41 +417,16 @@ GLint uniforms[NUM_UNIFORMS];
 - (void)addTapGesture
 {
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGesture)];
+    tapGesture.delegate = self;
     [self.view addGestureRecognizer:tapGesture];
 }
 
-- (void)setStartPosition
+- (void)setInitialParameters
 {
     _rotationX = kDefStartX;
     _rotationY = kDefStartY;
     self.zoomValueCurrent = kDefaultZoomDegree;
-}
-#pragma mark - UIConfiguration
-
-- (void)setupSlider
-{
-    [self.videoProgressSlider addTarget:self action:@selector(progressSliderTouchedDown) forControlEvents:UIControlEventTouchDown];
-    [self.videoProgressSlider addTarget:self action:@selector(progressSliderTouchedUp) forControlEvents:UIControlEventTouchUpInside];
-    [self.volumeSlider addTarget:self action:@selector(volumeSliderTouchedUp) forControlEvents:UIControlEventTouchUpInside];
-}
-
-#pragma mark - Slider
-
-- (void)progressSliderTouchedDown
-{
-    if ([self.videoPlayer isPlayerPlayVideo]) {
-        [self.videoPlayer pause];
-    }
-}
-
-- (void)progressSliderTouchedUp
-{
-    [self.videoPlayer seekPositionAtProgress:self.videoProgressSlider.value];
-}
-
-- (void)volumeSliderTouchedUp
-{
-    [self.videoPlayer setPlayerVolume:self.volumeSlider.value];
+    self.zoomValueLast = 1.0f;
 }
 
 #pragma mark - Cleanup
