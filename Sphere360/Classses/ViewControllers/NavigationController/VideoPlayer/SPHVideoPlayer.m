@@ -66,7 +66,9 @@ static const NSString *ItemStatusContext;
 
 - (void)stop
 {
-    self.assetPlayer.rate = .0f;
+    [self.assetPlayer seekToTime:kCMTimeZero];
+    self.assetPlayer.rate =.0f;
+    
 }
 
 - (BOOL)isPlayerPlayVideo

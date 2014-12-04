@@ -15,11 +15,16 @@
 #import <CoreMedia/CoreMedia.h>
 #import "SPHVideoPlayer.h"
 
-static CGFloat const kDefStartY = -1.8;
-static CGFloat const kDefStartX = -3.;
+static CGFloat const kDefStartY = -1.8f;
+static CGFloat const kDefStartX = -3.f;
+
 static CGFloat const kMinimumZoomValue = 0.1f;
 static CGFloat const kMaximumZoomValue = 1.45f;
 static CGFloat const kDefaultZoomDegree = 90;
+
+static CGFloat const kVelocityDecreasingValue = 10.0f;
+static CGFloat const kVelocityMaxValue = 1000.0f;
+static CGFloat const kVelocitySpeed = 0.3f;
 
 enum {
     UNIFORM_MVPMATRIX,
@@ -48,12 +53,14 @@ GLint uniforms[NUM_UNIFORMS];
 @property (strong, nonatomic) SPHGLProgram *program;
 @property (strong, nonatomic) EAGLContext *context;
 @property (strong, nonatomic) GLKTextureInfo *texture;
-@property (strong, nonatomic) NSMutableArray *currentTouches;
+
 @property (assign, nonatomic) CGFloat zoomValueCurrent;
 @property (assign, nonatomic) CGFloat zoomValueLast;
+@property (assign, nonatomic) CGPoint velocityEndPoint;
+@property (assign, nonatomic) CGPoint prevTouchPoint;
+@property (assign, nonatomic) BOOL isExtraMovementActive;
 @property (assign, nonatomic) BOOL isHyroscopeActive;
 
-//video prop
 @property (assign, nonatomic) CGFloat urlAssetDuration;
 @property (strong, nonatomic) AVURLAsset *urlAsset;
 @property (strong, nonatomic) SPHVideoPlayer *videoPlayer;
@@ -76,6 +83,7 @@ GLint uniforms[NUM_UNIFORMS];
     [self setupUI];
     [self addPinchGesture];
     [self addTapGesture];
+    [self addPanGesture];
     
     [self setupVideoPlayerIfNeeded];
 }
@@ -111,14 +119,14 @@ GLint uniforms[NUM_UNIFORMS];
     glVertexAttribPointer(_vertexTexCoordAttributeIndex, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, NULL);
 }
 
+#pragma mark - Textures
+
 - (void)applyImageTexture
 {
     UIImage *sourceImage = [UIImage imageWithContentsOfFile:self.sourceURL];
     UIImage* flippedImage = [UIImage flipAndMirrorImageHorizontally:sourceImage];
     [self setupTextureWithImage:flippedImage];
 }
-
-#pragma mark - Textures
 
 - (void)setupTextureWithImage:(UIImage *)image
 {
@@ -142,6 +150,9 @@ GLint uniforms[NUM_UNIFORMS];
 {
     if (self.selectedController == VideoViewController && [self.videoPlayer isPlayerPlayVideo]) {
         [self setNewTextureFromVideoPlayer];
+    }
+    if (self.isExtraMovementActive) {
+        [self startExtraMovement];
     }
     
     float aspect = fabsf(self.view.bounds.size.width / self.view.bounds.size.height);
@@ -186,50 +197,36 @@ GLint uniforms[NUM_UNIFORMS];
 		NSString *vertexLog = [_program vertexShaderLog];
 		NSLog(@"Vertex shader compile log: %@", vertexLog);
 		_program = nil;
-        NSAssert(NO, @"Falied to link HalfSpherical shaders");
+        NSAssert(NO, @"Falied to link Spherical shaders");
 	}
     _vertexTexCoordAttributeIndex = [_program attributeIndex:@"a_textureCoord"];
-    
     uniforms[UNIFORM_MVPMATRIX] = [_program uniformIndex:@"u_modelViewProjectionMatrix"];
     uniforms[UNIFORM_SAMPLER] = [_program uniformIndex:@"u_Sampler"];
 }
 
+- (void)setupContext
+{
+    self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+    [EAGLContext setCurrentContext:self.context];
+    if (!self.context) {
+        NSLog(@"Failed to create ES context");
+    }
+    GLKView *view = (GLKView *)self.view;
+    view.context = self.context;
+    self.preferredFramesPerSecond = 24.0;
+}
+
 #pragma mark - Touches
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+- (void)moveToPointX:(CGFloat)pointX andPointY:(CGFloat)pointY
 {
-    for (UITouch *touch in touches) {
-        if (!_currentTouches.count) {
-            _currentTouches = [[NSMutableArray alloc] init];
-        }
-        [_currentTouches addObject:touch];
-    }
+    pointX *= -0.001;
+    pointY *= 0.001;
+    _rotationX += -pointY;
+    _rotationY += -pointX;
 }
 
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    UITouch *touch = [touches anyObject];
-    float distX = [touch locationInView:touch.view].x - [touch previousLocationInView:touch.view].x;
-    float distY = [touch locationInView:touch.view].y - [touch previousLocationInView:touch.view].y;
-    distX *= -0.003;
-    distY *= 0.003;
-    _rotationX += -distY;
-    _rotationY += -distX;
-}
-
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    for (UITouch *touch in touches) {
-        [_currentTouches removeObject:touch];
-    }
-}
-
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    for (UITouch *touch in touches) {
-        [_currentTouches removeObject:touch];
-    }
-}
+#pragma mark - GestureActions
 
 - (void)pinchForZoom:(UIGestureRecognizer *)sender
 {
@@ -251,15 +248,61 @@ GLint uniforms[NUM_UNIFORMS];
     [self hideBottomBar];
 }
 
+- (void)panGesture:(UIPanGestureRecognizer *)sender
+{
+    CGPoint currentPoint = [sender locationInView:sender.view];
+    switch (sender.state) {
+        case UIGestureRecognizerStateEnded: {
+            CGPoint velocity = [sender velocityInView:sender.view];
+            self.velocityEndPoint = velocity;
+            self.isExtraMovementActive = YES;
+            break;
+        }
+        case UIGestureRecognizerStateBegan: {
+            self.prevTouchPoint = currentPoint;
+            [self disableExtraMovement];
+            break;
+        }
+        case UIGestureRecognizerStateChanged: {
+            [self moveToPointX:currentPoint.x - self.prevTouchPoint.x andPointY:currentPoint.y - self.prevTouchPoint.y];
+            self.prevTouchPoint = currentPoint;
+            break;
+        }
+        default:
+            break;
+    }
+}
+
 #pragma mark - UIGestureRecognizerDelegate
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
     if ([touch.view isKindOfClass:[GLKView class]]) {
+        [self disableExtraMovement];
         return YES;
     } else {
         return NO;
     }
+}
+
+#pragma mark - Velocity
+
+- (void)startExtraMovement
+{
+    if (!CGPointEqualToPoint(self.velocityEndPoint, CGPointZero)) {
+        CGFloat velocityAngle = atan2f(self.velocityEndPoint.y, self.velocityEndPoint.x);
+        CGFloat velocityValue = MIN(kVelocityMaxValue, sqrt(pow(self.velocityEndPoint.x, 2) + pow(self.velocityEndPoint.y, 2)));
+        velocityValue = MAX(0, velocityValue - kVelocityDecreasingValue);
+        self.velocityEndPoint = CGPointMake(velocityValue * cos(velocityAngle), velocityValue * sin(velocityAngle));
+        CGPoint nextPoint = CGPointMake(self.velocityEndPoint.x * kVelocitySpeed, self.velocityEndPoint.y * kVelocitySpeed);
+        [self moveToPointX:nextPoint.x andPointY:nextPoint.y];
+    }
+}
+
+- (void)disableExtraMovement
+{
+    self.isExtraMovementActive = NO;
+    self.velocityEndPoint = CGPointZero;
 }
 
 #pragma mark - IBActions
@@ -276,7 +319,7 @@ GLint uniforms[NUM_UNIFORMS];
         [self.playStopButton setTitle:@"Play" forState:UIControlStateNormal];
         [self.videoPlayer pause];
     } else {
-        [self.playStopButton setTitle:@"Stop" forState:UIControlStateNormal];
+        [self.playStopButton setTitle:@"Pause" forState:UIControlStateNormal];
         [self.videoPlayer play];
         self.volumeSlider.value = self.videoPlayer.volume;
     }
@@ -303,14 +346,6 @@ GLint uniforms[NUM_UNIFORMS];
         }
     }
     [self drawArrayOfData];
-}
-
-- (void)clearPlayer
-{
-    [self.videoPlayer stop];
-    [self.videoPlayer removeObserversFromPlayer];
-    self.videoPlayer.delegate = nil;
-    self.videoPlayer = nil;
 }
 
 #pragma mark - SPHVideoPlayerDelegate
@@ -386,7 +421,6 @@ GLint uniforms[NUM_UNIFORMS];
     } else {
         animation = [SPHAnimationProvider animationForMovingViewFromValue:[NSValue valueWithCGPoint:fromValue] toValue:[NSValue valueWithCGPoint:toValue]  withDuration:0.9];
     }
-    
     [self.bottomView.layer addAnimation:animation forKey:nil];
     self.bottomView.layer.position = toValue;
 }
@@ -396,21 +430,10 @@ GLint uniforms[NUM_UNIFORMS];
     [self.navigationController setNavigationBarHidden:!self.navigationController.navigationBarHidden animated:YES];
 }
 
-- (void)setupContext
-{
-    self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
-    [EAGLContext setCurrentContext:self.context];
-    if (!self.context) {
-        NSLog(@"Failed to create ES context");
-    }
-    GLKView *view = (GLKView *)self.view;
-    view.context = self.context;
-    self.preferredFramesPerSecond = 24.0;
-}
-
 - (void)addPinchGesture
 {
     UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchForZoom:)];
+    pinch.delegate = self;
     [self.view addGestureRecognizer:pinch];
 }
 
@@ -419,6 +442,18 @@ GLint uniforms[NUM_UNIFORMS];
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGesture)];
     tapGesture.delegate = self;
     [self.view addGestureRecognizer:tapGesture];
+}
+
+- (void)addPanGesture
+{
+    UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGesture:)];
+    panGesture.delegate = self;
+    [self.view addGestureRecognizer:panGesture];
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return YES;
 }
 
 - (void)setInitialParameters
@@ -434,7 +469,6 @@ GLint uniforms[NUM_UNIFORMS];
 - (void)tearDownGL
 {
     [EAGLContext setCurrentContext:self.context];
-    
     glDeleteBuffers(1, &_vertexBufferID);
     glDeleteVertexArraysOES(1, &_vertexArrayID);
     glDeleteBuffers(1, &_vertexTexCoordID);
@@ -450,6 +484,16 @@ GLint uniforms[NUM_UNIFORMS];
 {
     [self clearPlayer];
     [self tearDownGL];
+}
+
+- (void)clearPlayer
+{
+    [self.videoPlayer stop];
+    [self.videoPlayer removeObserversFromPlayer];
+    self.videoPlayer.delegate = nil;
+    self.urlAsset = nil;
+    self.videoPlayer = nil;
+
 }
 
 @end
