@@ -23,7 +23,7 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <segue destination="Ayf-fH-v40" kind="push" id="glC-8Y-ipl"/>
+                                    <segue destination="Ayf-fH-v40" kind="push" identifier="photoSegue" id="glC-8Y-ipl"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ver-29-fuD" userLabel="Video - UIButton">
@@ -33,7 +33,7 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <segue destination="AaC-I6-DZW" kind="push" id="oae-c4-Bgj"/>
+                                    <segue destination="AaC-I6-DZW" kind="push" identifier="videoSegue" id="oae-c4-Bgj"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="y3K-i2-HHr" userLabel="Live - UIButton">
@@ -43,7 +43,7 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <segue destination="X96-17-0wW" kind="push" id="ggy-rb-MBk"/>
+                                    <segue destination="X96-17-0wW" kind="push" identifier="liveSegue" id="ggy-rb-MBk"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -57,10 +57,10 @@
             </objects>
             <point key="canvasLocation" x="127" y="349"/>
         </scene>
-        <!--Photo View Controller-->
+        <!--Universal View Controller - Photo-->
         <scene sceneID="Krs-km-gWv">
             <objects>
-                <viewController id="Ayf-fH-v40" customClass="SPHPhotoViewController" sceneMemberID="viewController">
+                <viewController id="Ayf-fH-v40" customClass="SPHUniversalViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="NDu-Nw-tXh"/>
                         <viewControllerLayoutGuide type="bottom" id="3dq-tS-dpL"/>
@@ -104,42 +104,41 @@
                         </constraints>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
-                    <navigationItem key="navigationItem" id="6ky-1W-VR1"/>
+                    <navigationItem key="navigationItem" title="Photo" id="6ky-1W-VR1"/>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <connections>
                         <outlet property="bottomView" destination="byI-VA-AZC" id="XXf-uJ-NUs"/>
-                        <outlet property="heightBottomViewConstraint" destination="FXt-HW-XyK" id="4Ri-1X-hMP"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2Z9-op-JqD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="955" y="349"/>
         </scene>
-        <!--Live Stream View Controller-->
+        <!--Universal View Controller - Live-->
         <scene sceneID="y2O-ak-mRh">
             <objects>
-                <viewController id="X96-17-0wW" customClass="SPHLiveStreamViewController" sceneMemberID="viewController">
+                <viewController id="X96-17-0wW" customClass="SPHUniversalViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="gen-1W-U8M"/>
                         <viewControllerLayoutGuide type="bottom" id="RcH-Ci-wre"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="1sW-HI-nd3">
+                    <view key="view" contentMode="scaleToFill" id="1sW-HI-nd3" customClass="GLKView">
                         <rect key="frame" x="0.0" y="0.0" width="568" height="320"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
-                    <navigationItem key="navigationItem" id="v8A-hZ-Az9"/>
+                    <navigationItem key="navigationItem" title="Live" id="v8A-hZ-Az9"/>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="deY-Va-HBq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="955" y="886"/>
         </scene>
-        <!--Video View Controller-->
+        <!--Universal View Controller - Video-->
         <scene sceneID="zGQ-VC-kYO">
             <objects>
-                <viewController id="AaC-I6-DZW" customClass="SPHVideoViewController" sceneMemberID="viewController">
+                <viewController id="AaC-I6-DZW" customClass="SPHUniversalViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="buR-ZE-qyY"/>
                         <viewControllerLayoutGuide type="bottom" id="z1l-cW-7oV"/>
@@ -147,11 +146,86 @@
                     <view key="view" contentMode="scaleToFill" id="Zji-pn-ovp" customClass="GLKView">
                         <rect key="frame" x="0.0" y="0.0" width="568" height="320"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="slT-hP-TXf">
+                                <rect key="frame" x="0.0" y="260" width="568" height="60"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <subviews>
+                                    <slider opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" continuous="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ltT-uf-ol8" userLabel="VideoProgress - Slider">
+                                        <rect key="frame" x="74" y="15" width="278" height="31"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="274" id="QEc-OE-v36"/>
+                                        </constraints>
+                                    </slider>
+                                    <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yAf-yd-nAL" userLabel="Gyroscope - UIButton">
+                                        <rect key="frame" x="473" y="15" width="75" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="Vw5-Mk-f6y"/>
+                                        </constraints>
+                                        <state key="normal" title="Gyroscope">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="gyroscopeButtonPress:" destination="Ayf-fH-v40" eventType="touchUpInside" id="7LD-6m-LBS"/>
+                                            <action selector="gyroscopeButtonPress:" destination="AaC-I6-DZW" eventType="touchUpInside" id="pPo-QB-FOC"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KUN-48-zWo" userLabel="Play/Stop Button">
+                                        <rect key="frame" x="15" y="15" width="53" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="53" id="9BN-SN-WLe"/>
+                                        </constraints>
+                                        <state key="normal" title="Play">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="playStopButtonPress:" destination="AaC-I6-DZW" eventType="touchUpInside" id="MZb-6M-Bq3"/>
+                                        </connections>
+                                    </button>
+                                    <slider opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="10" continuous="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QS2-sr-xgk">
+                                        <rect key="frame" x="363" y="15" width="104" height="31"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    </slider>
+                                </subviews>
+                                <color key="backgroundColor" red="0.97254901959999995" green="0.97254901959999995" blue="0.97254901959999995" alpha="0.84999999999999998" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="yAf-yd-nAL" secondAttribute="trailing" constant="20" id="1UJ-F1-08r"/>
+                                    <constraint firstItem="KUN-48-zWo" firstAttribute="leading" secondItem="slT-hP-TXf" secondAttribute="leading" constant="15" id="2gp-an-iQ4"/>
+                                    <constraint firstItem="KUN-48-zWo" firstAttribute="top" secondItem="slT-hP-TXf" secondAttribute="top" constant="15" id="BoT-92-hwG"/>
+                                    <constraint firstAttribute="bottom" secondItem="yAf-yd-nAL" secondAttribute="bottom" constant="15" id="D1k-Mi-APP"/>
+                                    <constraint firstItem="ltT-uf-ol8" firstAttribute="leading" secondItem="KUN-48-zWo" secondAttribute="trailing" constant="8" id="F12-We-WNo"/>
+                                    <constraint firstAttribute="bottom" secondItem="ltT-uf-ol8" secondAttribute="bottom" constant="15" id="Mv5-6M-X96"/>
+                                    <constraint firstItem="yAf-yd-nAL" firstAttribute="leading" secondItem="QS2-sr-xgk" secondAttribute="trailing" constant="8" id="dU9-FH-b9m"/>
+                                    <constraint firstItem="yAf-yd-nAL" firstAttribute="top" secondItem="slT-hP-TXf" secondAttribute="top" constant="15" id="ni0-8z-fcm"/>
+                                    <constraint firstItem="QS2-sr-xgk" firstAttribute="top" secondItem="slT-hP-TXf" secondAttribute="top" constant="15" id="nmL-Px-P4E"/>
+                                    <constraint firstAttribute="height" constant="60" id="rFd-BN-JkI"/>
+                                    <constraint firstItem="QS2-sr-xgk" firstAttribute="leading" secondItem="ltT-uf-ol8" secondAttribute="trailing" constant="15" id="tA5-wU-tY2"/>
+                                    <constraint firstAttribute="bottom" secondItem="QS2-sr-xgk" secondAttribute="bottom" constant="15" id="v2N-Qw-koI"/>
+                                    <constraint firstItem="ltT-uf-ol8" firstAttribute="top" secondItem="slT-hP-TXf" secondAttribute="top" constant="15" id="xXv-6w-8MH"/>
+                                    <constraint firstAttribute="bottom" secondItem="KUN-48-zWo" secondAttribute="bottom" constant="15" id="z9K-5e-MfG"/>
+                                </constraints>
+                            </view>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="slT-hP-TXf" firstAttribute="leading" secondItem="Zji-pn-ovp" secondAttribute="leading" id="LdS-gZ-zkl"/>
+                            <constraint firstItem="z1l-cW-7oV" firstAttribute="top" secondItem="slT-hP-TXf" secondAttribute="bottom" id="hBv-pf-uN1"/>
+                            <constraint firstAttribute="trailing" secondItem="slT-hP-TXf" secondAttribute="trailing" id="war-ai-nyq"/>
+                        </constraints>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
-                    <navigationItem key="navigationItem" id="ugN-p8-aT6"/>
+                    <navigationItem key="navigationItem" title="Video" id="ugN-p8-aT6"/>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
+                    <connections>
+                        <outlet property="bottomView" destination="slT-hP-TXf" id="wTl-5Y-dFB"/>
+                        <outlet property="gyroscopeButton" destination="yAf-yd-nAL" id="FLY-kp-vnw"/>
+                        <outlet property="playStopButton" destination="KUN-48-zWo" id="ed4-bu-4nn"/>
+                        <outlet property="videoProgressSlider" destination="ltT-uf-ol8" id="MzE-hX-LPm"/>
+                        <outlet property="volumeSlider" destination="QS2-sr-xgk" id="DmB-Eo-MvP"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LaI-4Y-aaQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
