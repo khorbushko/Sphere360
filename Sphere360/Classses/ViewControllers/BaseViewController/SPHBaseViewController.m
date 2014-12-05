@@ -158,7 +158,7 @@ GLint uniforms[NUM_UNIFORMS];
 - (void)drawArrayOfData
 {
     glBindVertexArrayOES(_vertexArrayID);
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     glUniformMatrix4fv(uniforms[UNIFORM_MVPMATRIX], 1, 0, _modelViewProjectionMatrix.m);
     glActiveTexture(GL_TEXTURE0);

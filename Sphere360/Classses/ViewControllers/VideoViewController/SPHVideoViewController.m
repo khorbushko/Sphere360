@@ -29,7 +29,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self setupVideoPlayerIfNeeded];
+    [self setupVideoPlayer];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -80,7 +80,7 @@
 
 #pragma mark - Video
 
-- (void)setupVideoPlayerIfNeeded
+- (void)setupVideoPlayer
 {
     if (self.selectedController == VideoViewController) {
         NSURL *urlToFile = [NSURL URLWithString:self.sourceURL];
@@ -141,6 +141,7 @@
 - (void)setupUI
 {
     [super setupUI];
+    [self setupSlider];
     [self applyImageTexture];
 }
 
