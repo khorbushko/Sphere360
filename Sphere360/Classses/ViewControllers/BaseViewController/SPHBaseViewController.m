@@ -218,6 +218,63 @@ GLint uniforms[NUM_UNIFORMS];
     self.motionManager = [[CMMotionManager alloc] init];
 }
 
+- (void)gyroscopeChoose
+{
+    [self tapGesture];
+    if ([self.motionManager isGyroAvailable]) {
+        if (![self.motionManager isGyroActive]) {
+            
+            [self removeAllGesture];
+            
+            [self.motionManager setGyroUpdateInterval:1.0f / 2.0f];
+            [self.motionManager startGyroUpdatesToQueue:[NSOperationQueue mainQueue] withHandler:^(CMGyroData *gyroData, NSError *error) {
+                
+                //                CGFloat xRotation = gyroData.rotationRate.x;
+                //                CGFloat yRotation = gyroData.rotationRate.y;
+                
+                CMAttitude *attitude = self.motionManager.deviceMotion.attitude;
+                CMRotationMatrix rotationMatrix = attitude.rotationMatrix;
+                rotationMatrixFromGyro = [self getRotationMatrixFromGyroscope:rotationMatrix];
+            }];
+        } else {
+            [self.motionManager stopDeviceMotionUpdates];
+            
+            [self addPinchGesture];
+            [self addTapGesture];
+            [self addPanGesture];
+        }
+    } else {
+        [self showAlertNoGyroscopeAvaliable];
+    }
+}
+
+- (GLKMatrix4)getRotationMatrixFromGyroscope:(CMRotationMatrix)gyroRotationMatrix
+{
+    GLKMatrix4 rotationMatrix;
+    
+    rotationMatrix.m00 = gyroRotationMatrix.m11;
+    rotationMatrix.m01 = gyroRotationMatrix.m12;
+    rotationMatrix.m02 = gyroRotationMatrix.m13;
+    rotationMatrix.m03 = 0;
+    
+    rotationMatrix.m10 = gyroRotationMatrix.m21;
+    rotationMatrix.m11 = gyroRotationMatrix.m22;
+    rotationMatrix.m12 = gyroRotationMatrix.m23;
+    rotationMatrix.m13 = 0;
+    
+    rotationMatrix.m20 = gyroRotationMatrix.m31;
+    rotationMatrix.m21 = gyroRotationMatrix.m32;
+    rotationMatrix.m22 = gyroRotationMatrix.m33;
+    rotationMatrix.m23 = 0;
+    
+    rotationMatrix.m20 = 0;
+    rotationMatrix.m21 = 0;
+    rotationMatrix.m22 = 0;
+    rotationMatrix.m23 = 1;
+    
+    return rotationMatrix;
+}
+
 #pragma mark - Touches
 
 - (void)moveToPointX:(CGFloat)pointX andPointY:(CGFloat)pointY
@@ -299,63 +356,6 @@ GLint uniforms[NUM_UNIFORMS];
 - (void)disableExtraMovement
 {
     self.velocityValue = CGPointZero;
-}
-
-- (void)gyroscopeChoose
-{
-    [self tapGesture];
-    if ([self.motionManager isGyroAvailable]) {
-        if (![self.motionManager isGyroActive]) {
-            
-            [self removeAllGesture];
-            
-            [self.motionManager setGyroUpdateInterval:1.0f / 2.0f];
-            [self.motionManager startGyroUpdatesToQueue:[NSOperationQueue mainQueue] withHandler:^(CMGyroData *gyroData, NSError *error) {
-                
-//                CGFloat xRotation = gyroData.rotationRate.x;
-//                CGFloat yRotation = gyroData.rotationRate.y;
-                
-                CMAttitude *attitude = self.motionManager.deviceMotion.attitude;
-                CMRotationMatrix rotationMatrix = attitude.rotationMatrix;
-                rotationMatrixFromGyro = [self getRotationMatrixFromGyroscope:rotationMatrix];
-            }];
-        } else {
-            [self.motionManager stopDeviceMotionUpdates];
-            
-            [self addPinchGesture];
-            [self addTapGesture];
-            [self addPanGesture];
-        }
-    } else {
-        [self showAlertNoGyroscopeAvaliable];
-    }
-}
-
-- (GLKMatrix4)getRotationMatrixFromGyroscope:(CMRotationMatrix)gyroRotationMatrix
-{
-    GLKMatrix4 rotationMatrix;
-    
-    rotationMatrix.m00 = gyroRotationMatrix.m11;
-    rotationMatrix.m01 = gyroRotationMatrix.m12;
-    rotationMatrix.m02 = gyroRotationMatrix.m13;
-    rotationMatrix.m03 = 0;
-    
-    rotationMatrix.m10 = gyroRotationMatrix.m21;
-    rotationMatrix.m11 = gyroRotationMatrix.m22;
-    rotationMatrix.m12 = gyroRotationMatrix.m23;
-    rotationMatrix.m13 = 0;
-    
-    rotationMatrix.m20 = gyroRotationMatrix.m31;
-    rotationMatrix.m21 = gyroRotationMatrix.m32;
-    rotationMatrix.m22 = gyroRotationMatrix.m33;
-    rotationMatrix.m23 = 0;
-    
-    rotationMatrix.m20 = 0;
-    rotationMatrix.m21 = 0;
-    rotationMatrix.m22 = 0;
-    rotationMatrix.m23 = 1;
-    
-    return rotationMatrix;
 }
 
 #pragma mark - UIConfiguration
