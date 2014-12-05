@@ -11,6 +11,7 @@
 
 @optional
 - (void)progressUpdateToTime:(CGFloat)progress;
+- (void)downloadingProgress:(CGFloat)progress;
 - (void)progressChangedToTime:(CMTime)time;
 - (void)isReadyToPlayVideo;
 

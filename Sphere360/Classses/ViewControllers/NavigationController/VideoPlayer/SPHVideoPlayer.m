@@ -190,7 +190,7 @@ static const NSString *ItemStatusContext;
     }
     CGFloat progress = (self.assetDuration == 0) ? 0 : max / self.assetDuration;
     
-    [self.delegate progressUpdateToTime:progress];
+    [self.delegate downloadingProgress:progress];
 }
 
 - (void)playerItemDidReachEnd:(NSNotification *)notification
@@ -253,6 +253,7 @@ static const NSString *ItemStatusContext;
      */
 
     CMTime currentTime = [self.videoOutput itemTimeForHostTime:CACurrentMediaTime()];
+    [self.delegate progressChangedToTime:currentTime];
     if (![self.videoOutput hasNewPixelBufferForItemTime:currentTime]) {
         return nil;
     }
@@ -262,6 +263,7 @@ static const NSString *ItemStatusContext;
     if (buffer) {
           image = [SPHTextureProvider imageWithCVPixelBufferUsingUIGraphicsContext:buffer];
     }
+    [self.delegate progressUpdateToTime: CMTimeGetSeconds(currentTime)/self.assetDuration];
     return image;
 }
 

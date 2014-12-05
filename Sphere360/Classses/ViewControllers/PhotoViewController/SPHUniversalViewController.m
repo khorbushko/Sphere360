@@ -122,6 +122,10 @@ GLint uniforms[NUM_UNIFORMS];
 - (void)applyImageTexture
 {
     UIImage *sourceImage = [UIImage imageWithContentsOfFile:self.sourceURL];
+    if (!sourceImage) {
+        NSData *imageData = [NSData dataWithContentsOfURL: [NSURL URLWithString:self.sourceURL]];
+        sourceImage = [UIImage imageWithData:imageData];
+    }
     UIImage* flippedImage = [UIImage flipAndMirrorImageHorizontally:sourceImage];
     [self setupTextureWithImage:flippedImage];
 }
@@ -250,6 +254,7 @@ GLint uniforms[NUM_UNIFORMS];
 - (void)panGesture:(UIPanGestureRecognizer *)panGesture
 {
     CGPoint currentPoint = [panGesture locationInView:panGesture.view];
+
     switch (panGesture.state) {
         case UIGestureRecognizerStateEnded: {
             self.velocityValue = [panGesture velocityInView:panGesture.view];
@@ -326,7 +331,7 @@ GLint uniforms[NUM_UNIFORMS];
 - (void)setupVideoPlayerIfNeeded
 {
     if (self.selectedController == VideoViewController) {
-        NSURL *urlToFile = [NSURL fileURLWithPath:self.sourceURL];
+        NSURL *urlToFile = [NSURL URLWithString:self.sourceURL];
         self.videoPlayer = [[SPHVideoPlayer alloc] initVideoPlayerWithURL:urlToFile];
         [self.videoPlayer prepareToPlay];
         self.videoPlayer.delegate = self;
@@ -358,7 +363,18 @@ GLint uniforms[NUM_UNIFORMS];
 {
     if ([self.videoPlayer isPlayerPlayVideo]) {
         self.videoProgressSlider.value = progress;
+        NSLog(@"Progress - %f", progress);
     }
+}
+
+- (void)progressChangedToTime:(CMTime)time
+{
+    
+}
+
+- (void)downloadingProgress:(CGFloat)progress
+{
+    NSLog(@"Downloaded - %f percentage", progress * 100);
 }
 
 #pragma mark - UIConfiguration
