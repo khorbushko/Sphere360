@@ -50,6 +50,7 @@ GLint uniforms[NUM_UNIFORMS];
 @property (assign, nonatomic) CGPoint prevTouchPoint;
 
 @property (strong, nonatomic) CMMotionManager *motionManager;
+@property (assign, nonatomic) BOOL isGyroModeActive;
 
 @end
 
@@ -148,7 +149,7 @@ GLint uniforms[NUM_UNIFORMS];
     GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(kDefaultZoomDegree / self.zoomValue), aspect, 0.1f, 60.0f);
     GLKMatrix4 modelViewMatrix = GLKMatrix4Identity;
     
-    if ([self.motionManager isGyroActive]) {
+    if (self.isGyroModeActive) {
         modelViewMatrix = rotationMatrixFromGyro;
     } else {
         modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotationX, 1.0f, 0.0f, 0.0f);
@@ -223,21 +224,22 @@ GLint uniforms[NUM_UNIFORMS];
     [self tapGesture];
     if ([self.motionManager isGyroAvailable]) {
         if (![self.motionManager isGyroActive]) {
-            
+            self.isGyroModeActive = YES;
             [self removeAllGesture];
             
             [self.motionManager setGyroUpdateInterval:1.0f / 2.0f];
             [self.motionManager startGyroUpdatesToQueue:[NSOperationQueue mainQueue] withHandler:^(CMGyroData *gyroData, NSError *error) {
                 
-                //                CGFloat xRotation = gyroData.rotationRate.x;
-                //                CGFloat yRotation = gyroData.rotationRate.y;
+                //CGFloat xRotation = gyroData.rotationRate.x;
+                //CGFloat yRotation = gyroData.rotationRate.y;
                 
                 CMAttitude *attitude = self.motionManager.deviceMotion.attitude;
                 CMRotationMatrix rotationMatrix = attitude.rotationMatrix;
                 rotationMatrixFromGyro = [self getRotationMatrixFromGyroscope:rotationMatrix];
             }];
         } else {
-            [self.motionManager stopDeviceMotionUpdates];
+            [self.motionManager stopGyroUpdates];
+            self.isGyroModeActive = NO;
             
             [self addPinchGesture];
             [self addTapGesture];

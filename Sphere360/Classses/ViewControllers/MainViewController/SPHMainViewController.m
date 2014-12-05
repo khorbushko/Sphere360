@@ -32,16 +32,16 @@ static NSString *const MVCLiveSegue = @"liveSegue";
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    SPHBaseViewController *viewController = [segue destinationViewController];
     if ([segue.identifier isEqualToString:MVCPhotoSegue]) {
-        ((SPHPhotoViewController *)viewController).selectedController = PhotoViewController;
-        ((SPHPhotoViewController *)viewController).sourceURL = @"http://api.360.tv/GIR000156.jpg";
+        SPHPhotoViewController *viewController = [segue destinationViewController];
+        viewController.selectedController = PhotoViewController;
+        viewController.sourceURL = @"http://api.360.tv/GIR000156.jpg";
     } else if ([segue.identifier isEqualToString:MVCVideoSegue]){
-        ((SPHVideoViewController *)viewController).selectedController = VideoViewController;
-        ((SPHVideoViewController *)viewController).sourceURL = @"http://player.vimeo.com/external/96616956.hd.mp4?s=a30e67fc675df30962308e3239fe09e6";
+        SPHVideoViewController *viewController = [segue destinationViewController];
+        viewController.selectedController = VideoViewController;
+        viewController.sourceURL = @"http://player.vimeo.com/external/96616956.hd.mp4?s=a30e67fc675df30962308e3239fe09e6";
     } else if ([segue.identifier isEqualToString:MVCLiveSegue]) {
-        viewController.selectedController = LiveViewController;
-        viewController.sourceURL = @"http://pdl.vimeocdn.com/32832/736/257635005.mp4?token2=1417638082_e16e52797027cf8e94f9d963cf25e005&aksessionid=3cd7eed7b511225f87e03303d1b9f24fa9703d5b1417623682";
+        //todo live
     }
 }
 
