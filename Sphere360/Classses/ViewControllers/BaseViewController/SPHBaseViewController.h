@@ -20,9 +20,8 @@ typedef enum {
 @property (strong, nonatomic) NSString *sourceURL;
 @property (assign, nonatomic) MediaType selectedController;
 
-- (void)setEmptyImage;
+//- (void)setEmptyImage;
 - (void)setupTextureWithImage:(UIImage *)image;
-- (void)setupUI;
 - (void)gyroscopeChoose;
 - (void)tapGesture;
 - (void)update;

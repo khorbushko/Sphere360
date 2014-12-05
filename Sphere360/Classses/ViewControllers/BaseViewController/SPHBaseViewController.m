@@ -67,7 +67,6 @@ GLint uniforms[NUM_UNIFORMS];
     [self setupContext];
     [self setupGL];
     
-    [self setupUI];
     [self addPinchGesture];
     [self addTapGesture];
     [self addPanGesture];
@@ -281,10 +280,11 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (void)moveToPointX:(CGFloat)pointX andPointY:(CGFloat)pointY
 {
-    pointX *= -0.005;
-    pointY *= 0.005;
+    pointX *= -0.015;
+    pointY *= 0.015;
     _rotationX += -pointY;
     _rotationY += -pointX;
+    NSLog(@"x%f y%f", _rotationX, _rotationY);
 }
 
 #pragma mark - GestureActions
@@ -365,11 +365,6 @@ GLint uniforms[NUM_UNIFORMS];
 - (void)showAlertNoGyroscopeAvaliable
 {
     [[[UIAlertView alloc] initWithTitle:@"Panaroma" message:@"No gyroscope avaliable on your device" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
-}
-
-- (void)setupUI
-{
-
 }
 
 - (void)removeAllGesture

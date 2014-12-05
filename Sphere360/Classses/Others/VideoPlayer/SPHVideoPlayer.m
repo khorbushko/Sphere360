@@ -146,10 +146,8 @@ static const NSString *ItemStatusContext;
     if (!isOldKey) {
         if (context == &ItemStatusContext) {
             if ([keyPath isEqualToString:@"status"]) {
-                NSLog(@"Status updated");
                 [self moviePlayerDidChangeStatus:self.assetPlayer.status];
             } else if ([keyPath isEqualToString:@"loadedTimeRanges"]) {
-                 NSLog(@"Loaded range changed");
                 [self moviewPlayerLoadedTimeRangeDidUpdated:self.playerItem.loadedTimeRanges];
             }
             return;

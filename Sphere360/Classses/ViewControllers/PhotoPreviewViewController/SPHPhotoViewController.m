@@ -18,6 +18,14 @@
 
 #pragma mark - LifeCycle
 
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    [self setupUI];
+}
+
+#pragma mark - LifeCycle
+
 - (void)tapGesture
 {
     [super tapGesture];
@@ -38,7 +46,6 @@
 
 - (void)setupUI
 {
-    [super setupUI];
     [self applyImageTexture];
 }
 

@@ -29,6 +29,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self setupVideoUI];
     [self setupVideoPlayer];
 }
 
@@ -138,11 +139,10 @@
     [self.volumeSlider addTarget:self action:@selector(volumeSliderTouchedUp) forControlEvents:UIControlEventTouchUpInside];
 }
 
-- (void)setupUI
+- (void)setupVideoUI
 {
-    [super setupUI];
     [self setupSlider];
-    [self applyImageTexture];
+    [self setupTextureWithImage:[[UIImage alloc] init]];
 }
 
 #pragma mark - Slider
