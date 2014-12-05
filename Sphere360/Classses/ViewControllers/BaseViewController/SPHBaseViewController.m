@@ -37,6 +37,8 @@ GLint uniforms[NUM_UNIFORMS];
     
     float _rotationX;
     float _rotationY;
+    
+    GLKMatrix4 rotationMatrixFromGyro;
 }
 
 @property (strong, nonatomic) SPHGLProgram *program;
@@ -47,7 +49,7 @@ GLint uniforms[NUM_UNIFORMS];
 @property (assign, nonatomic) CGPoint velocityValue;
 @property (assign, nonatomic) CGPoint prevTouchPoint;
 
-@property (assign, nonatomic) BOOL isHyroscopeActive;
+@property (strong, nonatomic) CMMotionManager *motionManager;
 
 @end
 
@@ -68,6 +70,7 @@ GLint uniforms[NUM_UNIFORMS];
     [self addPinchGesture];
     [self addTapGesture];
     [self addPanGesture];
+    [self setupGyroscope];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -144,8 +147,14 @@ GLint uniforms[NUM_UNIFORMS];
     float aspect = fabsf(self.view.bounds.size.width / self.view.bounds.size.height);
     GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(kDefaultZoomDegree / self.zoomValue), aspect, 0.1f, 60.0f);
     GLKMatrix4 modelViewMatrix = GLKMatrix4Identity;
-    modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotationX, 1.0f, 0.0f, 0.0f);
-    modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotationY, 0.0f,  1.0f, 0.0f);
+    
+    if ([self.motionManager isGyroActive]) {
+        modelViewMatrix = rotationMatrixFromGyro;
+    } else {
+        modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotationX, 1.0f, 0.0f, 0.0f);
+        modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotationY, 0.0f,  1.0f, 0.0f);
+    }
+    
     _modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
 }
 
@@ -200,6 +209,13 @@ GLint uniforms[NUM_UNIFORMS];
     GLKView *view = (GLKView *)self.view;
     view.context = self.context;
     self.preferredFramesPerSecond = 24.0;
+}
+
+#pragma mark - Gyroscope
+
+- (void)setupGyroscope
+{
+    self.motionManager = [[CMMotionManager alloc] init];
 }
 
 #pragma mark - Touches
@@ -288,14 +304,77 @@ GLint uniforms[NUM_UNIFORMS];
 - (void)gyroscopeChoose
 {
     [self tapGesture];
-    self.isHyroscopeActive = !self.isHyroscopeActive;
+    if ([self.motionManager isGyroAvailable]) {
+        if (![self.motionManager isGyroActive]) {
+            
+            [self removeAllGesture];
+            
+            [self.motionManager setGyroUpdateInterval:1.0f / 2.0f];
+            [self.motionManager startGyroUpdatesToQueue:[NSOperationQueue mainQueue] withHandler:^(CMGyroData *gyroData, NSError *error) {
+                
+//                CGFloat xRotation = gyroData.rotationRate.x;
+//                CGFloat yRotation = gyroData.rotationRate.y;
+                
+                CMAttitude *attitude = self.motionManager.deviceMotion.attitude;
+                CMRotationMatrix rotationMatrix = attitude.rotationMatrix;
+                rotationMatrixFromGyro = [self getRotationMatrixFromGyroscope:rotationMatrix];
+            }];
+        } else {
+            [self.motionManager stopDeviceMotionUpdates];
+            
+            [self addPinchGesture];
+            [self addTapGesture];
+            [self addPanGesture];
+        }
+    } else {
+        [self showAlertNoGyroscopeAvaliable];
+    }
+}
+
+- (GLKMatrix4)getRotationMatrixFromGyroscope:(CMRotationMatrix)gyroRotationMatrix
+{
+    GLKMatrix4 rotationMatrix;
+    
+    rotationMatrix.m00 = gyroRotationMatrix.m11;
+    rotationMatrix.m01 = gyroRotationMatrix.m12;
+    rotationMatrix.m02 = gyroRotationMatrix.m13;
+    rotationMatrix.m03 = 0;
+    
+    rotationMatrix.m10 = gyroRotationMatrix.m21;
+    rotationMatrix.m11 = gyroRotationMatrix.m22;
+    rotationMatrix.m12 = gyroRotationMatrix.m23;
+    rotationMatrix.m13 = 0;
+    
+    rotationMatrix.m20 = gyroRotationMatrix.m31;
+    rotationMatrix.m21 = gyroRotationMatrix.m32;
+    rotationMatrix.m22 = gyroRotationMatrix.m33;
+    rotationMatrix.m23 = 0;
+    
+    rotationMatrix.m20 = 0;
+    rotationMatrix.m21 = 0;
+    rotationMatrix.m22 = 0;
+    rotationMatrix.m23 = 1;
+    
+    return rotationMatrix;
 }
 
 #pragma mark - UIConfiguration
 
+- (void)showAlertNoGyroscopeAvaliable
+{
+    [[[UIAlertView alloc] initWithTitle:@"Panaroma" message:@"No gyroscope avaliable on your device" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+}
+
 - (void)setupUI
 {
 
+}
+
+- (void)removeAllGesture
+{
+    for (UIGestureRecognizer *recognizer in self.view.gestureRecognizers) {
+        [self.view removeGestureRecognizer:recognizer];
+    }
 }
 
 #pragma mark - Animation

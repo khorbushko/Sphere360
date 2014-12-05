@@ -16,4 +16,5 @@
     #import "Constants/Constants.h"
     #import <GLKit/GLKit.h>
     #import "Categories.h"
+    #import <CoreMotion/CoreMotion.h>
 #endif

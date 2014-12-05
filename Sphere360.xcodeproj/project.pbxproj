@@ -38,6 +38,7 @@
 		EDCFEE191A31E1FC003ADA91 /* SPHBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCFEE181A31E1FC003ADA91 /* SPHBaseViewController.m */; };
 		EDCFEE1C1A31E52D003ADA91 /* SPHPhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCFEE1B1A31E52D003ADA91 /* SPHPhotoViewController.m */; };
 		EDCFEE211A31EB5B003ADA91 /* SPHVideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCFEE201A31EB5B003ADA91 /* SPHVideoViewController.m */; };
+		EDCFEE231A31F50D003ADA91 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDCFEE221A31F50D003ADA91 /* CoreMotion.framework */; };
 		EDEFC8C51A2DAD7100E01E11 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDEFC8C41A2DAD7100E01E11 /* CoreMedia.framework */; };
 		EDFAC6D91A2C74290059BBD0 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDFAC6D81A2C74290059BBD0 /* OpenGLES.framework */; };
 /* End PBXBuildFile section */
@@ -100,6 +101,7 @@
 		EDCFEE1B1A31E52D003ADA91 /* SPHPhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHPhotoViewController.m; sourceTree = "<group>"; };
 		EDCFEE1F1A31EB5B003ADA91 /* SPHVideoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHVideoViewController.h; sourceTree = "<group>"; };
 		EDCFEE201A31EB5B003ADA91 /* SPHVideoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHVideoViewController.m; sourceTree = "<group>"; };
+		EDCFEE221A31F50D003ADA91 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		EDEFC8C41A2DAD7100E01E11 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		EDFAC6D31A2C6C4B0059BBD0 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		EDFAC6D81A2C74290059BBD0 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -110,6 +112,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EDCFEE231A31F50D003ADA91 /* CoreMotion.framework in Frameworks */,
 				EDCFA2D61A2EF16800803941 /* CoreImage.framework in Frameworks */,
 				EDEFC8C51A2DAD7100E01E11 /* CoreMedia.framework in Frameworks */,
 				EDAC3A961A2CAE8E00EB6DE0 /* CoreAudio.framework in Frameworks */,
@@ -230,6 +233,7 @@
 		EDCFC6F31A2C671E00613D7B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EDCFEE221A31F50D003ADA91 /* CoreMotion.framework */,
 				EDCFA2D51A2EF16700803941 /* CoreImage.framework */,
 				EDEFC8C41A2DAD7100E01E11 /* CoreMedia.framework */,
 				EDAC3A951A2CAE8E00EB6DE0 /* CoreAudio.framework */,
