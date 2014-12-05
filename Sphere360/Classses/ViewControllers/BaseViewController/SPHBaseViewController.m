@@ -1,19 +1,16 @@
 //
-//  SPHUniversalViewController
+//  SPHBaseViewController.m
 //  Sphere360
 //
-//  Created by Kirill on 12/1/14.
+//  Created by Kirill on 12/5/14.
 //  Copyright (c) 2014 Kirill Gorbushko. All rights reserved.
 //
-
-#import "SPHUniversalViewController.h"
 #import "Sphere.h"
+#import "SPHBaseViewController.h"
 #import "SPHGLProgram.h"
-#import "SPHAnimationProvider.h"
 #import <AVFoundation/AVFoundation.h>
 #import "SPHTextureProvider.h"
 #import <CoreMedia/CoreMedia.h>
-#import "SPHVideoPlayer.h"
 
 static CGFloat const kDefStartY = -1.8f;
 static CGFloat const kDefStartX = -3.f;
@@ -22,8 +19,6 @@ static CGFloat const kMinimumZoomValue = 0.8f;
 static CGFloat const kMaximumZoomValue = 1.7f;
 static CGFloat const kDefaultZoomDegree = 90.0f;
 
-//static CGFloat const kVelocityDecreasingValue = 100.0f;
-//static CGFloat const kVelocityMaxValue = 1000.0f;
 static CGFloat const kVelocityCoef = 0.01f;
 
 enum {
@@ -33,7 +28,7 @@ enum {
 };
 GLint uniforms[NUM_UNIFORMS];
 
-@interface SPHUniversalViewController () <AVAssetResourceLoaderDelegate, SPHVideoPlayerDelegate, UIGestureRecognizerDelegate> {
+@interface SPHBaseViewController ()<AVAssetResourceLoaderDelegate, UIGestureRecognizerDelegate> {
     GLuint _vertexArrayID;
     GLuint _vertexBufferID;
     GLuint _vertexTexCoordID;
@@ -44,12 +39,6 @@ GLint uniforms[NUM_UNIFORMS];
     float _rotationY;
 }
 
-@property (weak, nonatomic) IBOutlet UIView *bottomView;
-@property (weak, nonatomic) IBOutlet UIButton *playStopButton;
-@property (weak, nonatomic) IBOutlet UISlider *videoProgressSlider;
-@property (weak, nonatomic) IBOutlet UISlider *volumeSlider;
-@property (weak, nonatomic) IBOutlet UIButton *gyroscopeButton;
-
 @property (strong, nonatomic) SPHGLProgram *program;
 @property (strong, nonatomic) EAGLContext *context;
 @property (strong, nonatomic) GLKTextureInfo *texture;
@@ -57,15 +46,12 @@ GLint uniforms[NUM_UNIFORMS];
 @property (assign, nonatomic) CGFloat zoomValue;
 @property (assign, nonatomic) CGPoint velocityValue;
 @property (assign, nonatomic) CGPoint prevTouchPoint;
-@property (assign, nonatomic) BOOL isHyroscopeActive;
 
-@property (assign, nonatomic) CGFloat urlAssetDuration;
-@property (strong, nonatomic) AVURLAsset *urlAsset;
-@property (strong, nonatomic) SPHVideoPlayer *videoPlayer;
+@property (assign, nonatomic) BOOL isHyroscopeActive;
 
 @end
 
-@implementation SPHUniversalViewController
+@implementation SPHBaseViewController
 
 #pragma mark - LifeCycle
 
@@ -82,14 +68,11 @@ GLint uniforms[NUM_UNIFORMS];
     [self addPinchGesture];
     [self addTapGesture];
     [self addPanGesture];
-    
-    [self setupVideoPlayerIfNeeded];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    [self clearPlayer];
     [self tearDownGL];
 }
 
@@ -154,9 +137,6 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (void)update
 {
-    if (self.selectedController == VideoViewController && [self.videoPlayer isPlayerPlayVideo]) {
-        [self setNewTextureFromVideoPlayer];
-    }
     if (!CGPointEqualToPoint(self.velocityValue, CGPointZero)) {
         [self updateMovement];
     }
@@ -165,12 +145,12 @@ GLint uniforms[NUM_UNIFORMS];
     GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(kDefaultZoomDegree / self.zoomValue), aspect, 0.1f, 60.0f);
     GLKMatrix4 modelViewMatrix = GLKMatrix4Identity;
     modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotationX, 1.0f, 0.0f, 0.0f);
-    modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotationY, 0.0f, 1.0f, 0.0f);
+    modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotationY, 0.0f,  1.0f, 0.0f);
     _modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
 }
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
-{    
+{
     [_program use];
     [self drawArrayOfData];
 }
@@ -248,13 +228,12 @@ GLint uniforms[NUM_UNIFORMS];
 - (void)tapGesture
 {
     [self hideShowNavigationBar];
-    [self hideBottomBar];
 }
 
 - (void)panGesture:(UIPanGestureRecognizer *)panGesture
 {
     CGPoint currentPoint = [panGesture locationInView:panGesture.view];
-
+    
     switch (panGesture.state) {
         case UIGestureRecognizerStateEnded: {
             self.velocityValue = [panGesture velocityInView:panGesture.view];
@@ -306,113 +285,34 @@ GLint uniforms[NUM_UNIFORMS];
     self.velocityValue = CGPointZero;
 }
 
-#pragma mark - IBActions
-
-- (IBAction)gyroscopeButtonPress:(id)sender
+- (void)gyroscopeChoose
 {
     [self tapGesture];
     self.isHyroscopeActive = !self.isHyroscopeActive;
 }
 
-- (IBAction)playStopButtonPress:(id)sender
-{
-    if ([self.videoPlayer isPlayerPlayVideo]) {
-        [self.playStopButton setTitle:@"Play" forState:UIControlStateNormal];
-        [self.videoPlayer pause];
-    } else {
-        [self.playStopButton setTitle:@"Pause" forState:UIControlStateNormal];
-        [self.videoPlayer play];
-        self.volumeSlider.value = self.videoPlayer.volume;
-    }
-}
-
-#pragma mark - Video
-
-- (void)setupVideoPlayerIfNeeded
-{
-    if (self.selectedController == VideoViewController) {
-        NSURL *urlToFile = [NSURL URLWithString:self.sourceURL];
-        self.videoPlayer = [[SPHVideoPlayer alloc] initVideoPlayerWithURL:urlToFile];
-        [self.videoPlayer prepareToPlay];
-        self.videoPlayer.delegate = self;
-    }
-}
-
-- (void)setNewTextureFromVideoPlayer
-{
-    if (self.videoPlayer) {
-        if ([self.videoPlayer canProvideFrame]) {
-            UIImage *image = [self.videoPlayer getCurrentFramePicture];
-            [self setupTextureWithImage:[UIImage flipAndMirrorImageHorizontally:image]];
-        }
-    }
-    [self drawArrayOfData];
-}
-
-#pragma mark - SPHVideoPlayerDelegate
-
-- (void)isReadyToPlayVideo
-{
-    self.playStopButton.enabled = YES;
-    self.videoProgressSlider.enabled = YES;
-    self.gyroscopeButton.enabled = YES;
-    self.volumeSlider.enabled = YES;
-}
-
-- (void)progressUpdateToTime:(CGFloat)progress
-{
-    if ([self.videoPlayer isPlayerPlayVideo]) {
-        self.videoProgressSlider.value = progress;
-        NSLog(@"Progress - %f", progress);
-    }
-}
-
-- (void)progressChangedToTime:(CMTime)time
-{
-    
-}
-
-- (void)downloadingProgress:(CGFloat)progress
-{
-    NSLog(@"Downloaded - %f percentage", progress * 100);
-}
-
 #pragma mark - UIConfiguration
-
-- (void)setupSlider
-{
-    [self.videoProgressSlider addTarget:self action:@selector(progressSliderTouchedDown) forControlEvents:UIControlEventTouchDown];
-    [self.videoProgressSlider addTarget:self action:@selector(progressSliderTouchedUp) forControlEvents:UIControlEventTouchUpInside];
-    [self.volumeSlider addTarget:self action:@selector(volumeSliderTouchedUp) forControlEvents:UIControlEventTouchUpInside];
-}
 
 - (void)setupUI
 {
-    if (self.selectedController == VideoViewController) {
-        [self setEmptyImage];
-        [self setupSlider];
-    } else if (self.selectedController == PhotoViewController) {
-        [self applyImageTexture];
+
+}
+
+#pragma mark - Animation
+
+- (void)hideBottomBarView:(UIView *)bottomView
+{
+    CGPoint toValue = bottomView.center;
+    CGPoint fromValue = bottomView.center;
+    CABasicAnimation *animation;
+    if (self.navigationController.navigationBarHidden) {
+        toValue.y += bottomView.bounds.size.height;
+        animation = [SPHAnimationProvider animationForMovingViewFromValue:[NSValue valueWithCGPoint:fromValue] toValue:[NSValue valueWithCGPoint:toValue]  withDuration:0.3];
+    } else {
+        animation = [SPHAnimationProvider animationForMovingViewFromValue:[NSValue valueWithCGPoint:fromValue] toValue:[NSValue valueWithCGPoint:toValue]  withDuration:0.9];
     }
-}
-
-#pragma mark - Slider
-
-- (void)progressSliderTouchedDown
-{
-    if ([self.videoPlayer isPlayerPlayVideo]) {
-        [self.videoPlayer pause];
-    }
-}
-
-- (void)progressSliderTouchedUp
-{
-    [self.videoPlayer seekPositionAtProgress:self.videoProgressSlider.value];
-}
-
-- (void)volumeSliderTouchedUp
-{
-    [self.videoPlayer setPlayerVolume:self.volumeSlider.value];
+    [bottomView.layer addAnimation:animation forKey:nil];
+    bottomView.layer.position = toValue;
 }
 
 #pragma mark - Private
@@ -420,21 +320,6 @@ GLint uniforms[NUM_UNIFORMS];
 - (void)setEmptyImage
 {
     [self setupTextureWithImage:[[UIImage alloc] init]];
-}
-
-- (void)hideBottomBar
-{
-    CGPoint toValue = self.bottomView.center;
-    CGPoint fromValue = self.bottomView.center;
-    CABasicAnimation *animation;
-    if (self.navigationController.navigationBarHidden) {
-        toValue.y += self.bottomView.bounds.size.height;
-        animation = [SPHAnimationProvider animationForMovingViewFromValue:[NSValue valueWithCGPoint:fromValue] toValue:[NSValue valueWithCGPoint:toValue]  withDuration:0.3];
-    } else {
-        animation = [SPHAnimationProvider animationForMovingViewFromValue:[NSValue valueWithCGPoint:fromValue] toValue:[NSValue valueWithCGPoint:toValue]  withDuration:0.9];
-    }
-    [self.bottomView.layer addAnimation:animation forKey:nil];
-    self.bottomView.layer.position = toValue;
 }
 
 - (void)hideShowNavigationBar
@@ -497,18 +382,7 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (void)dealloc
 {
-    [self clearPlayer];
     [self tearDownGL];
-}
-
-- (void)clearPlayer
-{
-    [self.videoPlayer stop];
-    [self.videoPlayer removeObserversFromPlayer];
-    self.videoPlayer.delegate = nil;
-    self.urlAsset = nil;
-    self.videoPlayer = nil;
-
 }
 
 @end

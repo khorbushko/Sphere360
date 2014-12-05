@@ -33,10 +33,12 @@
 		EDCFC7201A2C671F00613D7B /* Sphere360Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCFC71F1A2C671F00613D7B /* Sphere360Tests.m */; };
 		EDCFC72A1A2C673100613D7B /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDCFC7291A2C673100613D7B /* GLKit.framework */; };
 		EDCFC7301A2C67F100613D7B /* SPHMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCFC72F1A2C67F100613D7B /* SPHMainViewController.m */; };
-		EDCFC7361A2C685D00613D7B /* SPHUniversalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCFC7351A2C685D00613D7B /* SPHUniversalViewController.m */; };
 		EDCFC7431A2C6A2B00613D7B /* GIR000009.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = EDCFC7421A2C6A2B00613D7B /* GIR000009.jpeg */; };
+		EDCFEE061A31DBD5003ADA91 /* SPHVideoPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCFEE051A31DBD5003ADA91 /* SPHVideoPlayer.m */; };
+		EDCFEE191A31E1FC003ADA91 /* SPHBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCFEE181A31E1FC003ADA91 /* SPHBaseViewController.m */; };
+		EDCFEE1C1A31E52D003ADA91 /* SPHPhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCFEE1B1A31E52D003ADA91 /* SPHPhotoViewController.m */; };
+		EDCFEE211A31EB5B003ADA91 /* SPHVideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCFEE201A31EB5B003ADA91 /* SPHVideoViewController.m */; };
 		EDEFC8C51A2DAD7100E01E11 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDEFC8C41A2DAD7100E01E11 /* CoreMedia.framework */; };
-		EDEFC8C91A2DB7B600E01E11 /* SPHVideoPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = EDEFC8C81A2DB7B600E01E11 /* SPHVideoPlayer.m */; };
 		EDFAC6D91A2C74290059BBD0 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDFAC6D81A2C74290059BBD0 /* OpenGLES.framework */; };
 /* End PBXBuildFile section */
 
@@ -89,12 +91,16 @@
 		EDCFC7291A2C673100613D7B /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		EDCFC72E1A2C67F100613D7B /* SPHMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHMainViewController.h; sourceTree = "<group>"; };
 		EDCFC72F1A2C67F100613D7B /* SPHMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHMainViewController.m; sourceTree = "<group>"; };
-		EDCFC7341A2C685D00613D7B /* SPHUniversalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHUniversalViewController.h; sourceTree = "<group>"; };
-		EDCFC7351A2C685D00613D7B /* SPHUniversalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHUniversalViewController.m; sourceTree = "<group>"; };
 		EDCFC7421A2C6A2B00613D7B /* GIR000009.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = GIR000009.jpeg; sourceTree = "<group>"; };
+		EDCFEE041A31DBD5003ADA91 /* SPHVideoPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHVideoPlayer.h; sourceTree = "<group>"; };
+		EDCFEE051A31DBD5003ADA91 /* SPHVideoPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHVideoPlayer.m; sourceTree = "<group>"; };
+		EDCFEE171A31E1FC003ADA91 /* SPHBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHBaseViewController.h; sourceTree = "<group>"; };
+		EDCFEE181A31E1FC003ADA91 /* SPHBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHBaseViewController.m; sourceTree = "<group>"; };
+		EDCFEE1A1A31E52D003ADA91 /* SPHPhotoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHPhotoViewController.h; sourceTree = "<group>"; };
+		EDCFEE1B1A31E52D003ADA91 /* SPHPhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHPhotoViewController.m; sourceTree = "<group>"; };
+		EDCFEE1F1A31EB5B003ADA91 /* SPHVideoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHVideoViewController.h; sourceTree = "<group>"; };
+		EDCFEE201A31EB5B003ADA91 /* SPHVideoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHVideoViewController.m; sourceTree = "<group>"; };
 		EDEFC8C41A2DAD7100E01E11 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
-		EDEFC8C71A2DB7B600E01E11 /* SPHVideoPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHVideoPlayer.h; sourceTree = "<group>"; };
-		EDEFC8C81A2DB7B600E01E11 /* SPHVideoPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHVideoPlayer.m; sourceTree = "<group>"; };
 		EDFAC6D31A2C6C4B0059BBD0 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		EDFAC6D81A2C74290059BBD0 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -182,14 +188,6 @@
 				EDAC3A7F1A2C986F00EB6DE0 /* SPHTextureProvider.m */,
 			);
 			path = TextureProvider;
-			sourceTree = "<group>";
-		};
-		EDAC3A851A2CA4F400EB6DE0 /* Others */ = {
-			isa = PBXGroup;
-			children = (
-				EDEFC8C61A2DB79300E01E11 /* VideoPlayer */,
-			);
-			path = Others;
 			sourceTree = "<group>";
 		};
 		EDAC3A8B1A2CA90A00EB6DE0 /* UIImage+ImageModification */ = {
@@ -293,7 +291,7 @@
 		EDCFC72B1A2C674E00613D7B /* Classses */ = {
 			isa = PBXGroup;
 			children = (
-				EDAC3A851A2CA4F400EB6DE0 /* Others */,
+				EDCFEE021A31DBD5003ADA91 /* Others */,
 				EDAC3A751A2C94D600EB6DE0 /* Animation */,
 				EDAC3A6E1A2C820500EB6DE0 /* Categories */,
 				EDAC3A641A2C7A2F00EB6DE0 /* OpenGL */,
@@ -305,8 +303,10 @@
 		EDCFC72C1A2C675800613D7B /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				EDCFEE1E1A31EB4B003ADA91 /* VideoViewController */,
+				EDCFEE131A31E0B7003ADA91 /* BaseViewController */,
+				EDCFEE0B1A31DDCA003ADA91 /* PhotoPreviewViewController */,
 				EDAC3A8F1A2CAC5200EB6DE0 /* NavigationController */,
-				EDCFC7311A2C683500613D7B /* UniversalViewController */,
 				EDCFC72D1A2C676500613D7B /* MainViewController */,
 			);
 			path = ViewControllers;
@@ -319,16 +319,6 @@
 				EDCFC72F1A2C67F100613D7B /* SPHMainViewController.m */,
 			);
 			path = MainViewController;
-			sourceTree = "<group>";
-		};
-		EDCFC7311A2C683500613D7B /* UniversalViewController */ = {
-			isa = PBXGroup;
-			children = (
-				EDCFC7341A2C685D00613D7B /* SPHUniversalViewController.h */,
-				EDCFC7351A2C685D00613D7B /* SPHUniversalViewController.m */,
-			);
-			name = UniversalViewController;
-			path = PhotoViewController;
 			sourceTree = "<group>";
 		};
 		EDCFC73D1A2C699B00613D7B /* Resourses */ = {
@@ -357,15 +347,49 @@
 			path = TestResourses;
 			sourceTree = "<group>";
 		};
-		EDEFC8C61A2DB79300E01E11 /* VideoPlayer */ = {
+		EDCFEE021A31DBD5003ADA91 /* Others */ = {
 			isa = PBXGroup;
 			children = (
-				EDEFC8C71A2DB7B600E01E11 /* SPHVideoPlayer.h */,
-				EDEFC8C81A2DB7B600E01E11 /* SPHVideoPlayer.m */,
+				EDCFEE031A31DBD5003ADA91 /* VideoPlayer */,
 			);
-			name = VideoPlayer;
-			path = Sphere360/Classses/ViewControllers/NavigationController/VideoPlayer;
-			sourceTree = SOURCE_ROOT;
+			path = Others;
+			sourceTree = "<group>";
+		};
+		EDCFEE031A31DBD5003ADA91 /* VideoPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				EDCFEE041A31DBD5003ADA91 /* SPHVideoPlayer.h */,
+				EDCFEE051A31DBD5003ADA91 /* SPHVideoPlayer.m */,
+			);
+			path = VideoPlayer;
+			sourceTree = "<group>";
+		};
+		EDCFEE0B1A31DDCA003ADA91 /* PhotoPreviewViewController */ = {
+			isa = PBXGroup;
+			children = (
+				EDCFEE1A1A31E52D003ADA91 /* SPHPhotoViewController.h */,
+				EDCFEE1B1A31E52D003ADA91 /* SPHPhotoViewController.m */,
+			);
+			path = PhotoPreviewViewController;
+			sourceTree = "<group>";
+		};
+		EDCFEE131A31E0B7003ADA91 /* BaseViewController */ = {
+			isa = PBXGroup;
+			children = (
+				EDCFEE171A31E1FC003ADA91 /* SPHBaseViewController.h */,
+				EDCFEE181A31E1FC003ADA91 /* SPHBaseViewController.m */,
+			);
+			path = BaseViewController;
+			sourceTree = "<group>";
+		};
+		EDCFEE1E1A31EB4B003ADA91 /* VideoViewController */ = {
+			isa = PBXGroup;
+			children = (
+				EDCFEE1F1A31EB5B003ADA91 /* SPHVideoViewController.h */,
+				EDCFEE201A31EB5B003ADA91 /* SPHVideoViewController.m */,
+			);
+			path = VideoViewController;
+			sourceTree = "<group>";
 		};
 		EDFAC6D21A2C6C3D0059BBD0 /* Constants */ = {
 			isa = PBXGroup;
@@ -483,9 +507,11 @@
 				EDAC3A921A2CAC7700EB6DE0 /* SPHNavigationController.m in Sources */,
 				EDAC3A801A2C986F00EB6DE0 /* SPHTextureProvider.m in Sources */,
 				EDCFC7011A2C671E00613D7B /* main.m in Sources */,
+				EDCFEE1C1A31E52D003ADA91 /* SPHPhotoViewController.m in Sources */,
 				EDAC3A781A2C94F800EB6DE0 /* SPHAnimationProvider.m in Sources */,
-				EDCFC7361A2C685D00613D7B /* SPHUniversalViewController.m in Sources */,
-				EDEFC8C91A2DB7B600E01E11 /* SPHVideoPlayer.m in Sources */,
+				EDCFEE211A31EB5B003ADA91 /* SPHVideoViewController.m in Sources */,
+				EDCFEE191A31E1FC003ADA91 /* SPHBaseViewController.m in Sources */,
+				EDCFEE061A31DBD5003ADA91 /* SPHVideoPlayer.m in Sources */,
 				EDAC3A8E1A2CA91300EB6DE0 /* UIImage+ImageModification.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

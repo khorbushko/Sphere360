@@ -57,10 +57,10 @@
             </objects>
             <point key="canvasLocation" x="127" y="349"/>
         </scene>
-        <!--Universal View Controller - Photo-->
+        <!--Photo View Controller - Photo-->
         <scene sceneID="Krs-km-gWv">
             <objects>
-                <viewController id="Ayf-fH-v40" customClass="SPHUniversalViewController" sceneMemberID="viewController">
+                <viewController id="Ayf-fH-v40" customClass="SPHPhotoViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="NDu-Nw-tXh"/>
                         <viewControllerLayoutGuide type="bottom" id="3dq-tS-dpL"/>
@@ -135,10 +135,10 @@
             </objects>
             <point key="canvasLocation" x="955" y="886"/>
         </scene>
-        <!--Universal View Controller - Video-->
+        <!--Video View Controller - Video-->
         <scene sceneID="zGQ-VC-kYO">
             <objects>
-                <viewController id="AaC-I6-DZW" customClass="SPHUniversalViewController" sceneMemberID="viewController">
+                <viewController id="AaC-I6-DZW" customClass="SPHVideoViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="buR-ZE-qyY"/>
                         <viewControllerLayoutGuide type="bottom" id="z1l-cW-7oV"/>
