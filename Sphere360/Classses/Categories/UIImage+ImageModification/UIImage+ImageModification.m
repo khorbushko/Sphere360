@@ -13,6 +13,10 @@
 //flip by 180 degree and horizontal
 + (UIImage *)flipAndMirrorImageHorizontally:(UIImage *)image
 {
+    UIImage *sourceImage = [image copy];
+    if (!sourceImage) {
+        return nil;
+    }
     UIGraphicsBeginImageContext(image.size);
     CGContextDrawImage(UIGraphicsGetCurrentContext(),CGRectMake(0.,0., image.size.width, image.size.height),image.CGImage);
     CGAffineTransform verticalFlip = CGAffineTransformMake(1, 0, 0, -1, 0, image.size.height);

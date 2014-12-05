@@ -272,15 +272,12 @@ static const NSString *ItemStatusContext;
     @try {
         [[NSNotificationCenter defaultCenter] removeObserver:self];
         [[NSNotificationCenter defaultCenter] removeObserver:self.assetPlayer];
+        [self.playerItem removeObserver:self forKeyPath:@"status"];
+        [self.playerItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
     }
     @catch (NSException *ex) {
         NSLog(@"Cant remove observer in Player - %@", ex.description);
     }
-}
-
-- (void)dealloc
-{
-    [self removeObserversFromPlayer];
 }
 
 @end

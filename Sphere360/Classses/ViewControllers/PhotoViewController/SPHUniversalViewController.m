@@ -18,13 +18,13 @@
 static CGFloat const kDefStartY = -1.8f;
 static CGFloat const kDefStartX = -3.f;
 
-static CGFloat const kMinimumZoomValue = 0.1f;
-static CGFloat const kMaximumZoomValue = 1.45f;
-static CGFloat const kDefaultZoomDegree = 90;
+static CGFloat const kMinimumZoomValue = 0.8f;
+static CGFloat const kMaximumZoomValue = 1.7f;
+static CGFloat const kDefaultZoomDegree = 90.0f;
 
-static CGFloat const kVelocityDecreasingValue = 10.0f;
-static CGFloat const kVelocityMaxValue = 1000.0f;
-static CGFloat const kVelocitySpeed = 0.3f;
+//static CGFloat const kVelocityDecreasingValue = 100.0f;
+//static CGFloat const kVelocityMaxValue = 1000.0f;
+static CGFloat const kVelocityCoef = 0.01f;
 
 enum {
     UNIFORM_MVPMATRIX,
@@ -54,11 +54,9 @@ GLint uniforms[NUM_UNIFORMS];
 @property (strong, nonatomic) EAGLContext *context;
 @property (strong, nonatomic) GLKTextureInfo *texture;
 
-@property (assign, nonatomic) CGFloat zoomValueCurrent;
-@property (assign, nonatomic) CGFloat zoomValueLast;
-@property (assign, nonatomic) CGPoint velocityEndPoint;
+@property (assign, nonatomic) CGFloat zoomValue;
+@property (assign, nonatomic) CGPoint velocityValue;
 @property (assign, nonatomic) CGPoint prevTouchPoint;
-@property (assign, nonatomic) BOOL isExtraMovementActive;
 @property (assign, nonatomic) BOOL isHyroscopeActive;
 
 @property (assign, nonatomic) CGFloat urlAssetDuration;
@@ -130,8 +128,12 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (void)setupTextureWithImage:(UIImage *)image
 {
+    if (!image) {
+        return;
+    }
+    UIImage *textureImage = [image copy];
     GLKTextureLoader *textureloader = [[GLKTextureLoader alloc] initWithSharegroup:self.context.sharegroup];
-    [textureloader textureWithCGImage:image.CGImage options:nil queue:nil completionHandler:^(GLKTextureInfo *textureInfo, NSError *outError) {
+    [textureloader textureWithCGImage:textureImage.CGImage options:nil queue:nil completionHandler:^(GLKTextureInfo *textureInfo, NSError *outError) {
         if (_texture.name) {
             GLuint textureName = _texture.name;
             glDeleteTextures(1, &textureName);
@@ -151,12 +153,12 @@ GLint uniforms[NUM_UNIFORMS];
     if (self.selectedController == VideoViewController && [self.videoPlayer isPlayerPlayVideo]) {
         [self setNewTextureFromVideoPlayer];
     }
-    if (self.isExtraMovementActive) {
-        [self startExtraMovement];
+    if (!CGPointEqualToPoint(self.velocityValue, CGPointZero)) {
+        [self updateMovement];
     }
     
     float aspect = fabsf(self.view.bounds.size.width / self.view.bounds.size.height);
-    GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(self.zoomValueCurrent), aspect, 0.1f, 60.0f);
+    GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(kDefaultZoomDegree / self.zoomValue), aspect, 0.1f, 60.0f);
     GLKMatrix4 modelViewMatrix = GLKMatrix4Identity;
     modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotationX, 1.0f, 0.0f, 0.0f);
     modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotationY, 0.0f, 1.0f, 0.0f);
@@ -220,26 +222,23 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (void)moveToPointX:(CGFloat)pointX andPointY:(CGFloat)pointY
 {
-    pointX *= -0.001;
-    pointY *= 0.001;
+    pointX *= -0.005;
+    pointY *= 0.005;
     _rotationX += -pointY;
     _rotationY += -pointX;
 }
 
 #pragma mark - GestureActions
 
-- (void)pinchForZoom:(UIGestureRecognizer *)sender
+- (void)pinchForZoom:(UIPinchGestureRecognizer *)gesture
 {
-    CGFloat scaleValue = [(UIPinchGestureRecognizer*)sender scale];
-    CGFloat zoom = self.zoomValueLast * scaleValue;
-    
-    if (zoom > kMaximumZoomValue) {
-        zoom = kMaximumZoomValue;
-    } else if (zoom < kMinimumZoomValue) {
-        zoom = kMinimumZoomValue;
+    if (gesture.state == UIGestureRecognizerStateBegan) {
+        gesture.scale = self.zoomValue;
+    } else if (gesture.state == UIGestureRecognizerStateChanged) {
+        CGFloat zoom = gesture.scale;
+        zoom = MAX(MIN(zoom, kMaximumZoomValue), kMinimumZoomValue);
+        self.zoomValue = zoom;
     }
-    self.zoomValueLast = zoom;
-    self.zoomValueCurrent = zoom * kDefaultZoomDegree;
 }
 
 - (void)tapGesture
@@ -248,14 +247,12 @@ GLint uniforms[NUM_UNIFORMS];
     [self hideBottomBar];
 }
 
-- (void)panGesture:(UIPanGestureRecognizer *)sender
+- (void)panGesture:(UIPanGestureRecognizer *)panGesture
 {
-    CGPoint currentPoint = [sender locationInView:sender.view];
-    switch (sender.state) {
+    CGPoint currentPoint = [panGesture locationInView:panGesture.view];
+    switch (panGesture.state) {
         case UIGestureRecognizerStateEnded: {
-            CGPoint velocity = [sender velocityInView:sender.view];
-            self.velocityEndPoint = velocity;
-            self.isExtraMovementActive = YES;
+            self.velocityValue = [panGesture velocityInView:panGesture.view];
             break;
         }
         case UIGestureRecognizerStateBegan: {
@@ -287,22 +284,21 @@ GLint uniforms[NUM_UNIFORMS];
 
 #pragma mark - Velocity
 
-- (void)startExtraMovement
+- (void)updateMovement
 {
-    if (!CGPointEqualToPoint(self.velocityEndPoint, CGPointZero)) {
-        CGFloat velocityAngle = atan2f(self.velocityEndPoint.y, self.velocityEndPoint.x);
-        CGFloat velocityValue = MIN(kVelocityMaxValue, sqrt(pow(self.velocityEndPoint.x, 2) + pow(self.velocityEndPoint.y, 2)));
-        velocityValue = MAX(0, velocityValue - kVelocityDecreasingValue);
-        self.velocityEndPoint = CGPointMake(velocityValue * cos(velocityAngle), velocityValue * sin(velocityAngle));
-        CGPoint nextPoint = CGPointMake(self.velocityEndPoint.x * kVelocitySpeed, self.velocityEndPoint.y * kVelocitySpeed);
-        [self moveToPointX:nextPoint.x andPointY:nextPoint.y];
+    self.velocityValue = CGPointMake(0.9 * self.velocityValue.x, 0.9 * self.velocityValue.y);
+    CGPoint nextPoint = CGPointMake(kVelocityCoef * self.velocityValue.x, kVelocityCoef * self.velocityValue.y);
+    
+    if (fabsf(nextPoint.x) < 0.1 && fabsf(nextPoint.y) < 0.1) {
+        self.velocityValue = CGPointZero;
     }
+    
+    [self moveToPointX:nextPoint.x andPointY:nextPoint.y];
 }
 
 - (void)disableExtraMovement
 {
-    self.isExtraMovementActive = NO;
-    self.velocityEndPoint = CGPointZero;
+    self.velocityValue = CGPointZero;
 }
 
 #pragma mark - IBActions
@@ -448,20 +444,23 @@ GLint uniforms[NUM_UNIFORMS];
 {
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGesture:)];
     panGesture.delegate = self;
+    panGesture.maximumNumberOfTouches = 1;
     [self.view addGestureRecognizer:panGesture];
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
 {
-    return YES;
+    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]] && [otherGestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
+        return YES;
+    }
+    return NO;
 }
 
 - (void)setInitialParameters
 {
     _rotationX = kDefStartX;
     _rotationY = kDefStartY;
-    self.zoomValueCurrent = kDefaultZoomDegree;
-    self.zoomValueLast = 1.0f;
+    self.zoomValue = 1.0f;
 }
 
 #pragma mark - Cleanup
