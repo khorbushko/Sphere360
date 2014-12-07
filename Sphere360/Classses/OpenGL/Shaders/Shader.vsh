@@ -1,9 +1,4 @@
-//
-//  Shader.vsh
-//  StockOpenGL
-//
-//  Created by David Sweetman on 10/11/12.
-//
+
 
 attribute vec4 a_position;
 attribute vec2 a_textureCoord;

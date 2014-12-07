@@ -170,7 +170,7 @@ static const NSString *ItemStatusContext;
 
 - (void)moviewPlayerLoadedTimeRangeDidUpdated:(NSArray *)ranges
 {
-    NSTimeInterval max = 0;
+    NSTimeInterval maximum = 0;
     BOOL loadedRangesContainsCurrentTime = NO;
     
     CMTime time = self.playerItem.currentTime;
@@ -181,12 +181,12 @@ static const NSString *ItemStatusContext;
         if (CMTimeRangeContainsTime(range, time)) {
             loadedRangesContainsCurrentTime = YES;
         }        
-        NSTimeInterval currentMax = CMTimeGetSeconds(range.start) + CMTimeGetSeconds(range.duration);
-        if (currentMax > max) {
-            max = currentMax;
+        NSTimeInterval currenLoadedRangeTime = CMTimeGetSeconds(range.start) + CMTimeGetSeconds(range.duration);
+        if (currenLoadedRangeTime > maximum) {
+            maximum = currenLoadedRangeTime;
         }
     }
-    CGFloat progress = (self.assetDuration == 0) ? 0 : max / self.assetDuration;
+    CGFloat progress = (self.assetDuration == 0) ? 0 : maximum / self.assetDuration;
     
     [self.delegate downloadingProgress:progress];
 }
@@ -278,6 +278,11 @@ static const NSString *ItemStatusContext;
     @catch (NSException *ex) {
         NSLog(@"Cant remove observer in Player - %@", ex.description);
     }
+}
+
+- (void)dealloc
+{
+    [self removeObserversFromPlayer];
 }
 
 @end

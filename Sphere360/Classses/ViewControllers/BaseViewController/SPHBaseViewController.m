@@ -280,11 +280,10 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (void)moveToPointX:(CGFloat)pointX andPointY:(CGFloat)pointY
 {
-    pointX *= -0.015;
-    pointY *= 0.015;
+    pointX *= -0.008;
+    pointY *= 0.008;
     _rotationX += -pointY;
     _rotationY += -pointX;
-    NSLog(@"x%f y%f", _rotationX, _rotationY);
 }
 
 #pragma mark - GestureActions
