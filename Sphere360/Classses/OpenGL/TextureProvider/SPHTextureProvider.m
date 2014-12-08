@@ -123,7 +123,8 @@
     UIGraphicsEndImageContext();
     
     CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
-    CFRelease(pixelBuffer);
+    CVBufferRelease(pixelBuffer);
+    //CFRelease(pixelBuffer); //can cause crash in NULL pixelBuffer
     return image;
 }
 

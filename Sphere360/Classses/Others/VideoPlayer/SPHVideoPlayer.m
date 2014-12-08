@@ -87,9 +87,10 @@ static const NSString *ItemStatusContext;
 - (void)prepareToPlay
 {
     NSArray *keys = @[@"tracks"];
+    __weak SPHVideoPlayer *weakSelf = self;
     [self.urlAsset loadValuesAsynchronouslyForKeys:keys completionHandler:^{
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self startLoading];
+            [weakSelf startLoading];
         });
     }];
 }
@@ -101,10 +102,7 @@ static const NSString *ItemStatusContext;
     if (status == AVKeyValueStatusLoaded) {
         
         self.assetDuration = CMTimeGetSeconds(self.urlAsset.duration);
-        NSDictionary *videoOutputOptions = [NSDictionary dictionaryWithObjectsAndKeys:
-                                   [NSNumber numberWithInt:kCVPixelFormatType_32BGRA], kCVPixelBufferPixelFormatTypeKey,
-                                   [NSDictionary dictionary], kCVPixelBufferIOSurfacePropertiesKey,
-                                   nil];
+        NSDictionary* videoOutputOptions = @{ (id)kCVPixelBufferPixelFormatTypeKey : [NSNumber numberWithInt:kCVPixelFormatType_32BGRA] };
         self.videoOutput = [[AVPlayerItemVideoOutput alloc] initWithPixelBufferAttributes:videoOutputOptions];
         
         self.playerItem = [AVPlayerItem playerItemWithAsset: self.urlAsset];
@@ -251,15 +249,16 @@ static const NSString *ItemStatusContext;
      */
 
     CMTime currentTime = [self.videoOutput itemTimeForHostTime:CACurrentMediaTime()];
+    UIImage *image;
     [self.delegate progressChangedToTime:currentTime];
     if (![self.videoOutput hasNewPixelBufferForItemTime:currentTime]) {
         return nil;
     }
     CVPixelBufferRef buffer = [self.videoOutput copyPixelBufferForItemTime:currentTime itemTimeForDisplay:NULL];
     
-    UIImage *image;
+    
     if (buffer) {
-          image = [SPHTextureProvider imageWithCVPixelBufferUsingUIGraphicsContext:buffer];
+        image = [SPHTextureProvider imageWithCVPixelBufferUsingUIGraphicsContext:buffer];
     }
     [self.delegate progressUpdateToTime: CMTimeGetSeconds(currentTime)/self.assetDuration];
     return image;
