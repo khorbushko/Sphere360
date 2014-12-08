@@ -10,17 +10,16 @@
 #import "SPHVideoPlayer.h"
 
 typedef enum {
-    PhotoViewController,
-    VideoViewController,
-    LiveViewController,
+    MediaTypePhoto,
+    MediaTypeVideo,
+    MediaTypeLive
 } MediaType;
 
 @interface SPHBaseViewController : GLKViewController
 
 @property (strong, nonatomic) NSString *sourceURL;
-@property (assign, nonatomic) MediaType selectedController;
+@property (assign, nonatomic) MediaType mediaType;
 
-//- (void)setEmptyImage;
 - (void)setupTextureWithImage:(UIImage *)image;
 - (void)gyroscopeChoose;
 - (void)tapGesture;

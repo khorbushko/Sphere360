@@ -83,7 +83,7 @@
 
 - (void)setupVideoPlayer
 {
-    if (self.selectedController == VideoViewController) {
+    if (self.mediaType == MediaTypeVideo) {
         NSURL *urlToFile = [NSURL URLWithString:self.sourceURL];
         self.videoPlayer = [[SPHVideoPlayer alloc] initVideoPlayerWithURL:urlToFile];
         [self.videoPlayer prepareToPlay];

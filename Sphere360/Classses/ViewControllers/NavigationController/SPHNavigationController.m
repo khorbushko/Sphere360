@@ -29,6 +29,8 @@
 {
     [super viewDidLoad];
     [self setupNavigationBar];
+    self.interactivePopGestureRecognizer.enabled = NO;
+    self.navigationBar.tintColor = [UIColor darkTextColor];
 }
 
 #pragma mark - Private
