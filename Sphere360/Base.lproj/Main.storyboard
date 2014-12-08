@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5053" systemVersion="12E55" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="yxc-AD-c7O">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="yxc-AD-c7O">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
     </dependencies>
     <scenes>
         <!--Main View Controller-->
@@ -16,39 +17,61 @@
                         <rect key="frame" x="0.0" y="0.0" width="568" height="320"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qhu-Kb-3Uv" userLabel="Picture - UIButton">
-                                <rect key="frame" x="223" y="98" width="123" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Panorama Picture">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qhu-Kb-3Uv" userLabel="Picture - UIButton">
+                                <rect key="frame" x="60" y="115" width="70" height="90"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="70" id="PGg-iv-Xsf"/>
+                                    <constraint firstAttribute="height" constant="90" id="ujG-zp-66u"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="19"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="20"/>
+                                <state key="normal" title="Photo" image="PhotoIcon.png">
+                                    <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
                                 <connections>
-                                    <segue destination="Ayf-fH-v40" kind="push" identifier="photoSegue" id="glC-8Y-ipl"/>
+                                    <segue destination="4ld-54-zqw" kind="push" identifier="photo" id="Q1a-kc-MYY"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ver-29-fuD" userLabel="Video - UIButton">
-                                <rect key="frame" x="228" y="136" width="113" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Panorama Video">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ver-29-fuD" userLabel="Video - UIButton">
+                                <rect key="frame" x="249" y="115" width="70" height="90"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="70" id="2o9-5F-kvz"/>
+                                    <constraint firstAttribute="height" constant="90" id="43m-8z-Z0X"/>
+                                </constraints>
+                                <inset key="titleEdgeInsets" minX="0.0" minY="50" maxX="0.0" maxY="0.0"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="20"/>
+                                <state key="normal" title="Video" image="VideoIcon.png">
+                                    <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <segue destination="AaC-I6-DZW" kind="push" identifier="videoSegue" id="oae-c4-Bgj"/>
+                                    <segue destination="4ld-54-zqw" kind="push" identifier="video" id="8Aa-vZ-fgY"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="y3K-i2-HHr" userLabel="Live - UIButton">
-                                <rect key="frame" x="233" y="174" width="102" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Panorama Live">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="y3K-i2-HHr" userLabel="Live - UIButton">
+                                <rect key="frame" x="432" y="115" width="70" height="90"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="90" id="AMO-01-yCM"/>
+                                    <constraint firstAttribute="width" constant="70" id="ksd-s2-iah"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                <inset key="titleEdgeInsets" minX="0.0" minY="50" maxX="0.0" maxY="0.0"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="20"/>
+                                <state key="normal" title="Live" image="LiveIcon.png">
+                                    <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
-                                <connections>
-                                    <segue destination="X96-17-0wW" kind="push" identifier="liveSegue" id="ggy-rb-MBk"/>
-                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
+                        <constraints>
+                            <constraint firstItem="y3K-i2-HHr" firstAttribute="leading" secondItem="ver-29-fuD" secondAttribute="trailing" constant="113" id="1MG-R3-Csb"/>
+                            <constraint firstAttribute="centerX" secondItem="ver-29-fuD" secondAttribute="centerX" id="6hH-Y0-rh1"/>
+                            <constraint firstAttribute="centerY" secondItem="y3K-i2-HHr" secondAttribute="centerY" id="ag5-vk-n8q"/>
+                            <constraint firstItem="ver-29-fuD" firstAttribute="leading" secondItem="qhu-Kb-3Uv" secondAttribute="trailing" constant="119" id="ea6-dT-rmS"/>
+                            <constraint firstAttribute="centerY" secondItem="ver-29-fuD" secondAttribute="centerY" id="ote-vA-EOH"/>
+                            <constraint firstAttribute="centerY" secondItem="qhu-Kb-3Uv" secondAttribute="centerY" id="yFM-vW-YUc"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="i7q-NU-WUN"/>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
@@ -57,10 +80,81 @@
             </objects>
             <point key="canvasLocation" x="127" y="349"/>
         </scene>
-        <!--Photo View Controller - Photo-->
+        <!--Content List View Controller-->
+        <scene sceneID="oFi-QZ-0DU">
+            <objects>
+                <viewController id="4ld-54-zqw" customClass="SPHContentListViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="apD-gD-4Wk"/>
+                        <viewControllerLayoutGuide type="bottom" id="TTX-hc-zHm"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="eRs-Pl-vze">
+                        <rect key="frame" x="0.0" y="0.0" width="568" height="320"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="2Ya-ZH-Sps">
+                                <rect key="frame" x="0.0" y="64" width="568" height="256"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="20" minimumInteritemSpacing="20" id="E7e-pE-kIz">
+                                    <size key="itemSize" width="250" height="200"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="30" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="contentCell" id="lNi-2l-VlX" customClass="SPHContentCollectionViewCell">
+                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="0.0" y="0.0" width="250" height="200"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fsE-tY-ZvQ" userLabel="thumbnail">
+                                                    <rect key="frame" x="0.0" y="0.0" width="250" height="160"/>
+                                                </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sRc-D0-7bg" userLabel="title">
+                                                    <rect key="frame" x="0.0" y="160" width="250" height="40"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
+                                        <connections>
+                                            <outlet property="thumbnailImageView" destination="fsE-tY-ZvQ" id="Mxh-bl-X4Q"/>
+                                            <outlet property="titleLabel" destination="sRc-D0-7bg" id="67s-na-DX4"/>
+                                        </connections>
+                                    </collectionViewCell>
+                                </cells>
+                                <connections>
+                                    <outlet property="dataSource" destination="4ld-54-zqw" id="Cqk-ag-qaO"/>
+                                    <outlet property="delegate" destination="4ld-54-zqw" id="A6Q-uY-2Op"/>
+                                </connections>
+                            </collectionView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="2Ya-ZH-Sps" firstAttribute="leading" secondItem="eRs-Pl-vze" secondAttribute="leading" id="44G-Mf-JHC"/>
+                            <constraint firstAttribute="trailing" secondItem="2Ya-ZH-Sps" secondAttribute="trailing" id="AZI-ms-Itm"/>
+                            <constraint firstItem="2Ya-ZH-Sps" firstAttribute="top" secondItem="apD-gD-4Wk" secondAttribute="bottom" id="ck6-fR-6NV"/>
+                            <constraint firstItem="TTX-hc-zHm" firstAttribute="top" secondItem="2Ya-ZH-Sps" secondAttribute="bottom" id="eLw-0h-yHu"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="W8s-tl-eHy"/>
+                    <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
+                    <connections>
+                        <outlet property="collectionView" destination="2Ya-ZH-Sps" id="BU2-9b-X9h"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="srO-Ch-Tq0" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="875" y="349"/>
+        </scene>
+        <!--Photo-->
         <scene sceneID="Krs-km-gWv">
             <objects>
-                <viewController id="Ayf-fH-v40" customClass="SPHPhotoViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="photo" id="Ayf-fH-v40" customClass="SPHPhotoViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="NDu-Nw-tXh"/>
                         <viewControllerLayoutGuide type="bottom" id="3dq-tS-dpL"/>
@@ -71,11 +165,9 @@
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="byI-VA-AZC">
                                 <rect key="frame" x="0.0" y="260" width="568" height="60"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Pl4-fH-F2s" userLabel="Gyroscope - UIButton">
                                         <rect key="frame" x="473" y="15" width="75" height="30"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="30" id="oPS-yD-n5J"/>
                                         </constraints>
@@ -102,7 +194,6 @@
                             <constraint firstAttribute="trailing" secondItem="byI-VA-AZC" secondAttribute="trailing" id="MVL-MA-AMs"/>
                             <constraint firstItem="3dq-tS-dpL" firstAttribute="top" secondItem="byI-VA-AZC" secondAttribute="bottom" id="sNF-uY-cVE"/>
                         </constraints>
-                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
                     <navigationItem key="navigationItem" title="Photo" id="6ky-1W-VR1"/>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
@@ -112,9 +203,9 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2Z9-op-JqD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="955" y="349"/>
+            <point key="canvasLocation" x="1599" y="339"/>
         </scene>
-        <!--Universal View Controller - Live-->
+        <!--Live-->
         <scene sceneID="y2O-ak-mRh">
             <objects>
                 <viewController id="X96-17-0wW" customClass="SPHUniversalViewController" sceneMemberID="viewController">
@@ -126,19 +217,18 @@
                         <rect key="frame" x="0.0" y="0.0" width="568" height="320"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
                     <navigationItem key="navigationItem" title="Live" id="v8A-hZ-Az9"/>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="deY-Va-HBq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="955" y="886"/>
+            <point key="canvasLocation" x="1599" y="876"/>
         </scene>
-        <!--Video View Controller - Video-->
+        <!--Video-->
         <scene sceneID="zGQ-VC-kYO">
             <objects>
-                <viewController id="AaC-I6-DZW" customClass="SPHVideoViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="video" id="AaC-I6-DZW" customClass="SPHVideoViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="buR-ZE-qyY"/>
                         <viewControllerLayoutGuide type="bottom" id="z1l-cW-7oV"/>
@@ -149,18 +239,15 @@
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="slT-hP-TXf">
                                 <rect key="frame" x="0.0" y="260" width="568" height="60"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <slider opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" continuous="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ltT-uf-ol8" userLabel="VideoProgress - Slider">
                                         <rect key="frame" x="74" y="15" width="278" height="31"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="274" id="QEc-OE-v36"/>
                                         </constraints>
                                     </slider>
                                     <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yAf-yd-nAL" userLabel="Gyroscope - UIButton">
                                         <rect key="frame" x="473" y="15" width="75" height="30"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="30" id="Vw5-Mk-f6y"/>
                                         </constraints>
@@ -174,7 +261,6 @@
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KUN-48-zWo" userLabel="Play/Stop Button">
                                         <rect key="frame" x="15" y="15" width="53" height="30"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="53" id="9BN-SN-WLe"/>
                                         </constraints>
@@ -187,7 +273,6 @@
                                     </button>
                                     <slider opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="10" continuous="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QS2-sr-xgk">
                                         <rect key="frame" x="363" y="15" width="104" height="31"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </slider>
                                 </subviews>
                                 <color key="backgroundColor" red="0.97254901959999995" green="0.97254901959999995" blue="0.97254901959999995" alpha="0.84999999999999998" colorSpace="calibratedRGB"/>
@@ -215,7 +300,6 @@
                             <constraint firstItem="z1l-cW-7oV" firstAttribute="top" secondItem="slT-hP-TXf" secondAttribute="bottom" id="hBv-pf-uN1"/>
                             <constraint firstAttribute="trailing" secondItem="slT-hP-TXf" secondAttribute="trailing" id="war-ai-nyq"/>
                         </constraints>
-                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
                     <navigationItem key="navigationItem" title="Video" id="ugN-p8-aT6"/>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
@@ -229,7 +313,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LaI-4Y-aaQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="955" y="-139"/>
+            <point key="canvasLocation" x="1599" y="-149"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="D23-0J-SXy">
@@ -251,9 +335,17 @@
             <point key="canvasLocation" x="-662" y="349"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="LiveIcon.png" width="512" height="512"/>
+        <image name="PhotoIcon.png" width="512" height="512"/>
+        <image name="VideoIcon.png" width="512" height="512"/>
+    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
+    <inferredMetricsTieBreakers>
+        <segue reference="Q1a-kc-MYY"/>
+    </inferredMetricsTieBreakers>
 </document>

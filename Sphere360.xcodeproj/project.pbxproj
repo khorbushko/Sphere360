@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		84A1B4261A35D69600B17A58 /* LiveIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 84A1B4231A35D69600B17A58 /* LiveIcon.png */; };
+		84A1B4271A35D69600B17A58 /* PhotoIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 84A1B4241A35D69600B17A58 /* PhotoIcon.png */; };
+		84A1B4281A35D69600B17A58 /* VideoIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 84A1B4251A35D69600B17A58 /* VideoIcon.png */; };
+		84A1B42F1A35E38600B17A58 /* SPHContentListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 84A1B42E1A35E38600B17A58 /* SPHContentListViewController.m */; };
+		84A1B4321A35E39F00B17A58 /* SPHContentCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 84A1B4311A35E39F00B17A58 /* SPHContentCollectionViewCell.m */; };
 		EDAC3A681A2C7F9E00EB6DE0 /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = EDAC3A661A2C7F9E00EB6DE0 /* Shader.vsh */; };
 		EDAC3A691A2C7F9E00EB6DE0 /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = EDAC3A671A2C7F9E00EB6DE0 /* Shader.fsh */; };
 		EDAC3A6D1A2C809500EB6DE0 /* SPHGLProgram.m in Sources */ = {isa = PBXBuildFile; fileRef = EDAC3A6C1A2C809500EB6DE0 /* SPHGLProgram.m */; };
@@ -54,6 +59,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		84A1B4231A35D69600B17A58 /* LiveIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LiveIcon.png; sourceTree = "<group>"; };
+		84A1B4241A35D69600B17A58 /* PhotoIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PhotoIcon.png; sourceTree = "<group>"; };
+		84A1B4251A35D69600B17A58 /* VideoIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = VideoIcon.png; sourceTree = "<group>"; };
+		84A1B42D1A35E38600B17A58 /* SPHContentListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHContentListViewController.h; sourceTree = "<group>"; };
+		84A1B42E1A35E38600B17A58 /* SPHContentListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHContentListViewController.m; sourceTree = "<group>"; };
+		84A1B4301A35E39F00B17A58 /* SPHContentCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHContentCollectionViewCell.h; sourceTree = "<group>"; };
+		84A1B4311A35E39F00B17A58 /* SPHContentCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHContentCollectionViewCell.m; sourceTree = "<group>"; };
 		EDAC3A661A2C7F9E00EB6DE0 /* Shader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader.vsh; sourceTree = "<group>"; };
 		EDAC3A671A2C7F9E00EB6DE0 /* Shader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader.fsh; sourceTree = "<group>"; };
 		EDAC3A6B1A2C809500EB6DE0 /* SPHGLProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHGLProgram.h; sourceTree = "<group>"; };
@@ -138,6 +150,35 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		84A1B4221A35D68E00B17A58 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				84A1B4231A35D69600B17A58 /* LiveIcon.png */,
+				84A1B4241A35D69600B17A58 /* PhotoIcon.png */,
+				84A1B4251A35D69600B17A58 /* VideoIcon.png */,
+			);
+			path = Assets;
+			sourceTree = "<group>";
+		};
+		84A1B42B1A35E35F00B17A58 /* ContentListViewController */ = {
+			isa = PBXGroup;
+			children = (
+				84A1B42C1A35E35F00B17A58 /* ContentCell */,
+				84A1B42D1A35E38600B17A58 /* SPHContentListViewController.h */,
+				84A1B42E1A35E38600B17A58 /* SPHContentListViewController.m */,
+			);
+			path = ContentListViewController;
+			sourceTree = "<group>";
+		};
+		84A1B42C1A35E35F00B17A58 /* ContentCell */ = {
+			isa = PBXGroup;
+			children = (
+				84A1B4301A35E39F00B17A58 /* SPHContentCollectionViewCell.h */,
+				84A1B4311A35E39F00B17A58 /* SPHContentCollectionViewCell.m */,
+			);
+			path = ContentCell;
+			sourceTree = "<group>";
+		};
 		EDAC3A641A2C7A2F00EB6DE0 /* OpenGL */ = {
 			isa = PBXGroup;
 			children = (
@@ -307,6 +348,7 @@
 		EDCFC72C1A2C675800613D7B /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				84A1B42B1A35E35F00B17A58 /* ContentListViewController */,
 				EDCFEE1E1A31EB4B003ADA91 /* VideoViewController */,
 				EDCFEE131A31E0B7003ADA91 /* BaseViewController */,
 				EDCFEE0B1A31DDCA003ADA91 /* PhotoPreviewViewController */,
@@ -328,6 +370,7 @@
 		EDCFC73D1A2C699B00613D7B /* Resourses */ = {
 			isa = PBXGroup;
 			children = (
+				84A1B4221A35D68E00B17A58 /* Assets */,
 				EDCFC73F1A2C69C000613D7B /* TestResourses */,
 				EDCFC73E1A2C69A500613D7B /* Model */,
 			);
@@ -480,8 +523,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84A1B4261A35D69600B17A58 /* LiveIcon.png in Resources */,
 				EDAC3A971A2CBA3100EB6DE0 /* 3D.mp4 in Resources */,
+				84A1B4281A35D69600B17A58 /* VideoIcon.png in Resources */,
 				EDAC3A691A2C7F9E00EB6DE0 /* Shader.fsh in Resources */,
+				84A1B4271A35D69600B17A58 /* PhotoIcon.png in Resources */,
 				EDCFC70D1A2C671E00613D7B /* Images.xcassets in Resources */,
 				EDCFC7431A2C6A2B00613D7B /* GIR000009.jpeg in Resources */,
 				EDCFC6FF1A2C671E00613D7B /* InfoPlist.strings in Resources */,
@@ -507,6 +553,7 @@
 			files = (
 				EDAC3A6D1A2C809500EB6DE0 /* SPHGLProgram.m in Sources */,
 				EDCFC7051A2C671E00613D7B /* SPHAppDelegate.m in Sources */,
+				84A1B4321A35E39F00B17A58 /* SPHContentCollectionViewCell.m in Sources */,
 				EDCFC7301A2C67F100613D7B /* SPHMainViewController.m in Sources */,
 				EDAC3A921A2CAC7700EB6DE0 /* SPHNavigationController.m in Sources */,
 				EDAC3A801A2C986F00EB6DE0 /* SPHTextureProvider.m in Sources */,
@@ -516,6 +563,7 @@
 				EDCFEE211A31EB5B003ADA91 /* SPHVideoViewController.m in Sources */,
 				EDCFEE191A31E1FC003ADA91 /* SPHBaseViewController.m in Sources */,
 				EDCFEE061A31DBD5003ADA91 /* SPHVideoPlayer.m in Sources */,
+				84A1B42F1A35E38600B17A58 /* SPHContentListViewController.m in Sources */,
 				EDAC3A8E1A2CA91300EB6DE0 /* UIImage+ImageModification.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

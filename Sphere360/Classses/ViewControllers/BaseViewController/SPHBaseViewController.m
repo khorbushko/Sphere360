@@ -28,7 +28,7 @@ enum {
 };
 GLint uniforms[NUM_UNIFORMS];
 
-@interface SPHBaseViewController ()<AVAssetResourceLoaderDelegate, UIGestureRecognizerDelegate> {
+@interface SPHBaseViewController () <AVAssetResourceLoaderDelegate, UIGestureRecognizerDelegate> {
     GLuint _vertexArrayID;
     GLuint _vertexBufferID;
     GLuint _vertexTexCoordID;
@@ -37,8 +37,6 @@ GLint uniforms[NUM_UNIFORMS];
     
     float _rotationX;
     float _rotationY;
-    
-    GLKMatrix4 rotationMatrixFromGyro;
 }
 
 @property (strong, nonatomic) SPHGLProgram *program;
@@ -67,9 +65,7 @@ GLint uniforms[NUM_UNIFORMS];
     [self setupContext];
     [self setupGL];
     
-    [self addPinchGesture];
-    [self addTapGesture];
-    [self addPanGesture];
+    [self addGestures];
     [self setupGyroscope];
 }
 
@@ -118,10 +114,10 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (void)setupTextureWithImage:(UIImage *)image
 {
-    if (!image) {
+    UIImage *textureImage = [image copy];
+    if (!textureImage) {
         return;
     }
-    UIImage *textureImage = [image copy];
     GLKTextureLoader *textureloader = [[GLKTextureLoader alloc] initWithSharegroup:self.context.sharegroup];
     [textureloader textureWithCGImage:textureImage.CGImage options:nil queue:nil completionHandler:^(GLKTextureInfo *textureInfo, NSError *outError) {
         if (_texture.name) {
@@ -148,8 +144,23 @@ GLint uniforms[NUM_UNIFORMS];
     GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(kDefaultZoomDegree / self.zoomValue), aspect, 0.1f, 60.0f);
     GLKMatrix4 modelViewMatrix = GLKMatrix4Identity;
     
-    if (self.isGyroModeActive) {
-        modelViewMatrix = rotationMatrixFromGyro;
+    if (self.isGyroModeActive) {        
+        CGFloat roll, yaw, pitch;
+        CMAttitude *attitude = self.motionManager.deviceMotion.attitude;
+        
+        CMQuaternion quat = self.motionManager.deviceMotion.attitude.quaternion;
+        roll = atan2(2*(quat.y*quat.w - quat.x*quat.z), 1 - 2*quat.y*quat.y - 2*quat.z*quat.z) ;
+        pitch = atan2(2*(quat.x*quat.w + quat.y*quat.z), 1 - 2*quat.x*quat.x - 2*quat.z*quat.z);
+        yaw = asin(2*quat.x*quat.y + 2*quat.w*quat.z);
+        
+        CATransform3D rotationTransform = CATransform3DMakeRotation(attitude.roll, 0, 0, 1);
+        rotationTransform = CATransform3DRotate(rotationTransform, attitude.yaw, 0, 1, 0);
+        rotationTransform = CATransform3DRotate(rotationTransform, attitude.pitch, 1, 0, 0);
+                
+        modelViewMatrix = [self GLKMatrixFromCATransform3D:rotationTransform];
+        
+        projectionMatrix = GLKMatrix4Rotate(projectionMatrix, -M_PI / 2, 1, 0, 0);
+        projectionMatrix = GLKMatrix4Rotate(projectionMatrix, kDefStartY, 0, 1, 0);
     } else {
         modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotationX, 1.0f, 0.0f, 0.0f);
         modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotationY, 0.0f,  1.0f, 0.0f);
@@ -224,67 +235,76 @@ GLint uniforms[NUM_UNIFORMS];
 - (void)gyroscopeChoose
 {
     [self tapGesture];
-    if ([self.motionManager isGyroAvailable]) {
-        if (![self.motionManager isGyroActive]) {
+    if ([self.motionManager isDeviceMotionAvailable]) {
+        if (!self.motionManager.isDeviceMotionActive) {
             self.isGyroModeActive = YES;
-            [self removeAllGesture];
-            
-            [self.motionManager setGyroUpdateInterval:1.0f / 2.0f];
-            [self.motionManager startGyroUpdatesToQueue:[NSOperationQueue mainQueue] withHandler:^(CMGyroData *gyroData, NSError *error) {
-                
-                //CGFloat xRotation = gyroData.rotationRate.x;
-                //CGFloat yRotation = gyroData.rotationRate.y;
-                
-                CMAttitude *attitude = self.motionManager.deviceMotion.attitude;
-                CMRotationMatrix rotationMatrix = attitude.rotationMatrix;
-                rotationMatrixFromGyro = [self getRotationMatrixFromGyroscope:rotationMatrix];
-            }];
+            self.motionManager.gyroUpdateInterval = 1 / 60;
+            [self.motionManager startDeviceMotionUpdates];
         } else {
-            [self.motionManager stopGyroUpdates];
+            [self.motionManager stopDeviceMotionUpdates];
             self.isGyroModeActive = NO;
-            
-            [self addPinchGesture];
-            [self addTapGesture];
-            [self addPanGesture];
         }
     } else {
         [self showAlertNoGyroscopeAvaliable];
     }
 }
 
-- (GLKMatrix4)getRotationMatrixFromGyroscope:(CMRotationMatrix)gyroRotationMatrix
+- (GLKMatrix4)GLKMatrixFromCATransform3D:(CATransform3D)transform
 {
     GLKMatrix4 rotationMatrix;
     
-    rotationMatrix.m00 = gyroRotationMatrix.m11;
-    rotationMatrix.m01 = gyroRotationMatrix.m12;
-    rotationMatrix.m02 = gyroRotationMatrix.m13;
-    rotationMatrix.m03 = 0;
-    
-    rotationMatrix.m10 = gyroRotationMatrix.m21;
-    rotationMatrix.m11 = gyroRotationMatrix.m22;
-    rotationMatrix.m12 = gyroRotationMatrix.m23;
-    rotationMatrix.m13 = 0;
-    
-    rotationMatrix.m20 = gyroRotationMatrix.m31;
-    rotationMatrix.m21 = gyroRotationMatrix.m32;
-    rotationMatrix.m22 = gyroRotationMatrix.m33;
-    rotationMatrix.m23 = 0;
-    
-    rotationMatrix.m20 = 0;
-    rotationMatrix.m21 = 0;
-    rotationMatrix.m22 = 0;
-    rotationMatrix.m23 = 1;
+//    rotationMatrix.m00 = transform.m11;
+//    rotationMatrix.m01 = transform.m12;
+//    rotationMatrix.m02 = transform.m13;
+//    rotationMatrix.m03 = transform.m14;
+//    
+//    rotationMatrix.m10 = transform.m21;
+//    rotationMatrix.m11 = transform.m22;
+//    rotationMatrix.m12 = transform.m23;
+//    rotationMatrix.m13 = transform.m24;
+//    
+//    rotationMatrix.m20 = transform.m31;
+//    rotationMatrix.m21 = transform.m32;
+//    rotationMatrix.m22 = transform.m33;
+//    rotationMatrix.m23 = transform.m34;
+//    
+//    rotationMatrix.m30 = transform.m41;
+//    rotationMatrix.m31 = transform.m42;
+//    rotationMatrix.m32 = transform.m43;
+//    rotationMatrix.m33 = transform.m44;
+    CGFloat *srcPointer = (CGFloat *)&transform;
+    CGFloat *dstPointer = (CGFloat *)&rotationMatrix;
+    for (int i = 0; i < 16; i++) {
+        dstPointer[i] = srcPointer[i];
+    }
     
     return rotationMatrix;
 }
+
+//- (CATransform3D)CATransform3DFromCMRotationMatrix:(CMRotationMatrix)matrix
+//{
+//    CATransform3D transform = CATransform3DIdentity;
+//    transform.m11 = matrix.m11;
+//    transform.m12 = matrix.m12;
+//    transform.m13 = matrix.m13;
+//    transform.m21 = matrix.m21;
+//    transform.m22 = matrix.m22;
+//    transform.m23 = matrix.m23;
+//    transform.m31 = matrix.m31;
+//    transform.m32 = matrix.m32;
+//    transform.m33 = matrix.m33;
+//    return transform;
+//}
 
 #pragma mark - Touches
 
 - (void)moveToPointX:(CGFloat)pointX andPointY:(CGFloat)pointY
 {
-    pointX *= -0.008;
-    pointY *= 0.008;
+    if (self.isGyroModeActive) {
+        return;
+    }
+    pointX *= -0.005;
+    pointY *= 0.005;
     _rotationX += -pointY;
     _rotationY += -pointX;
 }
@@ -366,14 +386,8 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (void)showAlertNoGyroscopeAvaliable
 {
-    [[[UIAlertView alloc] initWithTitle:@"Panaroma" message:@"No gyroscope avaliable on your device" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
-}
-
-- (void)removeAllGesture
-{
-    for (UIGestureRecognizer *recognizer in self.view.gestureRecognizers) {
-        [self.view removeGestureRecognizer:recognizer];
-    }
+    NSString *title = [[[NSBundle mainBundle] localizedInfoDictionary] objectForKey:@"CFBundleDisplayName"];
+    [[[UIAlertView alloc] initWithTitle:title message:@"Gyroscope is not avaliable on your device" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
 }
 
 #pragma mark - Animation
@@ -405,22 +419,16 @@ GLint uniforms[NUM_UNIFORMS];
     [self.navigationController setNavigationBarHidden:!self.navigationController.navigationBarHidden animated:YES];
 }
 
-- (void)addPinchGesture
+- (void)addGestures
 {
     UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchForZoom:)];
     pinch.delegate = self;
     [self.view addGestureRecognizer:pinch];
-}
-
-- (void)addTapGesture
-{
+    
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGesture)];
     tapGesture.delegate = self;
     [self.view addGestureRecognizer:tapGesture];
-}
 
-- (void)addPanGesture
-{
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGesture:)];
     panGesture.delegate = self;
     panGesture.maximumNumberOfTouches = 1;
