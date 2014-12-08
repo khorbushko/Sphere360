@@ -51,5 +51,15 @@
     return image;
 }
 
++ (UIImage *)getImageFromSourceStringURL:(NSString *)sourceURL
+{
+    UIImage *sourceImage = [UIImage imageWithContentsOfFile:sourceURL];
+    if (!sourceImage) {
+        NSData *imageData = [NSData dataWithContentsOfURL: [NSURL URLWithString:sourceURL]];
+        sourceImage = [UIImage imageWithData:imageData];
+    }
+    return sourceImage;
+}
+
 
 @end

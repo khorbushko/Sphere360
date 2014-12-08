@@ -11,5 +11,6 @@
 + (UIImage *)flipAndMirrorImageHorizontally:(UIImage *)image;
 + (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize;
 + (UIImage *)imageWithColor:(UIColor *)color;
++ (UIImage *)getImageFromSourceStringURL:(NSString *)sourceURL;
 
 @end

@@ -51,12 +51,7 @@
 
 - (void)applyImageTexture
 {
-    UIImage *sourceImage = [UIImage imageWithContentsOfFile:self.sourceURL];
-    if (!sourceImage) {
-        NSData *imageData = [NSData dataWithContentsOfURL: [NSURL URLWithString:self.sourceURL]];
-        sourceImage = [UIImage imageWithData:imageData];
-    }
-    UIImage* flippedImage = [UIImage flipAndMirrorImageHorizontally:sourceImage];
+    UIImage* flippedImage = [UIImage flipAndMirrorImageHorizontally:self.sourceImage];
     [self setupTextureWithImage:flippedImage];
 }
 

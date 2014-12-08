@@ -121,6 +121,7 @@
                                                 <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="kth-z3-6Ho">
                                                     <rect key="frame" x="107" y="81" width="37" height="37"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <color key="color" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                                 </activityIndicatorView>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -212,10 +213,10 @@
             </objects>
             <point key="canvasLocation" x="1599" y="339"/>
         </scene>
-        <!--Universal View Controller - Live-->
+        <!--View Controller - Live-->
         <scene sceneID="y2O-ak-mRh">
             <objects>
-                <viewController id="X96-17-0wW" customClass="SPHUniversalViewController" sceneMemberID="viewController">
+                <viewController id="X96-17-0wW" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="gen-1W-U8M"/>
                         <viewControllerLayoutGuide type="bottom" id="RcH-Ci-wre"/>

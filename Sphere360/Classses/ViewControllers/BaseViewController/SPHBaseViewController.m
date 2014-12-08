@@ -103,7 +103,7 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (void)applyImageTexture
 {
-
+    
 }
 
 - (void)setupTextureWithImage:(UIImage *)image

@@ -18,6 +18,7 @@ typedef enum {
 @interface SPHBaseViewController : GLKViewController
 
 @property (strong, nonatomic) NSString *sourceURL;
+@property (strong, nonatomic) UIImage *sourceImage;
 @property (assign, nonatomic) MediaType mediaType;
 
 - (void)setupTextureWithImage:(UIImage *)image;

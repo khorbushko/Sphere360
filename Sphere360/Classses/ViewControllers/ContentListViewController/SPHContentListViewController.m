@@ -59,15 +59,16 @@ static NSString *const BaseApiPath = @"http://api.360.tv/";
     });
 }
 
-- (void)showContentAtIndex:(NSInteger)index
+- (void)showContentAtIndex:(NSIndexPath *)indexPath
 {
-    NSDictionary *dict = self.dataSource[index];
+    NSDictionary *dict = self.dataSource[indexPath.row];
     SPHBaseViewController *baseController;
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    SPHContentCollectionViewCell *cell = (SPHContentCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
     switch (self.mediaType) {
         case MediaTypePhoto: {
             baseController = [storyboard instantiateViewControllerWithIdentifier:@"photo"];
-            baseController.sourceURL = [NSString stringWithFormat:@"%@%@", BaseApiPath, dict[@"path_high"]];
+            baseController.sourceImage = [UIImage getImageFromSourceStringURL:[NSString stringWithFormat:@"%@%@", BaseApiPath, dict[@"path_high"]]];
             break;
         }
         case MediaTypeVideo: {
@@ -80,6 +81,7 @@ static NSString *const BaseApiPath = @"http://api.360.tv/";
     }
     baseController.mediaType = self.mediaType;
     [self.navigationController pushViewController:baseController animated:YES];
+    [cell.downloadingActivityIndicator stopAnimating];
 }
 
 #pragma mark - UICollectionViewDataSource
@@ -105,9 +107,11 @@ static NSString *const BaseApiPath = @"http://api.360.tv/";
 {
     SPHContentCollectionViewCell *cell = (SPHContentCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
     [cell.downloadingActivityIndicator startAnimating];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [cell.downloadingActivityIndicator stopAnimating];
-        [self showContentAtIndex:indexPath.row];
+    dispatch_queue_t serialQueue = dispatch_queue_create("serialQueue", DISPATCH_QUEUE_SERIAL);
+    dispatch_async(serialQueue, ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self showContentAtIndex:indexPath];
+        });
     });
 }
 
