@@ -88,7 +88,7 @@ static const NSString *ItemStatusContext;
 {
     NSArray *keys = @[@"tracks"];
     __weak SPHVideoPlayer *weakSelf = self;
-    [self.urlAsset loadValuesAsynchronouslyForKeys:keys completionHandler:^{
+    [weakSelf.urlAsset loadValuesAsynchronouslyForKeys:keys completionHandler:^{
         dispatch_async(dispatch_get_main_queue(), ^{
             [weakSelf startLoading];
         });
@@ -100,12 +100,11 @@ static const NSString *ItemStatusContext;
     NSError *error;
     AVKeyValueStatus status = [self.urlAsset statusOfValueForKey:@"tracks" error:&error];
     if (status == AVKeyValueStatusLoaded) {
-        
         self.assetDuration = CMTimeGetSeconds(self.urlAsset.duration);
         NSDictionary* videoOutputOptions = @{ (id)kCVPixelBufferPixelFormatTypeKey : [NSNumber numberWithInt:kCVPixelFormatType_32BGRA] };
         self.videoOutput = [[AVPlayerItemVideoOutput alloc] initWithPixelBufferAttributes:videoOutputOptions];
-        
         self.playerItem = [AVPlayerItem playerItemWithAsset: self.urlAsset];
+        
         [self.playerItem addObserver:self
                           forKeyPath:@"status"
                              options:NSKeyValueObservingOptionInitial
@@ -114,7 +113,6 @@ static const NSString *ItemStatusContext;
                           forKeyPath:@"loadedTimeRanges"
                              options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld
                              context:&ItemStatusContext];
-        
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(playerItemDidReachEnd:)
                                                      name:AVPlayerItemDidPlayToEndTimeNotification
@@ -123,13 +121,13 @@ static const NSString *ItemStatusContext;
                                                  selector:@selector(didFailedToPlayToEnd)
                                                      name:AVPlayerItemFailedToPlayToEndTimeNotification
                                                    object:nil];
+        
         [self.playerItem addOutput:self.videoOutput];
-        
+
         self.assetPlayer = [AVPlayer playerWithPlayerItem:self.playerItem];
+
         [self addPeriodicalObserver];
-        
         NSLog(@"Player created");
-        
     } else {
         NSLog(@"The asset's tracks were not loaded:\n%@", error.localizedDescription);
     }
@@ -255,8 +253,7 @@ static const NSString *ItemStatusContext;
         return nil;
     }
     CVPixelBufferRef buffer = [self.videoOutput copyPixelBufferForItemTime:currentTime itemTimeForDisplay:NULL];
-    
-    
+
     if (buffer) {
         image = [SPHTextureProvider imageWithCVPixelBufferUsingUIGraphicsContext:buffer];
     }
