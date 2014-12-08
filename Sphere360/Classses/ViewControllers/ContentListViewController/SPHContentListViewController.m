@@ -68,7 +68,6 @@ static NSString *const BaseApiPath = @"http://api.360.tv/";
         case MediaTypePhoto: {
             baseController = [storyboard instantiateViewControllerWithIdentifier:@"photo"];
             baseController.sourceURL = [NSString stringWithFormat:@"%@%@", BaseApiPath, dict[@"path_high"]];
-            ((SPHPhotoViewController *)baseController).delegate = self;
             break;
         }
         case MediaTypeVideo: {
