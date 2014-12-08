@@ -17,6 +17,7 @@ static NSString *const BaseApiPath = @"http://api.360.tv/";
 @interface SPHContentListViewController () <UICollectionViewDataSource, UICollectionViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
+
 @property (assign, nonatomic) MediaType mediaType;
 
 @end
@@ -67,6 +68,7 @@ static NSString *const BaseApiPath = @"http://api.360.tv/";
         case MediaTypePhoto: {
             baseController = [storyboard instantiateViewControllerWithIdentifier:@"photo"];
             baseController.sourceURL = [NSString stringWithFormat:@"%@%@", BaseApiPath, dict[@"path_high"]];
+            ((SPHPhotoViewController *)baseController).delegate = self;
             break;
         }
         case MediaTypeVideo: {
@@ -102,7 +104,12 @@ static NSString *const BaseApiPath = @"http://api.360.tv/";
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self showContentAtIndex:indexPath.row];
+    SPHContentCollectionViewCell *cell = (SPHContentCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
+    [cell.downloadingActivityIndicator startAnimating];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [cell.downloadingActivityIndicator stopAnimating];
+        [self showContentAtIndex:indexPath.row];
+    });
 }
 
 @end

@@ -103,13 +103,7 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (void)applyImageTexture
 {
-    UIImage *sourceImage = [UIImage imageWithContentsOfFile:self.sourceURL];
-    if (!sourceImage) {
-        NSData *imageData = [NSData dataWithContentsOfURL: [NSURL URLWithString:self.sourceURL]];
-        sourceImage = [UIImage imageWithData:imageData];
-    }
-    UIImage* flippedImage = [UIImage flipAndMirrorImageHorizontally:sourceImage];
-    [self setupTextureWithImage:flippedImage];
+
 }
 
 - (void)setupTextureWithImage:(UIImage *)image
@@ -182,6 +176,9 @@ GLint uniforms[NUM_UNIFORMS];
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUniformMatrix4fv(uniforms[UNIFORM_MVPMATRIX], 1, 0, _modelViewProjectionMatrix.m);
     glActiveTexture(GL_TEXTURE0);
+#warning Need to check
+    glBindTexture(GL_TEXTURE0, 0); //free old one texture
+
     glBindTexture(_texture.target, _texture.name);
     glEnable(_texture.target);
     glDrawArrays(GL_TRIANGLES, 0, SphereNumVerts);
