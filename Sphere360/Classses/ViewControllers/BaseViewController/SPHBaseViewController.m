@@ -168,7 +168,7 @@ GLint uniforms[NUM_UNIFORMS];
 {
     glBindVertexArrayOES(_vertexArrayID);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUniformMatrix4fv(uniforms[UNIFORM_MVPMATRIX], 1, 0, _modelViewProjectionMatrix.m);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(_texture.target, _texture.name);
@@ -209,6 +209,9 @@ GLint uniforms[NUM_UNIFORMS];
     GLKView *view = (GLKView *)self.view;
     view.context = self.context;
     self.preferredFramesPerSecond = 24.0;
+    
+    //improve quality - required more resources - can be switched off
+    //view.drawableMultisample = GLKViewDrawableMultisample4X;
 }
 
 #pragma mark - Gyroscope
