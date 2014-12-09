@@ -695,7 +695,7 @@
 				GCC_PREFIX_HEADER = "Sphere360/Sphere360-Prefix.pch";
 				INFOPLIST_FILE = "Sphere360/Sphere360-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "4e189d42-91b3-4f69-92bf-30d1fa444b9a";
+				PROVISIONING_PROFILE = "f0d3cbeb-09ad-4e89-b9f9-7bb56b90b537";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -711,7 +711,7 @@
 				GCC_PREFIX_HEADER = "Sphere360/Sphere360-Prefix.pch";
 				INFOPLIST_FILE = "Sphere360/Sphere360-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "4e189d42-91b3-4f69-92bf-30d1fa444b9a";
+				PROVISIONING_PROFILE = "f0d3cbeb-09ad-4e89-b9f9-7bb56b90b537";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

@@ -13,13 +13,13 @@
 #import <CoreMedia/CoreMedia.h>
 
 static CGFloat const kDefStartY = -1.8f;
-static CGFloat const kDefStartX = -3.f;
+static CGFloat const kDefStartX = -3.0f;
 
 static CGFloat const kMinimumZoomValue = 0.8f;
-static CGFloat const kMaximumZoomValue = 1.7f;
+static CGFloat const kMaximumZoomValue = 2.0f;
 static CGFloat const kDefaultZoomDegree = 90.0f;
 
-static CGFloat const kVelocityCoef = 0.01f;
+static CGFloat const kVelocityCoef = 0.015f;
 
 enum {
     UNIFORM_MVPMATRIX,
@@ -34,6 +34,8 @@ GLint uniforms[NUM_UNIFORMS];
     GLuint _vertexTexCoordID;
     GLuint _vertexTexCoordAttributeIndex;
     GLKMatrix4 _modelViewProjectionMatrix;
+    GLKMatrix4 _currentProjectionMatrix;
+    GLKMatrix4 _cameraProjectionMatrix;
     
     float _rotationX;
     float _rotationY;
@@ -139,7 +141,7 @@ GLint uniforms[NUM_UNIFORMS];
     }
     
     float aspect = fabsf(self.view.bounds.size.width / self.view.bounds.size.height);
-    GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(kDefaultZoomDegree / self.zoomValue), aspect, 0.1f, 60.0f);
+    GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(kDefaultZoomDegree) / self.zoomValue, aspect, 0.1f, 2.1f);
     GLKMatrix4 modelViewMatrix = GLKMatrix4Identity;
     
     if (self.isGyroModeActive) {        
@@ -160,8 +162,9 @@ GLint uniforms[NUM_UNIFORMS];
         projectionMatrix = GLKMatrix4Rotate(projectionMatrix, -M_PI / 2, 1, 0, 0);
         projectionMatrix = GLKMatrix4Rotate(projectionMatrix, kDefStartY, 0, 1, 0);
     } else {
-        modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotationX, 1.0f, 0.0f, 0.0f);
-        modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotationY, 0.0f,  1.0f, 0.0f);
+        projectionMatrix = GLKMatrix4Multiply(projectionMatrix, _cameraProjectionMatrix);
+        modelViewMatrix = _currentProjectionMatrix;// GLKMatrix4Rotate(modelViewMatrix, _rotationX, 1.0f, 0.0f, 0.0f);
+//        modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotationY, 0.0f,  1.0f, 0.0f);
     }
     
     _modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
@@ -252,30 +255,30 @@ GLint uniforms[NUM_UNIFORMS];
 {
     GLKMatrix4 rotationMatrix;
     
-//    rotationMatrix.m00 = transform.m11;
-//    rotationMatrix.m01 = transform.m12;
-//    rotationMatrix.m02 = transform.m13;
-//    rotationMatrix.m03 = transform.m14;
-//    
-//    rotationMatrix.m10 = transform.m21;
-//    rotationMatrix.m11 = transform.m22;
-//    rotationMatrix.m12 = transform.m23;
-//    rotationMatrix.m13 = transform.m24;
-//    
-//    rotationMatrix.m20 = transform.m31;
-//    rotationMatrix.m21 = transform.m32;
-//    rotationMatrix.m22 = transform.m33;
-//    rotationMatrix.m23 = transform.m34;
-//    
-//    rotationMatrix.m30 = transform.m41;
-//    rotationMatrix.m31 = transform.m42;
-//    rotationMatrix.m32 = transform.m43;
-//    rotationMatrix.m33 = transform.m44;
-    CGFloat *srcPointer = (CGFloat *)&transform;
-    CGFloat *dstPointer = (CGFloat *)&rotationMatrix;
-    for (int i = 0; i < 16; i++) {
-        dstPointer[i] = srcPointer[i];
-    }
+    rotationMatrix.m00 = transform.m11;
+    rotationMatrix.m01 = transform.m12;
+    rotationMatrix.m02 = transform.m13;
+    rotationMatrix.m03 = transform.m14;
+    
+    rotationMatrix.m10 = transform.m21;
+    rotationMatrix.m11 = transform.m22;
+    rotationMatrix.m12 = transform.m23;
+    rotationMatrix.m13 = transform.m24;
+    
+    rotationMatrix.m20 = transform.m31;
+    rotationMatrix.m21 = transform.m32;
+    rotationMatrix.m22 = transform.m33;
+    rotationMatrix.m23 = transform.m34;
+    
+    rotationMatrix.m30 = transform.m41;
+    rotationMatrix.m31 = transform.m42;
+    rotationMatrix.m32 = transform.m43;
+    rotationMatrix.m33 = transform.m44;
+//    CGFloat *srcPointer = (CGFloat *)&transform;
+//    CGFloat *dstPointer = (CGFloat *)&rotationMatrix;
+//    for (int i = 0; i < 16; i++) {
+//        dstPointer[i] = srcPointer[i];
+//    }
     
     return rotationMatrix;
 }
@@ -302,10 +305,16 @@ GLint uniforms[NUM_UNIFORMS];
     if (self.isGyroModeActive) {
         return;
     }
-    pointX *= -0.005;
-    pointY *= 0.005;
-    _rotationX += -pointY;
-    _rotationY += -pointX;
+    pointX *= 0.004;
+    pointY *= 0.004;
+    GLKMatrix4 rotatedMatrix = GLKMatrix4MakeRotation(pointX / self.zoomValue, 0, 1, 0);
+    _currentProjectionMatrix = GLKMatrix4Multiply(_currentProjectionMatrix, rotatedMatrix);
+    
+    GLKMatrix4 cameraMatrix = GLKMatrix4MakeRotation(-pointY / self.zoomValue, 1, 0, 0);
+    _cameraProjectionMatrix = GLKMatrix4Multiply(_cameraProjectionMatrix, cameraMatrix);
+
+//    _rotationX += -pointY;
+//    _rotationY += pointX;
 }
 
 #pragma mark - GestureActions
@@ -366,6 +375,7 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (void)updateMovement
 {
+    self.prevTouchPoint = CGPointZero;
     self.velocityValue = CGPointMake(0.9 * self.velocityValue.x, 0.9 * self.velocityValue.y);
     CGPoint nextPoint = CGPointMake(kVelocityCoef * self.velocityValue.x, kVelocityCoef * self.velocityValue.y);
     
@@ -444,8 +454,8 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (void)setInitialParameters
 {
-    _rotationX = kDefStartX;
-    _rotationY = kDefStartY;
+    _currentProjectionMatrix = GLKMatrix4MakeRotation(kDefStartY, 0, 1, 0);
+    _cameraProjectionMatrix = GLKMatrix4MakeRotation(kDefStartX, 1, 0, 0);
     self.zoomValue = 1.0f;
 }
 
