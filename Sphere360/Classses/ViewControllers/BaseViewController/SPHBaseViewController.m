@@ -110,14 +110,13 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (void)setupTextureWithImage:(UIImage *)image
 {
-    UIImage *textureImage = [image copy];
-    if (!textureImage) {
+    self.tempImage = [image copy];
+    if (!self.tempImage) {
         return;
     }
-    self.tempImage = textureImage;
     GLKTextureLoader *textureloader = [[GLKTextureLoader alloc] initWithSharegroup:self.context.sharegroup];
     NSDictionary *textureOption = @{GLKTextureLoaderOriginBottomLeft : @YES};
-    [textureloader textureWithCGImage:textureImage.CGImage options:textureOption queue:nil completionHandler:^(GLKTextureInfo *textureInfo, NSError *outError) {
+    [textureloader textureWithCGImage:self.tempImage.CGImage options:textureOption queue:nil completionHandler:^(GLKTextureInfo *textureInfo, NSError *outError) {
         if (_texture.name) {
             GLuint textureName = _texture.name;
             glDeleteTextures(1, &textureName);
@@ -221,7 +220,7 @@ GLint uniforms[NUM_UNIFORMS];
     self.preferredFramesPerSecond = 24.0;
     
     //improve quality - required more resources - can be switched off
-    view.drawableMultisample = GLKViewDrawableMultisample4X;
+    //view.drawableMultisample = GLKViewDrawableMultisample4X;
 }
 
 #pragma mark - Gyroscope
