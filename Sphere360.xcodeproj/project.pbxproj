@@ -12,6 +12,7 @@
 		84A1B4281A35D69600B17A58 /* VideoIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 84A1B4251A35D69600B17A58 /* VideoIcon.png */; };
 		84A1B42F1A35E38600B17A58 /* SPHContentListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 84A1B42E1A35E38600B17A58 /* SPHContentListViewController.m */; };
 		84A1B4321A35E39F00B17A58 /* SPHContentCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 84A1B4311A35E39F00B17A58 /* SPHContentCollectionViewCell.m */; };
+		ED45D35D1A37441F00D7914D /* SPHMathUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = ED45D35C1A37441F00D7914D /* SPHMathUtils.m */; };
 		EDAC3A681A2C7F9E00EB6DE0 /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = EDAC3A661A2C7F9E00EB6DE0 /* Shader.vsh */; };
 		EDAC3A691A2C7F9E00EB6DE0 /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = EDAC3A671A2C7F9E00EB6DE0 /* Shader.fsh */; };
 		EDAC3A6D1A2C809500EB6DE0 /* SPHGLProgram.m in Sources */ = {isa = PBXBuildFile; fileRef = EDAC3A6C1A2C809500EB6DE0 /* SPHGLProgram.m */; };
@@ -66,6 +67,8 @@
 		84A1B42E1A35E38600B17A58 /* SPHContentListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHContentListViewController.m; sourceTree = "<group>"; };
 		84A1B4301A35E39F00B17A58 /* SPHContentCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHContentCollectionViewCell.h; sourceTree = "<group>"; };
 		84A1B4311A35E39F00B17A58 /* SPHContentCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHContentCollectionViewCell.m; sourceTree = "<group>"; };
+		ED45D35B1A37441F00D7914D /* SPHMathUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHMathUtils.h; sourceTree = "<group>"; };
+		ED45D35C1A37441F00D7914D /* SPHMathUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHMathUtils.m; sourceTree = "<group>"; };
 		EDAC3A661A2C7F9E00EB6DE0 /* Shader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader.vsh; sourceTree = "<group>"; };
 		EDAC3A671A2C7F9E00EB6DE0 /* Shader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader.fsh; sourceTree = "<group>"; };
 		EDAC3A6B1A2C809500EB6DE0 /* SPHGLProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHGLProgram.h; sourceTree = "<group>"; };
@@ -179,9 +182,19 @@
 			path = ContentCell;
 			sourceTree = "<group>";
 		};
+		ED45D35A1A37440400D7914D /* MathUtils */ = {
+			isa = PBXGroup;
+			children = (
+				ED45D35B1A37441F00D7914D /* SPHMathUtils.h */,
+				ED45D35C1A37441F00D7914D /* SPHMathUtils.m */,
+			);
+			path = MathUtils;
+			sourceTree = "<group>";
+		};
 		EDAC3A641A2C7A2F00EB6DE0 /* OpenGL */ = {
 			isa = PBXGroup;
 			children = (
+				ED45D35A1A37440400D7914D /* MathUtils */,
 				EDAC3A7D1A2C986300EB6DE0 /* TextureProvider */,
 				EDAC3A6A1A2C808B00EB6DE0 /* Program */,
 				EDAC3A651A2C7A3C00EB6DE0 /* Shaders */,
@@ -556,6 +569,7 @@
 				84A1B4321A35E39F00B17A58 /* SPHContentCollectionViewCell.m in Sources */,
 				EDCFC7301A2C67F100613D7B /* SPHMainViewController.m in Sources */,
 				EDAC3A921A2CAC7700EB6DE0 /* SPHNavigationController.m in Sources */,
+				ED45D35D1A37441F00D7914D /* SPHMathUtils.m in Sources */,
 				EDAC3A801A2C986F00EB6DE0 /* SPHTextureProvider.m in Sources */,
 				EDCFC7011A2C671E00613D7B /* main.m in Sources */,
 				EDCFEE1C1A31E52D003ADA91 /* SPHPhotoViewController.m in Sources */,

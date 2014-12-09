@@ -11,13 +11,16 @@
 #import <AVFoundation/AVFoundation.h>
 #import "SPHTextureProvider.h"
 #import <CoreMedia/CoreMedia.h>
+#import "SPHMathUtils.h"
 
 static CGFloat const kDefStartY = -1.8f;
 static CGFloat const kDefStartX = -3.f;
 
-static CGFloat const kMinimumZoomValue = 0.8f;
+static CGFloat const kMinimumZoomValue = 0.767f;
 static CGFloat const kMaximumZoomValue = 1.7f;
-static CGFloat const kDefaultZoomDegree = 90.0f;
+
+static CGFloat const kPreMinimumZoomValue = 0.85f;
+static CGFloat const kPreMaximumZoomValue = 1.45f;
 
 static CGFloat const kVelocityCoef = 0.01f;
 
@@ -51,6 +54,7 @@ GLint uniforms[NUM_UNIFORMS];
 @property (assign, nonatomic) BOOL isGyroModeActive;
 
 @property (strong, nonatomic) UIImage *tempImage;
+@property (assign, nonatomic) BOOL isZooming;
 
 @end
 
@@ -61,7 +65,7 @@ GLint uniforms[NUM_UNIFORMS];
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+
     [self setInitialParameters];
     
     [self setupContext];
@@ -136,33 +140,28 @@ GLint uniforms[NUM_UNIFORMS];
     if (!CGPointEqualToPoint(self.velocityValue, CGPointZero)) {
         [self updateMovement];
     }
+    if (!self.isZooming) {
+        [self normalizeZoomValue];
+    }
     
+    CGFloat FOVY = (M_PI * 90 / 180) / self.zoomValue;
     float aspect = fabsf(self.view.bounds.size.width / self.view.bounds.size.height);
-    GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(kDefaultZoomDegree / self.zoomValue), aspect, 0.1f, 60.0f);
+    CGFloat cameraDistanse = - (self.zoomValue - kMaximumZoomValue);
+    CATransform3D cameraTranslation = CATransform3DMakeTranslation(0, 0, -cameraDistanse / 2.0);
+    CATransform3D projectionMatrixCATransform = CATransform3DMakePerspective(FOVY, aspect, 0.1, 4.5);
+    projectionMatrixCATransform = CATransform3DConcat(cameraTranslation, projectionMatrixCATransform);
+    
+    GLKMatrix4 projectionMatrix = [SPHMathUtils GLKMatrixFromCATransform3D:projectionMatrixCATransform];
     GLKMatrix4 modelViewMatrix = GLKMatrix4Identity;
     
-    if (self.isGyroModeActive) {        
-        CGFloat roll, yaw, pitch;
-        CMAttitude *attitude = self.motionManager.deviceMotion.attitude;
-        
-        CMQuaternion quat = self.motionManager.deviceMotion.attitude.quaternion;
-        roll = atan2(2*(quat.y*quat.w - quat.x*quat.z), 1 - 2*quat.y*quat.y - 2*quat.z*quat.z) ;
-        pitch = atan2(2*(quat.x*quat.w + quat.y*quat.z), 1 - 2*quat.x*quat.x - 2*quat.z*quat.z);
-        yaw = asin(2*quat.x*quat.y + 2*quat.w*quat.z);
-        
-        CATransform3D rotationTransform = CATransform3DMakeRotation(attitude.roll, 0, 0, 1);
-        rotationTransform = CATransform3DRotate(rotationTransform, attitude.yaw, 0, 1, 0);
-        rotationTransform = CATransform3DRotate(rotationTransform, attitude.pitch, 1, 0, 0);
-                
-        modelViewMatrix = [self GLKMatrixFromCATransform3D:rotationTransform];
-        
+    if (self.isGyroModeActive) {
+        modelViewMatrix = [SPHMathUtils GLKMatrixFromCATransform3D:[self rotationMatrixFromGyro]];
         projectionMatrix = GLKMatrix4Rotate(projectionMatrix, -M_PI / 2, 1, 0, 0);
         projectionMatrix = GLKMatrix4Rotate(projectionMatrix, kDefStartY, 0, 1, 0);
     } else {
         modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotationX, 1.0f, 0.0f, 0.0f);
         modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotationY, 0.0f,  1.0f, 0.0f);
     }
-    
     _modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
 }
 
@@ -181,6 +180,10 @@ GLint uniforms[NUM_UNIFORMS];
     if (_texture) {
         [EAGLContext setCurrentContext:self.context];
         glBindTexture(GL_TEXTURE_2D, _texture.name);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     }
     glDrawArrays(GL_TRIANGLES, 0, SphereNumVerts);
 }
@@ -217,10 +220,6 @@ GLint uniforms[NUM_UNIFORMS];
     }
     GLKView *view = (GLKView *)self.view;
     view.context = self.context;
-    self.preferredFramesPerSecond = 24.0;
-    
-    //improve quality - required more resources - can be switched off
-    //view.drawableMultisample = GLKViewDrawableMultisample4X;
 }
 
 #pragma mark - Gyroscope
@@ -247,52 +246,22 @@ GLint uniforms[NUM_UNIFORMS];
     }
 }
 
-- (GLKMatrix4)GLKMatrixFromCATransform3D:(CATransform3D)transform
+- (CATransform3D)rotationMatrixFromGyro
 {
-    GLKMatrix4 rotationMatrix;
-    
-//    rotationMatrix.m00 = transform.m11;
-//    rotationMatrix.m01 = transform.m12;
-//    rotationMatrix.m02 = transform.m13;
-//    rotationMatrix.m03 = transform.m14;
-//    
-//    rotationMatrix.m10 = transform.m21;
-//    rotationMatrix.m11 = transform.m22;
-//    rotationMatrix.m12 = transform.m23;
-//    rotationMatrix.m13 = transform.m24;
-//    
-//    rotationMatrix.m20 = transform.m31;
-//    rotationMatrix.m21 = transform.m32;
-//    rotationMatrix.m22 = transform.m33;
-//    rotationMatrix.m23 = transform.m34;
-//    
-//    rotationMatrix.m30 = transform.m41;
-//    rotationMatrix.m31 = transform.m42;
-//    rotationMatrix.m32 = transform.m43;
-//    rotationMatrix.m33 = transform.m44;
-    CGFloat *srcPointer = (CGFloat *)&transform;
-    CGFloat *dstPointer = (CGFloat *)&rotationMatrix;
-    for (int i = 0; i < 16; i++) {
-        dstPointer[i] = srcPointer[i];
-    }
-    
-    return rotationMatrix;
-}
+    CGFloat roll, yaw, pitch;
+    CMAttitude *attitude = self.motionManager.deviceMotion.attitude;
 
-//- (CATransform3D)CATransform3DFromCMRotationMatrix:(CMRotationMatrix)matrix
-//{
-//    CATransform3D transform = CATransform3DIdentity;
-//    transform.m11 = matrix.m11;
-//    transform.m12 = matrix.m12;
-//    transform.m13 = matrix.m13;
-//    transform.m21 = matrix.m21;
-//    transform.m22 = matrix.m22;
-//    transform.m23 = matrix.m23;
-//    transform.m31 = matrix.m31;
-//    transform.m32 = matrix.m32;
-//    transform.m33 = matrix.m33;
-//    return transform;
-//}
+    CMQuaternion quat = self.motionManager.deviceMotion.attitude.quaternion;
+    roll = atan2(2*(quat.y*quat.w - quat.x*quat.z), 1 - 2*quat.y*quat.y - 2*quat.z*quat.z) ;
+    pitch = atan2(2*(quat.x*quat.w + quat.y*quat.z), 1 - 2*quat.x*quat.x - 2*quat.z*quat.z);
+    yaw = asin(2*quat.x*quat.y + 2*quat.w*quat.z);
+
+    CATransform3D rotationTransform = CATransform3DMakeRotation(attitude.roll, 0, 0, 1);
+    rotationTransform = CATransform3DRotate(rotationTransform, attitude.yaw, 0, 1, 0);
+    rotationTransform = CATransform3DRotate(rotationTransform, attitude.pitch, 1, 0, 0);
+    
+    return rotationTransform;
+}
 
 #pragma mark - Touches
 
@@ -301,10 +270,21 @@ GLint uniforms[NUM_UNIFORMS];
     if (self.isGyroModeActive) {
         return;
     }
-    pointX *= -0.005;
-    pointY *= 0.005;
+    pointX *= -0.008;
+    pointY *= 0.008;
     _rotationX += -pointY;
     _rotationY += -pointX;
+}
+
+#pragma mark - Zoom
+
+- (void)normalizeZoomValue
+{
+    if (self.zoomValue > kPreMaximumZoomValue) {
+        self.zoomValue *= 0.95;
+    } else if (self.zoomValue < kPreMinimumZoomValue) {
+        self.zoomValue *= 1.05;
+    }
 }
 
 #pragma mark - GestureActions
@@ -312,11 +292,14 @@ GLint uniforms[NUM_UNIFORMS];
 - (void)pinchForZoom:(UIPinchGestureRecognizer *)gesture
 {
     if (gesture.state == UIGestureRecognizerStateBegan) {
+        self.isZooming = YES;
         gesture.scale = self.zoomValue;
     } else if (gesture.state == UIGestureRecognizerStateChanged) {
         CGFloat zoom = gesture.scale;
         zoom = MAX(MIN(zoom, kMaximumZoomValue), kMinimumZoomValue);
         self.zoomValue = zoom;
+    } else if (gesture.state == UIGestureRecognizerStateEnded) {
+        self.isZooming = NO;
     }
 }
 
