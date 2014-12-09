@@ -218,7 +218,7 @@ GLint uniforms[NUM_UNIFORMS];
     }
     GLKView *view = (GLKView *)self.view;
     view.context = self.context;
-    self.preferredFramesPerSecond = 60.0;
+    self.preferredFramesPerSecond = 24.0;
     
     //improve quality - required more resources - can be switched off
     view.drawableMultisample = GLKViewDrawableMultisample4X;
