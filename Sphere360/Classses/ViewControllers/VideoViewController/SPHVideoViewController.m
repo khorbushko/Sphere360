@@ -128,9 +128,6 @@
 - (void)downloadingProgress:(CGFloat)progress
 {
     NSLog(@"Downloaded - %f percentage", progress * 100);
-    if (![self.videoPlayer isPlayerPlayVideo]) {
-        [self.videoPlayer play];
-    }
 }
 
 #pragma mark - UIConfiguration

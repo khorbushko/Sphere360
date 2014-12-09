@@ -11,6 +11,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import "SPHTextureProvider.h"
 #import <CoreMedia/CoreMedia.h>
+#import "SPHMathUtils.h"
 
 static CGFloat const kDefStartY = -1.8f;
 static CGFloat const kDefStartX = -3.0f;
@@ -53,6 +54,7 @@ GLint uniforms[NUM_UNIFORMS];
 @property (assign, nonatomic) BOOL isGyroModeActive;
 
 @property (strong, nonatomic) UIImage *tempImage;
+@property (assign, nonatomic) BOOL isZooming;
 
 @end
 
@@ -63,7 +65,7 @@ GLint uniforms[NUM_UNIFORMS];
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+
     [self setInitialParameters];
     
     [self setupContext];
@@ -112,14 +114,13 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (void)setupTextureWithImage:(UIImage *)image
 {
-    UIImage *textureImage = [image copy];
-    if (!textureImage) {
+    self.tempImage = [image copy];
+    if (!self.tempImage) {
         return;
     }
-    self.tempImage = textureImage;
     GLKTextureLoader *textureloader = [[GLKTextureLoader alloc] initWithSharegroup:self.context.sharegroup];
     NSDictionary *textureOption = @{GLKTextureLoaderOriginBottomLeft : @YES};
-    [textureloader textureWithCGImage:textureImage.CGImage options:textureOption queue:nil completionHandler:^(GLKTextureInfo *textureInfo, NSError *outError) {
+    [textureloader textureWithCGImage:self.tempImage.CGImage options:textureOption queue:nil completionHandler:^(GLKTextureInfo *textureInfo, NSError *outError) {
         if (_texture.name) {
             GLuint textureName = _texture.name;
             glDeleteTextures(1, &textureName);
@@ -139,26 +140,17 @@ GLint uniforms[NUM_UNIFORMS];
     if (!CGPointEqualToPoint(self.velocityValue, CGPointZero)) {
         [self updateMovement];
     }
+    if (!self.isZooming) {
+        [self normalizeZoomValue];
+    }
     
+    CGFloat FOVY = (M_PI * 90 / 180) / self.zoomValue;
     float aspect = fabsf(self.view.bounds.size.width / self.view.bounds.size.height);
     GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(kDefaultZoomDegree) / self.zoomValue, aspect, 0.1f, 2.1f);
     GLKMatrix4 modelViewMatrix = GLKMatrix4Identity;
     
-    if (self.isGyroModeActive) {        
-        CGFloat roll, yaw, pitch;
-        CMAttitude *attitude = self.motionManager.deviceMotion.attitude;
-        
-        CMQuaternion quat = self.motionManager.deviceMotion.attitude.quaternion;
-        roll = atan2(2*(quat.y*quat.w - quat.x*quat.z), 1 - 2*quat.y*quat.y - 2*quat.z*quat.z) ;
-        pitch = atan2(2*(quat.x*quat.w + quat.y*quat.z), 1 - 2*quat.x*quat.x - 2*quat.z*quat.z);
-        yaw = asin(2*quat.x*quat.y + 2*quat.w*quat.z);
-        
-        CATransform3D rotationTransform = CATransform3DMakeRotation(attitude.roll, 0, 0, 1);
-        rotationTransform = CATransform3DRotate(rotationTransform, attitude.yaw, 0, 1, 0);
-        rotationTransform = CATransform3DRotate(rotationTransform, attitude.pitch, 1, 0, 0);
-                
-        modelViewMatrix = [self GLKMatrixFromCATransform3D:rotationTransform];
-        
+    if (self.isGyroModeActive) {
+        modelViewMatrix = [SPHMathUtils GLKMatrixFromCATransform3D:[self rotationMatrixFromGyro]];
         projectionMatrix = GLKMatrix4Rotate(projectionMatrix, -M_PI / 2, 1, 0, 0);
         projectionMatrix = GLKMatrix4Rotate(projectionMatrix, kDefStartY, 0, 1, 0);
     } else {
@@ -166,7 +158,6 @@ GLint uniforms[NUM_UNIFORMS];
         modelViewMatrix = _currentProjectionMatrix;// GLKMatrix4Rotate(modelViewMatrix, _rotationX, 1.0f, 0.0f, 0.0f);
 //        modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotationY, 0.0f,  1.0f, 0.0f);
     }
-    
     _modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
 }
 
@@ -185,6 +176,10 @@ GLint uniforms[NUM_UNIFORMS];
     if (_texture) {
         [EAGLContext setCurrentContext:self.context];
         glBindTexture(GL_TEXTURE_2D, _texture.name);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     }
     glDrawArrays(GL_TRIANGLES, 0, SphereNumVerts);
 }
@@ -221,10 +216,6 @@ GLint uniforms[NUM_UNIFORMS];
     }
     GLKView *view = (GLKView *)self.view;
     view.context = self.context;
-    self.preferredFramesPerSecond = 24.0;
-    
-    //improve quality - required more resources - can be switched off
-    view.drawableMultisample = GLKViewDrawableMultisample4X;
 }
 
 #pragma mark - Gyroscope
@@ -251,7 +242,7 @@ GLint uniforms[NUM_UNIFORMS];
     }
 }
 
-- (GLKMatrix4)GLKMatrixFromCATransform3D:(CATransform3D)transform
+- (CATransform3D)rotationMatrixFromGyro
 {
     GLKMatrix4 rotationMatrix;
     
@@ -280,23 +271,8 @@ GLint uniforms[NUM_UNIFORMS];
 //        dstPointer[i] = srcPointer[i];
 //    }
     
-    return rotationMatrix;
+    return rotationTransform;
 }
-
-//- (CATransform3D)CATransform3DFromCMRotationMatrix:(CMRotationMatrix)matrix
-//{
-//    CATransform3D transform = CATransform3DIdentity;
-//    transform.m11 = matrix.m11;
-//    transform.m12 = matrix.m12;
-//    transform.m13 = matrix.m13;
-//    transform.m21 = matrix.m21;
-//    transform.m22 = matrix.m22;
-//    transform.m23 = matrix.m23;
-//    transform.m31 = matrix.m31;
-//    transform.m32 = matrix.m32;
-//    transform.m33 = matrix.m33;
-//    return transform;
-//}
 
 #pragma mark - Touches
 
@@ -317,16 +293,30 @@ GLint uniforms[NUM_UNIFORMS];
 //    _rotationY += pointX;
 }
 
+#pragma mark - Zoom
+
+- (void)normalizeZoomValue
+{
+    if (self.zoomValue > kPreMaximumZoomValue) {
+        self.zoomValue *= 0.95;
+    } else if (self.zoomValue < kPreMinimumZoomValue) {
+        self.zoomValue *= 1.05;
+    }
+}
+
 #pragma mark - GestureActions
 
 - (void)pinchForZoom:(UIPinchGestureRecognizer *)gesture
 {
     if (gesture.state == UIGestureRecognizerStateBegan) {
+        self.isZooming = YES;
         gesture.scale = self.zoomValue;
     } else if (gesture.state == UIGestureRecognizerStateChanged) {
         CGFloat zoom = gesture.scale;
         zoom = MAX(MIN(zoom, kMaximumZoomValue), kMinimumZoomValue);
         self.zoomValue = zoom;
+    } else if (gesture.state == UIGestureRecognizerStateEnded) {
+        self.isZooming = NO;
     }
 }
 
