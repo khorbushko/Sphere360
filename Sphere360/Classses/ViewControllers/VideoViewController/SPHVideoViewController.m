@@ -96,7 +96,7 @@
     if (self.videoPlayer) {
         if ([self.videoPlayer canProvideFrame]) {
             UIImage *image = [self.videoPlayer getCurrentFramePicture];
-            [self setupTextureWithImage:[UIImage flipAndMirrorImageHorizontally:image]];
+            [self setupTextureWithImage:image];
         }
     }
     [self drawArrayOfData];
@@ -128,6 +128,9 @@
 - (void)downloadingProgress:(CGFloat)progress
 {
     NSLog(@"Downloaded - %f percentage", progress * 100);
+    if (![self.videoPlayer isPlayerPlayVideo]) {
+        [self.videoPlayer play];
+    }
 }
 
 #pragma mark - UIConfiguration

@@ -146,7 +146,6 @@ static const NSString *ItemStatusContext;
             } else if ([keyPath isEqualToString:@"loadedTimeRanges"]) {
                 [self moviewPlayerLoadedTimeRangeDidUpdated:self.playerItem.loadedTimeRanges];
             }
-            return;
         }
     }
 }
@@ -160,7 +159,7 @@ static const NSString *ItemStatusContext;
         self.volume = self.assetPlayer.volume;
         [self.delegate isReadyToPlayVideo];
     } else {
-        return;
+        NSLog(@"Player do not tried to load new media resources for playback yet");
     }
 }
 

@@ -51,8 +51,7 @@
 
 - (void)applyImageTexture
 {
-    UIImage* flippedImage = [UIImage flipAndMirrorImageHorizontally:self.sourceImage];
-    [self setupTextureWithImage:flippedImage];
+    [self setupTextureWithImage:self.sourceImage];
 }
 
 @end

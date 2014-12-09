@@ -50,6 +50,8 @@ GLint uniforms[NUM_UNIFORMS];
 @property (strong, nonatomic) CMMotionManager *motionManager;
 @property (assign, nonatomic) BOOL isGyroModeActive;
 
+@property (strong, nonatomic) UIImage *tempImage;
+
 @end
 
 @implementation SPHBaseViewController
@@ -112,8 +114,10 @@ GLint uniforms[NUM_UNIFORMS];
     if (!textureImage) {
         return;
     }
+    self.tempImage = textureImage;
     GLKTextureLoader *textureloader = [[GLKTextureLoader alloc] initWithSharegroup:self.context.sharegroup];
-    [textureloader textureWithCGImage:textureImage.CGImage options:nil queue:nil completionHandler:^(GLKTextureInfo *textureInfo, NSError *outError) {
+    NSDictionary *textureOption = @{GLKTextureLoaderOriginBottomLeft : @YES};
+    [textureloader textureWithCGImage:textureImage.CGImage options:textureOption queue:nil completionHandler:^(GLKTextureInfo *textureInfo, NSError *outError) {
         if (_texture.name) {
             GLuint textureName = _texture.name;
             glDeleteTextures(1, &textureName);
@@ -175,12 +179,10 @@ GLint uniforms[NUM_UNIFORMS];
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUniformMatrix4fv(uniforms[UNIFORM_MVPMATRIX], 1, 0, _modelViewProjectionMatrix.m);
-    glActiveTexture(GL_TEXTURE0);
-#warning Need to check
-    glBindTexture(GL_TEXTURE0, 0); //free old one texture
-
-    glBindTexture(_texture.target, _texture.name);
-    glEnable(_texture.target);
+    if (_texture) {
+        [EAGLContext setCurrentContext:self.context];
+        glBindTexture(GL_TEXTURE_2D, _texture.name);
+    }
     glDrawArrays(GL_TRIANGLES, 0, SphereNumVerts);
 }
 
@@ -216,10 +218,10 @@ GLint uniforms[NUM_UNIFORMS];
     }
     GLKView *view = (GLKView *)self.view;
     view.context = self.context;
-    self.preferredFramesPerSecond = 24.0;
+    self.preferredFramesPerSecond = 60.0;
     
     //improve quality - required more resources - can be switched off
-    //view.drawableMultisample = GLKViewDrawableMultisample4X;
+    view.drawableMultisample = GLKViewDrawableMultisample4X;
 }
 
 #pragma mark - Gyroscope
