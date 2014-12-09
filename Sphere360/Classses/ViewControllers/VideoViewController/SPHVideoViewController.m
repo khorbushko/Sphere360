@@ -95,8 +95,7 @@
 {
     if (self.videoPlayer) {
         if ([self.videoPlayer canProvideFrame]) {
-            UIImage *image = [self.videoPlayer getCurrentFramePicture];
-            [self setupTextureWithImage:image];
+            [self setupTextureWithImage:[self.videoPlayer getCurrentFramePicture]];
         }
     }
     [self drawArrayOfData];

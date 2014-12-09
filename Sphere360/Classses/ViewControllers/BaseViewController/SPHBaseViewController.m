@@ -42,6 +42,8 @@ GLint uniforms[NUM_UNIFORMS];
     
     float _rotationX;
     float _rotationY;
+    
+    GLuint texturePointer;
 }
 
 @property (strong, nonatomic) SPHGLProgram *program;
@@ -181,12 +183,12 @@ GLint uniforms[NUM_UNIFORMS];
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUniformMatrix4fv(uniforms[UNIFORM_MVPMATRIX], 1, 0, _modelViewProjectionMatrix.m);
     if (_texture) {
-        [EAGLContext setCurrentContext:self.context];
+//        [EAGLContext setCurrentContext:self.context];
         glBindTexture(GL_TEXTURE_2D, _texture.name);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+//		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     }
     glDrawArrays(GL_TRIANGLES, 0, SphereNumVerts);
 }

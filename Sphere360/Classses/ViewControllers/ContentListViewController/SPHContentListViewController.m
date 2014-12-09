@@ -107,12 +107,8 @@ static NSString *const BaseApiPath = @"http://api.360.tv/";
 {
     SPHContentCollectionViewCell *cell = (SPHContentCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
     [cell.downloadingActivityIndicator startAnimating];
-    dispatch_queue_t serialQueue = dispatch_queue_create("serialQueue", DISPATCH_QUEUE_SERIAL);
-    dispatch_async(serialQueue, ^{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self showContentAtIndex:indexPath];
-        });
-    });
+    
+    [self performSelector:@selector(showContentAtIndex:) withObject:indexPath afterDelay:0];
 }
 
 @end
