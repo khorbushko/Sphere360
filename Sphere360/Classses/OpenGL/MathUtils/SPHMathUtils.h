@@ -11,5 +11,6 @@
 CATransform3D CATransform3DMakePerspective(CGFloat fovY, CGFloat aspectRatio, CGFloat near, CGFloat far);
 
 + (GLKMatrix4)GLKMatrixFromCATransform3D:(CATransform3D)transform;
++ (CATransform3D)CATransform3DMatrixFromCMRotationMatrix:(CMRotationMatrix)transform;
 
 @end

@@ -250,6 +250,8 @@ GLint uniforms[NUM_UNIFORMS];
 {
     CGFloat roll, yaw, pitch;
     CMAttitude *attitude = self.motionManager.deviceMotion.attitude;
+    
+//    CATransform3D rotationTransform = [SPHMathUtils CATransform3DMatrixFromCMRotationMatrix:attitude.rotationMatrix];
 
     CMQuaternion quat = self.motionManager.deviceMotion.attitude.quaternion;
     roll = atan2(2*(quat.y*quat.w - quat.x*quat.z), 1 - 2*quat.y*quat.y - 2*quat.z*quat.z) ;
