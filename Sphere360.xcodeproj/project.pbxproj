@@ -13,6 +13,8 @@
 		84A1B42F1A35E38600B17A58 /* SPHContentListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 84A1B42E1A35E38600B17A58 /* SPHContentListViewController.m */; };
 		84A1B4321A35E39F00B17A58 /* SPHContentCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 84A1B4311A35E39F00B17A58 /* SPHContentCollectionViewCell.m */; };
 		ED45D35D1A37441F00D7914D /* SPHMathUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = ED45D35C1A37441F00D7914D /* SPHMathUtils.m */; };
+		EDA245991A383198004FD7C6 /* SPHInternetStatusChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = EDA245951A383198004FD7C6 /* SPHInternetStatusChecker.m */; };
+		EDA2459A1A383198004FD7C6 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = EDA245981A383198004FD7C6 /* Reachability.m */; };
 		EDAC3A681A2C7F9E00EB6DE0 /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = EDAC3A661A2C7F9E00EB6DE0 /* Shader.vsh */; };
 		EDAC3A691A2C7F9E00EB6DE0 /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = EDAC3A671A2C7F9E00EB6DE0 /* Shader.fsh */; };
 		EDAC3A6D1A2C809500EB6DE0 /* SPHGLProgram.m in Sources */ = {isa = PBXBuildFile; fileRef = EDAC3A6C1A2C809500EB6DE0 /* SPHGLProgram.m */; };
@@ -69,6 +71,10 @@
 		84A1B4311A35E39F00B17A58 /* SPHContentCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHContentCollectionViewCell.m; sourceTree = "<group>"; };
 		ED45D35B1A37441F00D7914D /* SPHMathUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHMathUtils.h; sourceTree = "<group>"; };
 		ED45D35C1A37441F00D7914D /* SPHMathUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHMathUtils.m; sourceTree = "<group>"; };
+		EDA245941A383198004FD7C6 /* SPHInternetStatusChecker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHInternetStatusChecker.h; sourceTree = "<group>"; };
+		EDA245951A383198004FD7C6 /* SPHInternetStatusChecker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHInternetStatusChecker.m; sourceTree = "<group>"; };
+		EDA245971A383198004FD7C6 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		EDA245981A383198004FD7C6 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		EDAC3A661A2C7F9E00EB6DE0 /* Shader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader.vsh; sourceTree = "<group>"; };
 		EDAC3A671A2C7F9E00EB6DE0 /* Shader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader.fsh; sourceTree = "<group>"; };
 		EDAC3A6B1A2C809500EB6DE0 /* SPHGLProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHGLProgram.h; sourceTree = "<group>"; };
@@ -189,6 +195,24 @@
 				ED45D35C1A37441F00D7914D /* SPHMathUtils.m */,
 			);
 			path = MathUtils;
+			sourceTree = "<group>";
+		};
+		EDA245931A383198004FD7C6 /* InternetStatusChecker */ = {
+			isa = PBXGroup;
+			children = (
+				EDA245941A383198004FD7C6 /* SPHInternetStatusChecker.h */,
+				EDA245951A383198004FD7C6 /* SPHInternetStatusChecker.m */,
+			);
+			path = InternetStatusChecker;
+			sourceTree = "<group>";
+		};
+		EDA245961A383198004FD7C6 /* Reachability */ = {
+			isa = PBXGroup;
+			children = (
+				EDA245971A383198004FD7C6 /* Reachability.h */,
+				EDA245981A383198004FD7C6 /* Reachability.m */,
+			);
+			path = Reachability;
 			sourceTree = "<group>";
 		};
 		EDAC3A641A2C7A2F00EB6DE0 /* OpenGL */ = {
@@ -410,6 +434,8 @@
 		EDCFEE021A31DBD5003ADA91 /* Others */ = {
 			isa = PBXGroup;
 			children = (
+				EDA245931A383198004FD7C6 /* InternetStatusChecker */,
+				EDA245961A383198004FD7C6 /* Reachability */,
 				EDCFEE031A31DBD5003ADA91 /* VideoPlayer */,
 			);
 			path = Others;
@@ -575,10 +601,12 @@
 				EDCFEE1C1A31E52D003ADA91 /* SPHPhotoViewController.m in Sources */,
 				EDAC3A781A2C94F800EB6DE0 /* SPHAnimationProvider.m in Sources */,
 				EDCFEE211A31EB5B003ADA91 /* SPHVideoViewController.m in Sources */,
+				EDA245991A383198004FD7C6 /* SPHInternetStatusChecker.m in Sources */,
 				EDCFEE191A31E1FC003ADA91 /* SPHBaseViewController.m in Sources */,
 				EDCFEE061A31DBD5003ADA91 /* SPHVideoPlayer.m in Sources */,
 				84A1B42F1A35E38600B17A58 /* SPHContentListViewController.m in Sources */,
 				EDAC3A8E1A2CA91300EB6DE0 /* UIImage+ImageModification.m in Sources */,
+				EDA2459A1A383198004FD7C6 /* Reachability.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -13,6 +13,7 @@ static NSString *const BaseApiPath = @"http://api.360.tv/";
 #import "SPHPhotoViewController.h"
 #import "SPHVideoViewController.h"
 #import "SPHBaseViewController.h"
+#import "SPHInternetStatusChecker.h"
 
 @interface SPHContentListViewController () <UICollectionViewDataSource, UICollectionViewDelegate>
 
@@ -105,10 +106,13 @@ static NSString *const BaseApiPath = @"http://api.360.tv/";
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    SPHContentCollectionViewCell *cell = (SPHContentCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
-    [cell.downloadingActivityIndicator startAnimating];
-    
-    [self performSelector:@selector(showContentAtIndex:) withObject:indexPath afterDelay:0.1];
+    if ([SPHInternetStatusChecker isInternetAvaliable]) {
+        SPHContentCollectionViewCell *cell = (SPHContentCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
+        [cell.downloadingActivityIndicator startAnimating];
+        [self performSelector:@selector(showContentAtIndex:) withObject:indexPath afterDelay:0.1];
+    } else {
+        [SPHInternetStatusChecker notificationNoInternetAvaliable];
+    }
 }
 
 @end
