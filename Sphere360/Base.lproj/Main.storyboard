@@ -302,10 +302,20 @@
                                     <constraint firstAttribute="bottom" secondItem="KUN-48-zWo" secondAttribute="bottom" constant="15" id="z9K-5e-MfG"/>
                                 </constraints>
                             </view>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="rmX-Po-uto">
+                                <rect key="frame" x="266" y="141" width="37" height="37"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="37" id="KEl-ha-zR1"/>
+                                    <constraint firstAttribute="height" constant="37" id="Pcv-oy-Rdm"/>
+                                </constraints>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstAttribute="centerY" secondItem="rmX-Po-uto" secondAttribute="centerY" id="5Nk-aK-3rR"/>
                             <constraint firstItem="slT-hP-TXf" firstAttribute="leading" secondItem="Zji-pn-ovp" secondAttribute="leading" id="LdS-gZ-zkl"/>
+                            <constraint firstAttribute="centerX" secondItem="rmX-Po-uto" secondAttribute="centerX" id="MK3-ZA-lhh"/>
                             <constraint firstItem="z1l-cW-7oV" firstAttribute="top" secondItem="slT-hP-TXf" secondAttribute="bottom" id="hBv-pf-uN1"/>
                             <constraint firstAttribute="trailing" secondItem="slT-hP-TXf" secondAttribute="trailing" id="war-ai-nyq"/>
                         </constraints>
@@ -315,6 +325,7 @@
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <connections>
                         <outlet property="bottomView" destination="slT-hP-TXf" id="wTl-5Y-dFB"/>
+                        <outlet property="downloadingActivityIndicator" destination="rmX-Po-uto" id="My9-75-YyS"/>
                         <outlet property="gyroscopeButton" destination="yAf-yd-nAL" id="FLY-kp-vnw"/>
                         <outlet property="playStopButton" destination="KUN-48-zWo" id="ed4-bu-4nn"/>
                         <outlet property="videoProgressSlider" destination="ltT-uf-ol8" id="MzE-hX-LPm"/>

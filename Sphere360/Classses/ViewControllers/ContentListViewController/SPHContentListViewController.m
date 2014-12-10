@@ -68,7 +68,7 @@ static NSString *const BaseApiPath = @"http://api.360.tv/";
     switch (self.mediaType) {
         case MediaTypePhoto: {
             baseController = [storyboard instantiateViewControllerWithIdentifier:@"photo"];
-            baseController.sourceImage = [UIImage getImageFromSourceStringURL:/*[[NSBundle mainBundle] pathForResource:@"GIR000009" ofType:@"jpeg"]*/[NSString stringWithFormat:@"%@%@", BaseApiPath, dict[@"path_high"]]];
+            baseController.sourceImage = [UIImage getImageFromSourceStringURL:/*[[NSBundle mainBundle] pathForResource:@"GIR000009" ofType:@"jpeg"]];/*/[NSString stringWithFormat:@"%@%@", BaseApiPath, dict[@"path_high"]]];
             break;
         }
         case MediaTypeVideo: {
@@ -108,7 +108,7 @@ static NSString *const BaseApiPath = @"http://api.360.tv/";
     SPHContentCollectionViewCell *cell = (SPHContentCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
     [cell.downloadingActivityIndicator startAnimating];
     
-    [self performSelector:@selector(showContentAtIndex:) withObject:indexPath afterDelay:0];
+    [self performSelector:@selector(showContentAtIndex:) withObject:indexPath afterDelay:0.1];
 }
 
 @end

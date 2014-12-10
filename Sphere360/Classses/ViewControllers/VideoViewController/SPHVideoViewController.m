@@ -15,10 +15,13 @@
 @property (weak, nonatomic) IBOutlet UISlider *videoProgressSlider;
 @property (weak, nonatomic) IBOutlet UISlider *volumeSlider;
 @property (weak, nonatomic) IBOutlet UIButton *gyroscopeButton;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *downloadingActivityIndicator;
 
 @property (assign, nonatomic) CGFloat urlAssetDuration;
 @property (strong, nonatomic) AVURLAsset *urlAsset;
 @property (strong, nonatomic) SPHVideoPlayer *videoPlayer;
+
+@property (assign, nonatomic) CGFloat downloadedProgress;
 
 @end
 
@@ -31,6 +34,8 @@
     [super viewDidLoad];
     [self setupVideoUI];
     [self setupVideoPlayer];
+    
+    [self.downloadingActivityIndicator startAnimating];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -85,6 +90,10 @@
 {
     if (self.mediaType == MediaTypeVideo) {
         NSURL *urlToFile = [NSURL URLWithString:self.sourceURL];
+        //local resource
+//        NSString *url = [[NSBundle mainBundle] pathForResource:@"3D" ofType:@"mp4"];
+//        NSURL *urlToFile = [NSURL fileURLWithPath: url];
+        
         self.videoPlayer = [[SPHVideoPlayer alloc] initVideoPlayerWithURL:urlToFile];
         [self.videoPlayer prepareToPlay];
         self.videoPlayer.delegate = self;
@@ -105,17 +114,17 @@
 
 - (void)isReadyToPlayVideo
 {
-    self.playStopButton.enabled = YES;
-    self.videoProgressSlider.enabled = YES;
-    self.gyroscopeButton.enabled = YES;
-    self.volumeSlider.enabled = YES;
+    [self enableControlls];
 }
 
 - (void)progressUpdateToTime:(CGFloat)progress
 {
     if ([self.videoPlayer isPlayerPlayVideo]) {
         self.videoProgressSlider.value = progress;
-        NSLog(@"Progress - %f", progress);
+        NSLog(@"Progress - %f", progress * 100);
+    }
+    if ((self.downloadedProgress - progress) > 0.1) {
+        [self enableControlls];
     }
 }
 
@@ -127,6 +136,7 @@
 - (void)downloadingProgress:(CGFloat)progress
 {
     NSLog(@"Downloaded - %f percentage", progress * 100);
+    self.downloadedProgress = progress;
 }
 
 #pragma mark - UIConfiguration
@@ -155,12 +165,34 @@
 
 - (void)progressSliderTouchedUp
 {
+    [self.videoPlayer pause];
+    [self disableControls];
     [self.videoPlayer seekPositionAtProgress:self.videoProgressSlider.value];
 }
 
 - (void)volumeSliderTouchedUp
 {
     [self.videoPlayer setPlayerVolume:self.volumeSlider.value];
+}
+
+#pragma mark - Private
+
+- (void)disableControls
+{
+    self.playStopButton.enabled = NO;
+    self.videoProgressSlider.enabled = NO;
+    self.gyroscopeButton.enabled = NO;
+    self.volumeSlider.enabled = NO;
+    [self.downloadingActivityIndicator startAnimating];
+}
+
+- (void)enableControlls
+{
+    self.playStopButton.enabled = YES;
+    self.videoProgressSlider.enabled = YES;
+    self.gyroscopeButton.enabled = YES;
+    self.volumeSlider.enabled = YES;
+    [self.downloadingActivityIndicator stopAnimating];
 }
 
 #pragma mark - Cleanup

@@ -45,6 +45,7 @@ static const NSString *ItemStatusContext;
 - (void)pause
 {
     [self.assetPlayer pause];
+//    self.assetPlayer.rate = 0.0f;
 }
 
 - (void)seekPositionAtProgress:(CGFloat)progressValue
@@ -68,7 +69,6 @@ static const NSString *ItemStatusContext;
 {
     [self.assetPlayer seekToTime:kCMTimeZero];
     self.assetPlayer.rate =.0f;
-    
 }
 
 - (BOOL)isPlayerPlayVideo
