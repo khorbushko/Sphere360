@@ -58,7 +58,7 @@
     size_t width = CVPixelBufferGetWidth(imageBuffer);
     size_t height = CVPixelBufferGetHeight(imageBuffer);
     
-    CVPixelBufferUnlockBaseAddress(imageBuffer,0);
+    //here was unlock
     
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     CGContextRef newContext = CGBitmapContextCreate(baseAddress, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
@@ -69,6 +69,7 @@
     
     UIImage *image= [UIImage imageWithCGImage:newImage scale:1.0 orientation:UIImageOrientationRight];
     CGImageRelease(newImage);
+    CVPixelBufferUnlockBaseAddress(imageBuffer,0);
     return image;
 }
 
@@ -90,7 +91,7 @@
 }
 
 //must Be faster `10 times than "imageWithCVPixelBuffer:(CVPixelBufferRef)pixelBuffer" -> stackoverflow
-+ (UIImage *)imageWithCVPixelBufferUsingUIGraphicsContext:(CVPixelBufferRef)pixelBuffer
++ (CGImageRef)imageWithCVPixelBufferUsingUIGraphicsContext:(CVPixelBufferRef)pixelBuffer
 {
     CVPixelBufferLockBaseAddress(pixelBuffer, 0);
     
@@ -103,7 +104,7 @@
     UIGraphicsBeginImageContext(CGSizeMake(width, hight));
     
     CGContextRef context = UIGraphicsGetCurrentContext();
-    
+
     unsigned char* data = CGBitmapContextGetData(context);
     if (data) {
         int maxY = hight;
@@ -117,14 +118,15 @@
             }
         }
     }
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    CGImageRef cgImage = CGBitmapContextCreateImage(context);
+//    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
 
     CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
-    CVBufferRelease(pixelBuffer);
-    //CFRelease(pixelBuffer);
+//    CVBufferRelease(pixelBuffer);
+    CFRelease(pixelBuffer);
     
-    return image;
+    return cgImage;
 }
 
 #pragma mark - Private

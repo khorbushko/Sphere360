@@ -11,6 +11,6 @@
 + (GLuint)getPoinerToTextureFrom:(UIImage *)image;
 + (UIImage *)imageWithCVImageBuffer:(CVImageBufferRef)imageBuffer;
 + (UIImage *)imageWithCVPixelBuffer:(CVPixelBufferRef)pixelBuffer;
-+ (UIImage *)imageWithCVPixelBufferUsingUIGraphicsContext:(CVPixelBufferRef)pixelBuffer;
++ (CGImageRef)imageWithCVPixelBufferUsingUIGraphicsContext:(CVPixelBufferRef)pixelBuffer;
 
 @end

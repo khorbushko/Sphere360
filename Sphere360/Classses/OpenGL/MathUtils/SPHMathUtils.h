@@ -13,4 +13,7 @@ CATransform3D CATransform3DMakePerspective(CGFloat fovY, CGFloat aspectRatio, CG
 + (GLKMatrix4)GLKMatrixFromCATransform3D:(CATransform3D)transform;
 + (CATransform3D)CATransform3DMatrixFromCMRotationMatrix:(CMRotationMatrix)transform;
 
++ (GLKMatrix4)getMatrixGLK4FromQuaternion:(CMQuaternion)quaternion;
++ (CMQuaternion)normalizeQuaternion:(CMQuaternion)inputQuaternion;
+
 @end

@@ -41,11 +41,12 @@ GLint uniforms[NUM_UNIFORMS];
     float _rotationY;
     
     GLuint texturePointer;
+    CGImageRef lastImage;
 }
 
 @property (strong, nonatomic) SPHGLProgram *program;
 @property (strong, nonatomic) EAGLContext *context;
-@property (strong, nonatomic) GLKTextureInfo *texture;
+@property (strong, atomic) GLKTextureInfo *texture;
 
 @property (assign, nonatomic) CGFloat zoomValue;
 @property (assign, nonatomic) CGPoint velocityValue;
@@ -54,8 +55,10 @@ GLint uniforms[NUM_UNIFORMS];
 @property (strong, nonatomic) CMMotionManager *motionManager;
 @property (assign, nonatomic) BOOL isGyroModeActive;
 
-@property (strong, nonatomic) UIImage *tempImage;
+//@property (strong, nonatomic) UIImage *tempImage;
 @property (assign, nonatomic) BOOL isZooming;
+
+@property (strong, atomic) GLKTextureLoader *textureloader;
 
 @end
 
@@ -74,6 +77,8 @@ GLint uniforms[NUM_UNIFORMS];
     
     [self addGestures];
     [self setupGyroscope];
+    
+    self.textureloader = [[GLKTextureLoader alloc] initWithSharegroup:self.context.sharegroup];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -116,22 +121,28 @@ GLint uniforms[NUM_UNIFORMS];
     
 }
 
-- (void)setupTextureWithImage:(UIImage *)image
+- (void)setupTextureWithImage:(CGImageRef)image
 {
-    self.tempImage = [image copy];
-    if (!self.tempImage) {
-        return;
+//    self.tempImage = [image copy];
+//    if (!self.tempImage) {
+//        return;
+//    }
+    if (!image) {
+        image = lastImage;
     }
-    GLKTextureLoader *textureloader = [[GLKTextureLoader alloc] initWithSharegroup:self.context.sharegroup];
+
+//    GLKTextureLoader *textureloader = [[GLKTextureLoader alloc] initWithSharegroup:self.context.sharegroup];
     NSDictionary *textureOption = @{GLKTextureLoaderOriginBottomLeft : @YES};
-    [textureloader textureWithCGImage:self.tempImage.CGImage options:textureOption queue:nil completionHandler:^(GLKTextureInfo *textureInfo, NSError *outError) {
-        if (_texture.name) {
-            GLuint textureName = _texture.name;
-            glDeleteTextures(1, &textureName);
-        }
-        _texture = textureInfo;
+    [self.textureloader textureWithCGImage:image/*self.tempImage.CGImage*/ options:textureOption queue:NULL completionHandler:^(GLKTextureInfo *textureInfo, NSError *outError) {
         if (outError){
             NSLog(@"GL Error = %u", glGetError());
+        } else {
+            lastImage = image;
+            if (_texture.name) {
+                GLuint textureName = _texture.name;
+                glDeleteTextures(1, &textureName);
+            }
+            _texture = textureInfo;
         }
     }];
 }
@@ -159,8 +170,10 @@ GLint uniforms[NUM_UNIFORMS];
     GLKMatrix4 modelViewMatrix = GLKMatrix4Identity;
     
     if (self.isGyroModeActive) {
-        modelViewMatrix = [SPHMathUtils GLKMatrixFromCATransform3D:[self rotationMatrixFromGyro]];
+//        modelViewMatrix = [SPHMathUtils GLKMatrixFromCATransform3D:[self rotationMatrixFromGyro]];
 //        modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, M_PI_2, 1, 0, 0);
+        
+        modelViewMatrix = GLKMatrix4MakeWithQuaternion([self quaternioFromGyro]);
 
     } else {
         projectionMatrix = GLKMatrix4Multiply(projectionMatrix, _cameraProjectionMatrix);
@@ -250,9 +263,15 @@ GLint uniforms[NUM_UNIFORMS];
 {
     CMAttitude *attitude = self.motionManager.deviceMotion.attitude;
     CATransform3D rotationTransform = [SPHMathUtils CATransform3DMatrixFromCMRotationMatrix:attitude.rotationMatrix];
-//    CMQuaternion
-
     return rotationTransform;
+}
+
+- (GLKQuaternion)quaternioFromGyro
+{
+    CMAttitude *attitude = self.motionManager.deviceMotion.attitude;
+    GLKQuaternion quaternion = GLKQuaternionMake(0, 0, 0, 1);
+    quaternion = GLKQuaternionMake(0, 0, 0, attitude.quaternion.w);
+    return quaternion;
 }
 
 #pragma mark - Touches
@@ -388,7 +407,7 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (void)setEmptyImage
 {
-    [self setupTextureWithImage:[[UIImage alloc] init]];
+    [self setupTextureWithImage:[[UIImage alloc] init].CGImage];
 }
 
 - (void)hideShowNavigationBar

@@ -17,7 +17,7 @@ static const NSString *ItemStatusContext;
 @property (strong, nonatomic) AVPlayerItem *playerItem;
 @property (assign, nonatomic) CGFloat assetDuration;
 @property (strong, nonatomic) AVURLAsset *urlAsset;
-@property (strong, nonatomic) AVPlayerItemVideoOutput *videoOutput;
+@property (strong, atomic) AVPlayerItemVideoOutput *videoOutput;
 
 @end
 
@@ -232,7 +232,7 @@ static const NSString *ItemStatusContext;
     return self.assetPlayer.status == AVPlayerItemStatusReadyToPlay;
 }
 
-- (UIImage *)getCurrentFramePicture
+- (CGImageRef)getCurrentFramePicture
 {
     /* uncomment for log progress review
     CMTime outputItemTime = self.playerItem.currentTime;
@@ -241,7 +241,7 @@ static const NSString *ItemStatusContext;
      */
 
     CMTime currentTime = [self.videoOutput itemTimeForHostTime:CACurrentMediaTime()];
-    UIImage *image;
+    CGImageRef image;
     [self.delegate progressChangedToTime:currentTime];
     if (![self.videoOutput hasNewPixelBufferForItemTime:currentTime]) {
         return nil;

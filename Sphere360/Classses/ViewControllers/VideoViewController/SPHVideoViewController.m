@@ -93,10 +93,10 @@
 - (void)setupVideoPlayer
 {
     if (self.mediaType == MediaTypeVideo) {
-        NSURL *urlToFile = [NSURL URLWithString:self.sourceURL];
+//        NSURL *urlToFile = [NSURL URLWithString:self.sourceURL];
         //local resource
-//        NSString *url = [[NSBundle mainBundle] pathForResource:@"3D" ofType:@"mp4"];
-//        NSURL *urlToFile = [NSURL fileURLWithPath: url];
+        NSString *url = [[NSBundle mainBundle] pathForResource:@"3D" ofType:@"mp4"];
+        NSURL *urlToFile = [NSURL fileURLWithPath: url];
         
         self.videoPlayer = [[SPHVideoPlayer alloc] initVideoPlayerWithURL:urlToFile];
         [self.videoPlayer prepareToPlay];
@@ -164,7 +164,7 @@
 - (void)setupVideoUI
 {
     [self setupSlider];
-    [self setupTextureWithImage:[[UIImage alloc] init]];
+    [self setupTextureWithImage:[[UIImage alloc] init].CGImage];
 }
 
 #pragma mark - Slider

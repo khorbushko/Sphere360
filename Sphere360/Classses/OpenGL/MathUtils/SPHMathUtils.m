@@ -8,7 +8,11 @@
 
 #import "SPHMathUtils.h"
 
+static CGFloat const MUTolerance = 0.00001;
+
 @implementation SPHMathUtils
+
+#pragma mark - MatrixOperation
 
 CATransform3D CATransform3DMakePerspective(CGFloat fovY, CGFloat aspectRatio, CGFloat near, CGFloat far)
 {
@@ -58,6 +62,42 @@ CATransform3D CATransform3DMakePerspective(CGFloat fovY, CGFloat aspectRatio, CG
     rotationMatrix.m33 = transform.m33;
     
     return rotationMatrix;
+}
+
+#pragma mark - Quaternions
+
++ (CMQuaternion)normalizeQuaternion:(CMQuaternion)inputQuaternion
+{
+    float mag2 = inputQuaternion.w * inputQuaternion.w + inputQuaternion.x * inputQuaternion.x + inputQuaternion.y * inputQuaternion.y + inputQuaternion.z * inputQuaternion.z;
+    if (fabs(mag2) > MUTolerance && fabs(mag2 - 1.0f) > MUTolerance) {
+        float mag = sqrt(mag2);
+        inputQuaternion.w /= mag;
+		inputQuaternion.x /= mag;
+		inputQuaternion.y /= mag;
+		inputQuaternion.z /= mag;
+    }
+    return inputQuaternion;
+}
+
++ (GLKMatrix4)getMatrixGLK4FromQuaternion:(CMQuaternion)quaternion
+{
+    float x2 = quaternion.x * quaternion.x;
+	float y2 = quaternion.y * quaternion.y;
+	float z2 = quaternion.z * quaternion.z;
+	float xy = quaternion.x * quaternion.y;
+	float xz = quaternion.x * quaternion.z;
+	float yz = quaternion.y * quaternion.z;
+	float wx = quaternion.w * quaternion.x;
+	float wy = quaternion.w * quaternion.y;
+	float wz = quaternion.w * quaternion.z;
+    
+    GLKMatrix4 matrix = GLKMatrix4Identity;
+    
+    matrix.m00 = 1.0f - 2.0f * (y2 + z2); matrix.m01 = 2.0f * (xy - wz); matrix.m02 = 2.0f * (xz + wy);
+    matrix.m10 = 2.0f * (xy + wz); matrix.m11 = 1.0f - 2.0f * (x2 + z2); matrix.m12 = 2.0f * (yz - wx);
+    matrix.m20 = 2.0f * (xz - wy); matrix.m21 = 2.0f * (yz + wx); matrix.m22 = 1.0f - 2.0f * (x2 + y2);
+
+    return matrix;
 }
 
 @end

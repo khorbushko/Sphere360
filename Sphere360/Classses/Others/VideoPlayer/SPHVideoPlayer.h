@@ -34,7 +34,7 @@
 - (BOOL)isPlayerPlayVideo;
 
 - (BOOL)canProvideFrame;
-- (UIImage *)getCurrentFramePicture;
+- (CGImageRef)getCurrentFramePicture;
 
 - (void)removeObserversFromPlayer;
 

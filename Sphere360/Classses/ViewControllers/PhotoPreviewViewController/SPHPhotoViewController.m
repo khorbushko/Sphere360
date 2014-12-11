@@ -51,7 +51,7 @@
 
 - (void)applyImageTexture
 {
-    [self setupTextureWithImage:self.sourceImage];
+    [self setupTextureWithImage:self.sourceImage.CGImage];
 }
 
 @end
