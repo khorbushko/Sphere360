@@ -17,7 +17,7 @@ static const NSString *ItemStatusContext;
 @property (strong, nonatomic) AVPlayerItem *playerItem;
 @property (assign, nonatomic) CGFloat assetDuration;
 @property (strong, nonatomic) AVURLAsset *urlAsset;
-@property (strong, nonatomic) AVPlayerItemVideoOutput *videoOutput;
+@property (strong, atomic) AVPlayerItemVideoOutput *videoOutput;
 
 @end
 
@@ -47,10 +47,12 @@ static const NSString *ItemStatusContext;
     [self.assetPlayer pause];
 }
 
-- (void)seekPositionAtProgress:(CGFloat)progressValue
+- (void)seekPositionAtProgress:(CGFloat)progressValue withPlayingStatus:(BOOL)isPlaying
 {
     [self.assetPlayer seekToTime:CMTimeMakeWithSeconds(self.assetDuration * progressValue, NSEC_PER_SEC)];
-    [self.assetPlayer play];
+    if (isPlaying) {
+        [self.assetPlayer play];
+    }
 }
 
 - (void)setPlayerVolume:(CGFloat)volume
@@ -68,7 +70,6 @@ static const NSString *ItemStatusContext;
 {
     [self.assetPlayer seekToTime:kCMTimeZero];
     self.assetPlayer.rate =.0f;
-    
 }
 
 - (BOOL)isPlayerPlayVideo
@@ -166,16 +167,10 @@ static const NSString *ItemStatusContext;
 - (void)moviewPlayerLoadedTimeRangeDidUpdated:(NSArray *)ranges
 {
     NSTimeInterval maximum = 0;
-    BOOL loadedRangesContainsCurrentTime = NO;
-    
-    CMTime time = self.playerItem.currentTime;
     
     for (NSValue *value in ranges) {
         CMTimeRange range;
         [value getValue:&range];
-        if (CMTimeRangeContainsTime(range, time)) {
-            loadedRangesContainsCurrentTime = YES;
-        }        
         NSTimeInterval currenLoadedRangeTime = CMTimeGetSeconds(range.start) + CMTimeGetSeconds(range.duration);
         if (currenLoadedRangeTime > maximum) {
             maximum = currenLoadedRangeTime;
@@ -222,12 +217,12 @@ static const NSString *ItemStatusContext;
 
 - (void)didEnterBackground
 {
-    self.assetPlayer.rate = 0.0f;
+    [self.assetPlayer pause];
 }
 
 - (void)willEnterForeground
 {
-    self.assetPlayer.rate = 1.0f;
+    [self.assetPlayer pause];
 }
 
 #pragma mark - GetImagesFromVideoPlayer
@@ -237,7 +232,7 @@ static const NSString *ItemStatusContext;
     return self.assetPlayer.status == AVPlayerItemStatusReadyToPlay;
 }
 
-- (UIImage *)getCurrentFramePicture
+- (CGImageRef)getCurrentFramePicture
 {
     /* uncomment for log progress review
     CMTime outputItemTime = self.playerItem.currentTime;
@@ -246,7 +241,7 @@ static const NSString *ItemStatusContext;
      */
 
     CMTime currentTime = [self.videoOutput itemTimeForHostTime:CACurrentMediaTime()];
-    UIImage *image;
+    CGImageRef image;
     [self.delegate progressChangedToTime:currentTime];
     if (![self.videoOutput hasNewPixelBufferForItemTime:currentTime]) {
         return nil;
@@ -255,6 +250,8 @@ static const NSString *ItemStatusContext;
 
     if (buffer) {
         image = [SPHTextureProvider imageWithCVPixelBufferUsingUIGraphicsContext:buffer];
+    } else {
+        return nil;
     }
     [self.delegate progressUpdateToTime: CMTimeGetSeconds(currentTime)/self.assetDuration];
     return image;
@@ -265,19 +262,29 @@ static const NSString *ItemStatusContext;
 - (void)removeObserversFromPlayer
 {
     @try {
-        [[NSNotificationCenter defaultCenter] removeObserver:self];
-        [[NSNotificationCenter defaultCenter] removeObserver:self.assetPlayer];
         [self.playerItem removeObserver:self forKeyPath:@"status"];
         [self.playerItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
+        [[NSNotificationCenter defaultCenter] removeObserver:self.assetPlayer];        
     }
     @catch (NSException *ex) {
         NSLog(@"Cant remove observer in Player - %@", ex.description);
     }
 }
 
-- (void)dealloc
+- (void)cleanUp
 {
     [self removeObserversFromPlayer];
+    
+    self.assetPlayer.rate = 0;
+    self.assetPlayer = nil;
+    self.playerItem = nil;
+    self.urlAsset = nil;
+}
+
+- (void)dealloc
+{
+    [self cleanUp];    
 }
 
 @end

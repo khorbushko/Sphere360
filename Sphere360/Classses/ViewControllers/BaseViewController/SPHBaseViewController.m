@@ -13,9 +13,6 @@
 #import <CoreMedia/CoreMedia.h>
 #import "SPHMathUtils.h"
 
-static CGFloat const kDefStartY = -1.8f;
-static CGFloat const kDefStartX = -3.0f;
-
 static CGFloat const kMinimumZoomValue = 0.767f;
 static CGFloat const kMaximumZoomValue = 1.7f;
 
@@ -42,11 +39,14 @@ GLint uniforms[NUM_UNIFORMS];
     
     float _rotationX;
     float _rotationY;
+    
+    GLuint texturePointer;
+    CGImageRef lastImage;
 }
 
 @property (strong, nonatomic) SPHGLProgram *program;
 @property (strong, nonatomic) EAGLContext *context;
-@property (strong, nonatomic) GLKTextureInfo *texture;
+@property (strong, atomic) GLKTextureInfo *texture;
 
 @property (assign, nonatomic) CGFloat zoomValue;
 @property (assign, nonatomic) CGPoint velocityValue;
@@ -55,8 +55,10 @@ GLint uniforms[NUM_UNIFORMS];
 @property (strong, nonatomic) CMMotionManager *motionManager;
 @property (assign, nonatomic) BOOL isGyroModeActive;
 
-@property (strong, nonatomic) UIImage *tempImage;
+//@property (strong, nonatomic) UIImage *tempImage;
 @property (assign, nonatomic) BOOL isZooming;
+
+@property (strong, atomic) GLKTextureLoader *textureloader;
 
 @end
 
@@ -75,6 +77,8 @@ GLint uniforms[NUM_UNIFORMS];
     
     [self addGestures];
     [self setupGyroscope];
+    
+    self.textureloader = [[GLKTextureLoader alloc] initWithSharegroup:self.context.sharegroup];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -90,6 +94,9 @@ GLint uniforms[NUM_UNIFORMS];
     [EAGLContext setCurrentContext:self.context];
     
     [self buildProgram];
+    
+    glDisable(GL_DEPTH_TEST);
+    glDepthMask(GL_FALSE);
     
     glGenVertexArraysOES(1, &_vertexArrayID);
     glBindVertexArrayOES(_vertexArrayID);
@@ -114,23 +121,28 @@ GLint uniforms[NUM_UNIFORMS];
     
 }
 
-- (void)setupTextureWithImage:(UIImage *)image
+- (void)setupTextureWithImage:(CGImageRef)image
 {
-    self.tempImage = [image copy];
-    if (!self.tempImage) {
-        return;
+//    self.tempImage = [image copy];
+//    if (!self.tempImage) {
+//        return;
+//    }
+    if (!image) {
+        image = lastImage;
     }
-    GLKTextureLoader *textureloader = [[GLKTextureLoader alloc] initWithSharegroup:self.context.sharegroup];
+
+//    GLKTextureLoader *textureloader = [[GLKTextureLoader alloc] initWithSharegroup:self.context.sharegroup];
     NSDictionary *textureOption = @{GLKTextureLoaderOriginBottomLeft : @YES};
-    [textureloader textureWithCGImage:self.tempImage.CGImage options:textureOption queue:nil completionHandler:^(GLKTextureInfo *textureInfo, NSError *outError) {
-        if (_texture.name) {
-            GLuint textureName = _texture.name;
-            glDeleteTextures(1, &textureName);
-        }
-        [EAGLContext setCurrentContext:self.context];
-        _texture = textureInfo;
+    [self.textureloader textureWithCGImage:image/*self.tempImage.CGImage*/ options:textureOption queue:NULL completionHandler:^(GLKTextureInfo *textureInfo, NSError *outError) {
         if (outError){
             NSLog(@"GL Error = %u", glGetError());
+        } else {
+            lastImage = image;
+            if (_texture.name) {
+                GLuint textureName = _texture.name;
+                glDeleteTextures(1, &textureName);
+            }
+            _texture = textureInfo;
         }
     }];
 }
@@ -184,14 +196,10 @@ GLint uniforms[NUM_UNIFORMS];
     glBindVertexArrayOES(_vertexArrayID);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glBlendFunc(GL_ONE, GL_ZERO);
     glUniformMatrix4fv(uniforms[UNIFORM_MVPMATRIX], 1, 0, _modelViewProjectionMatrix.m);
     if (_texture) {
-        [EAGLContext setCurrentContext:self.context];
         glBindTexture(GL_TEXTURE_2D, _texture.name);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     }
     glDrawArrays(GL_TRIANGLES, 0, SphereNumVerts);
 }
@@ -244,7 +252,7 @@ GLint uniforms[NUM_UNIFORMS];
         if (!self.motionManager.isDeviceMotionActive) {
             self.isGyroModeActive = YES;
             self.motionManager.gyroUpdateInterval = 1 / 60;
-            [self.motionManager startDeviceMotionUpdates];
+            [self.motionManager startDeviceMotionUpdatesUsingReferenceFrame:CMAttitudeReferenceFrameXMagneticNorthZVertical];
         } else {
             [self.motionManager stopDeviceMotionUpdates];
             self.isGyroModeActive = NO;
@@ -256,7 +264,6 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (CATransform3D)rotationMatrixFromGyro
 {
-    CGFloat roll, yaw, pitch;
     CMAttitude *attitude = self.motionManager.deviceMotion.attitude;
 
     CMQuaternion quat = self.motionManager.deviceMotion.attitude.quaternion;
@@ -339,6 +346,14 @@ GLint uniforms[NUM_UNIFORMS];
     return transponsed;
 }
 
+- (GLKQuaternion)quaternioFromGyro
+{
+    CMAttitude *attitude = self.motionManager.deviceMotion.attitude;
+    GLKQuaternion quaternion = GLKQuaternionMake(0, 0, 0, 1);
+    quaternion = GLKQuaternionMake(0, 0, 0, attitude.quaternion.w);
+    return quaternion;
+}
+
 #pragma mark - Touches
 
 - (void)moveToPointX:(CGFloat)pointX andPointY:(CGFloat)pointY
@@ -348,7 +363,7 @@ GLint uniforms[NUM_UNIFORMS];
     }
     pointX *= 0.004;
     pointY *= 0.004;
-    GLKMatrix4 rotatedMatrix = GLKMatrix4MakeRotation(pointX / self.zoomValue, 0, 1, 0);
+    GLKMatrix4 rotatedMatrix = GLKMatrix4MakeRotation(-pointX / self.zoomValue, 0, 1, 0);
     _currentProjectionMatrix = GLKMatrix4Multiply(_currentProjectionMatrix, rotatedMatrix);
     
     GLKMatrix4 cameraMatrix = GLKMatrix4MakeRotation(-pointY / self.zoomValue, 1, 0, 0);
@@ -473,7 +488,7 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (void)setEmptyImage
 {
-    [self setupTextureWithImage:[[UIImage alloc] init]];
+    [self setupTextureWithImage:[[UIImage alloc] init].CGImage];
 }
 
 - (void)hideShowNavigationBar
@@ -526,11 +541,6 @@ GLint uniforms[NUM_UNIFORMS];
         glDeleteTextures(1, &textureName);
     }
     _texture = nil;
-}
-
-- (void)dealloc
-{
-    [self tearDownGL];
 }
 
 @end

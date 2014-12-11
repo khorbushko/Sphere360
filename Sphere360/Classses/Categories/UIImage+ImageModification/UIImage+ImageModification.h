@@ -8,7 +8,8 @@
 
 @interface UIImage (ImageModification)
 
-+ (UIImage *)flipAndMirrorImageHorizontally:(UIImage *)image;
++ (UIImage *)flipImage180:(UIImage *)image;
++ (UIImage *)horizontalFlip:(UIImage *)image;
 + (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize;
 + (UIImage *)imageWithColor:(UIColor *)color;
 + (UIImage *)getImageFromSourceStringURL:(NSString *)sourceURL;

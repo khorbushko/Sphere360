@@ -10,8 +10,7 @@
 
 @implementation UIImage (ImageModification)
 
-//flip by 180 degree and horizontal
-+ (UIImage *)flipAndMirrorImageHorizontally:(UIImage *)image
++ (UIImage *)flipImage180:(UIImage *)image
 {
     UIImage *sourceImage = [image copy];
     if (!sourceImage) {
@@ -19,12 +18,30 @@
     }
     UIGraphicsBeginImageContext(image.size);
     CGContextDrawImage(UIGraphicsGetCurrentContext(),CGRectMake(0.,0., image.size.width, image.size.height),image.CGImage);
-    CGAffineTransform verticalFlip = CGAffineTransformMake(1, 0, 0, -1, 0, image.size.height);
-    CGContextConcatCTM(UIGraphicsGetCurrentContext(), verticalFlip);
-    
     UIImage *imageMod = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return imageMod;
+}
+
++ (UIImage *)horizontalFlip:(UIImage *)image
+{
+    UIImage *sourceImage = [image copy];
+    if (!sourceImage) {
+        return nil;
+    }
+    UIGraphicsBeginImageContext(image.size);
+    if (!image.size.height && !image.size.width) {
+        return nil;
+    }
+    CGContextRef currentContext = UIGraphicsGetCurrentContext();
+    CGContextTranslateCTM(currentContext, image.size.width, 0);
+    CGContextScaleCTM(currentContext, -1.0, 1.0);
+    [image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
+    UIImage *flippedImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    CGContextRelease(currentContext);
+    
+    return flippedImage;
 }
 
 + (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize

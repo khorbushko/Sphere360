@@ -21,7 +21,8 @@ typedef enum {
 @property (strong, nonatomic) UIImage *sourceImage;
 @property (assign, nonatomic) MediaType mediaType;
 
-- (void)setupTextureWithImage:(UIImage *)image;
+- (void)setupTextureWithImage:(CGImageRef)image;
+
 - (void)gyroscopeChoose;
 - (void)tapGesture;
 - (void)update;
