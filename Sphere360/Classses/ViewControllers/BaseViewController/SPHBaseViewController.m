@@ -249,29 +249,10 @@ GLint uniforms[NUM_UNIFORMS];
 - (CATransform3D)rotationMatrixFromGyro
 {
     CMAttitude *attitude = self.motionManager.deviceMotion.attitude;
-    CATransform3D rotationTransform = [self CATransform3DMatrixFromCMRotationMatrix:attitude.rotationMatrix];
+    CATransform3D rotationTransform = [SPHMathUtils CATransform3DMatrixFromCMRotationMatrix:attitude.rotationMatrix];
 //    CMQuaternion
 
     return rotationTransform;
-}
-
-- (CATransform3D)CATransform3DMatrixFromCMRotationMatrix:(CMRotationMatrix)transform
-{
-    CATransform3D rotationMatrix = CATransform3DIdentity;
-    
-    rotationMatrix.m11 = transform.m11;
-    rotationMatrix.m12 = transform.m12;
-    rotationMatrix.m13 = transform.m13;
-    
-    rotationMatrix.m21 = transform.m21;
-    rotationMatrix.m22 = transform.m22;
-    rotationMatrix.m23 = transform.m23;
-    
-    rotationMatrix.m31 = transform.m31;
-    rotationMatrix.m32 = transform.m32;
-    rotationMatrix.m33 = transform.m33;
-    
-    return rotationMatrix;
 }
 
 #pragma mark - Touches
