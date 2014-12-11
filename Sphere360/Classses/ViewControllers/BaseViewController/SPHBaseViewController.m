@@ -158,19 +158,24 @@ GLint uniforms[NUM_UNIFORMS];
     GLKMatrix4 modelViewMatrix = GLKMatrix4Identity;
     
     if (self.isGyroModeActive) {
-        modelViewMatrix = [SPHMathUtils GLKMatrixFromCATransform3D:[self rotationMatrixFromGyro]];
+        CMQuaternion quat = self.motionManager.deviceMotion.attitude.quaternion;
+        GLKQuaternion glQuat = GLKQuaternionMake(-quat.y, quat.z, quat.x, quat.w);
+        modelViewMatrix = GLKMatrix4MakeWithQuaternion(glQuat);
+//        modelViewMatrix = [SPHMathUtils GLKMatrixFromCATransform3D:[self rotationMatrixFromGyro]];
         projectionMatrix = GLKMatrix4Rotate(projectionMatrix, -M_PI / 2, 1, 0, 0);
-        projectionMatrix = GLKMatrix4Rotate(projectionMatrix, kDefStartY, 0, 1, 0);
+//        projectionMatrix = GLKMatrix4Rotate(projectionMatrix, kDefStartY, 0, 1, 0);
+//        projectionMatrix = GLKMatrix4Multiply(projectionMatrix, GLKMatrix4MakeRotation(kDefStartX, 1, 0, 0));
+        _modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
     } else {
         projectionMatrix = GLKMatrix4Multiply(projectionMatrix, _cameraProjectionMatrix);
         modelViewMatrix = _currentProjectionMatrix;
+        _modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
     }
-    _modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
 }
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
 {
-    [_program use];
+    [_program use];	
     [self drawArrayOfData];
 }
 
@@ -258,11 +263,17 @@ GLint uniforms[NUM_UNIFORMS];
     roll = atan2(2*(quat.y*quat.w - quat.x*quat.z), 1 - 2*quat.y*quat.y - 2*quat.z*quat.z) ;
     pitch = atan2(2*(quat.x*quat.w + quat.y*quat.z), 1 - 2*quat.x*quat.x - 2*quat.z*quat.z);
     yaw = asin(2*quat.x*quat.y + 2*quat.w*quat.z);
-
-    CATransform3D rotationTransform = CATransform3DMakeRotation(attitude.roll, 0, 0, 1);
-    rotationTransform = CATransform3DRotate(rotationTransform, attitude.yaw, 0, 1, 0);
-    rotationTransform = CATransform3DRotate(rotationTransform, attitude.pitch, 1, 0, 0);
     
+    CATransform3D rotationTransform = CATransform3DIdentity;
+    if (UIDeviceOrientationIsPortrait([UIDevice currentDevice].orientation)) {
+        rotationTransform = CATransform3DRotate(rotationTransform, -attitude.roll, 0, 1, 0);
+        rotationTransform = CATransform3DRotate(rotationTransform, -attitude.yaw, 1, 0, 0);
+        rotationTransform = CATransform3DRotate(rotationTransform, -attitude.pitch, 0, 0, 1);
+    } else {
+        rotationTransform = CATransform3DRotate(rotationTransform, attitude.roll, 0, 0, 1);
+        rotationTransform = CATransform3DRotate(rotationTransform, attitude.yaw, 0, 1, 0);
+        rotationTransform = CATransform3DRotate(rotationTransform, attitude.pitch, 1, 0, 0);
+    }
 //    rotationMatrix.m00 = transform.m11;
 //    rotationMatrix.m01 = transform.m12;
 //    rotationMatrix.m02 = transform.m13;
@@ -283,7 +294,49 @@ GLint uniforms[NUM_UNIFORMS];
 //    rotationMatrix.m32 = transform.m43;
 //    rotationMatrix.m33 = transform.m44;
     
-    return rotationTransform;
+    NSLog(@"orientation - %@", UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation) ? @"Landscape" : @"Portrait");
+    CMRotationMatrix rotationMatrix = attitude.rotationMatrix;
+    CATransform3D transform = CATransform3DIdentity;
+    transform.m11 = rotationMatrix.m11;
+    transform.m12 = rotationMatrix.m12;
+    transform.m13 = rotationMatrix.m13;
+    transform.m21 = rotationMatrix.m21;
+    transform.m22 = rotationMatrix.m22;
+    transform.m23 = rotationMatrix.m23;
+    transform.m31 = rotationMatrix.m31;
+    transform.m32 = rotationMatrix.m32;
+    transform.m33 = rotationMatrix.m33;
+    
+    CATransform3D fixedTransform = transform;// CATransform3DRotate(transform, -M_PI /2, 0, 0, 0);
+//    fixedTransform = CATransform3DRotate(fixedTransform, M_PI / 2, 0, 1, 0);
+//    fixedTransform = CATransform3DRotate(fixedTransform, -M_PI / 2, 0, 0, 1);
+    CATransform3D transponsed = [self transposedMatrix:fixedTransform];
+
+    return transponsed;
+}
+
+- (CATransform3D)transposedMatrix:(CATransform3D)transform
+{
+    CATransform3D transponsed;
+    
+    transponsed.m11 = transform.m11;
+    transponsed.m12 = transform.m21;
+    transponsed.m13 = transform.m31;
+    transponsed.m14 = transform.m41;
+    transponsed.m21 = transform.m12;
+    transponsed.m22 = transform.m22;
+    transponsed.m23 = transform.m32;
+    transponsed.m24 = transform.m42;
+    transponsed.m31 = transform.m13;
+    transponsed.m32 = transform.m23;
+    transponsed.m33 = transform.m33;
+    transponsed.m34 = transform.m43;
+    transponsed.m41 = transform.m14;
+    transponsed.m42 = transform.m24;
+    transponsed.m43 = transform.m34;
+    transponsed.m44 = transform.m44;
+    
+    return transponsed;
 }
 
 #pragma mark - Touches
@@ -407,9 +460,10 @@ GLint uniforms[NUM_UNIFORMS];
     CABasicAnimation *animation;
     if (self.navigationController.navigationBarHidden) {
         toValue.y += bottomView.bounds.size.height;
-        animation = [SPHAnimationProvider animationForMovingViewFromValue:[NSValue valueWithCGPoint:fromValue] toValue:[NSValue valueWithCGPoint:toValue]  withDuration:0.3];
+        animation = [SPHAnimationProvider animationForMovingViewFromValue:[NSValue valueWithCGPoint:fromValue] toValue:[NSValue valueWithCGPoint:toValue]  withDuration:0.25];
     } else {
-        animation = [SPHAnimationProvider animationForMovingViewFromValue:[NSValue valueWithCGPoint:fromValue] toValue:[NSValue valueWithCGPoint:toValue]  withDuration:0.9];
+        fromValue.y += bottomView.bounds.size.height;
+        animation = [SPHAnimationProvider animationForMovingViewFromValue:[NSValue valueWithCGPoint:fromValue] toValue:[NSValue valueWithCGPoint:toValue]  withDuration:0.25];
     }
     [bottomView.layer addAnimation:animation forKey:nil];
     bottomView.layer.position = toValue;
@@ -455,7 +509,7 @@ GLint uniforms[NUM_UNIFORMS];
 {
     _currentProjectionMatrix = GLKMatrix4MakeRotation(kDefStartY, 0, 1, 0);
     _cameraProjectionMatrix = GLKMatrix4MakeRotation(kDefStartX, 1, 0, 0);
-    self.zoomValue = 1.0f;
+    self.zoomValue = 1.2f;
 }
 
 #pragma mark - Cleanup
