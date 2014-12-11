@@ -28,7 +28,7 @@
 - (void)play;
 - (void)pause;
 - (void)stop;
-- (void)seekPositionAtProgress:(CGFloat)progressValue;
+- (void)seekPositionAtProgress:(CGFloat)progressValue withPlayingStatus:(BOOL)isPlaying;
 - (void)setPlayerVolume:(CGFloat)volume;
 - (void)setPlayerRate:(CGFloat)rate;
 - (BOOL)isPlayerPlayVideo;

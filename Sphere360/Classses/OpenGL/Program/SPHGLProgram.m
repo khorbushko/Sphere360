@@ -178,12 +178,15 @@ typedef void (*GLLogFunction) (GLuint program, GLsizei bufsize, GLsizei* length,
 {
     if (vertShader) {
         glDeleteShader(vertShader);
+        vertShader = 0;
     }
     if (fragShader) {
         glDeleteShader(fragShader);
+        fragShader = 0;
     }
     if (_program) {
         glDeleteProgram(_program);
+        _program =0;
     }    
 }
 

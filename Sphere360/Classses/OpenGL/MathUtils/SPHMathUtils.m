@@ -31,6 +31,7 @@ CATransform3D CATransform3DMakePerspective(CGFloat fovY, CGFloat aspectRatio, CG
 + (GLKMatrix4)GLKMatrixFromCATransform3D:(CATransform3D)transform
 {
     GLKMatrix4 rotationMatrix;
+
     CGFloat *srcPointer = (CGFloat *)&transform;
     float *dstPointer = (float *)&rotationMatrix;
     for (int i = 0; i < 16; i++) {

@@ -78,13 +78,11 @@
     CIImage *ciImage = [CIImage imageWithCVPixelBuffer:pixelBuffer];
     
     CIContext *temporaryContext = [CIContext contextWithOptions:nil];
-    CGImageRef videoImage = [temporaryContext
-                             createCGImage:ciImage
-                             fromRect:CGRectMake(0, 0,
-                                                 CVPixelBufferGetWidth(pixelBuffer),
-                                                 CVPixelBufferGetHeight(pixelBuffer))];
+    CGImageRef videoImage = [temporaryContext createCGImage:ciImage fromRect:CGRectMake(0, 0, CVPixelBufferGetWidth(pixelBuffer), CVPixelBufferGetHeight(pixelBuffer))];
     
     UIImage *image = [UIImage imageWithCGImage:videoImage];
+    CGImageRelease(videoImage);
+    
     CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
     CFRelease(pixelBuffer);
     
@@ -96,35 +94,36 @@
 {
     CVPixelBufferLockBaseAddress(pixelBuffer, 0);
     
-    int w = (int)CVPixelBufferGetWidth(pixelBuffer);
-    int h = (int)CVPixelBufferGetHeight(pixelBuffer);
-    int r = (int)CVPixelBufferGetBytesPerRow(pixelBuffer);
-    int bytesPerPixel = r/w;
+    int width = (int)CVPixelBufferGetWidth(pixelBuffer);
+    int hight = (int)CVPixelBufferGetHeight(pixelBuffer);
+    int rows = (int)CVPixelBufferGetBytesPerRow(pixelBuffer);
+    int bytesPerPixel = rows/width;
     
-    unsigned char *bufferU = CVPixelBufferGetBaseAddress(pixelBuffer);
-    UIGraphicsBeginImageContext(CGSizeMake(w, h));
+    unsigned char *bufferPointer = CVPixelBufferGetBaseAddress(pixelBuffer);
+    UIGraphicsBeginImageContext(CGSizeMake(width, hight));
     
-    CGContextRef c = UIGraphicsGetCurrentContext();
+    CGContextRef context = UIGraphicsGetCurrentContext();
     
-    unsigned char* data = CGBitmapContextGetData(c);
+    unsigned char* data = CGBitmapContextGetData(context);
     if (data) {
-        int maxY = h;
+        int maxY = hight;
         for(int y = 0; y < maxY; y++) {
-            for(int x = 0; x < w; x++) {
-                int offset = bytesPerPixel*((w*y)+x);
-                data[offset] = bufferU[offset];     // R
-                data[offset+1] = bufferU[offset+1]; // G
-                data[offset+2] = bufferU[offset+2]; // B
-                data[offset+3] = bufferU[offset+3]; // A
+            for(int x = 0; x < width; x++) {
+                int offset = bytesPerPixel*((width*y)+x);
+                data[offset] = bufferPointer[offset];     // R
+                data[offset+1] = bufferPointer[offset+1]; // G
+                data[offset+2] = bufferPointer[offset+2]; // B
+                data[offset+3] = bufferPointer[offset+3]; // A
             }
         }
     }
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    
+
     CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
     CVBufferRelease(pixelBuffer);
-    //CFRelease(pixelBuffer); //can cause crash in NULL pixelBuffer
+    //CFRelease(pixelBuffer);
+    
     return image;
 }
 

@@ -20,7 +20,9 @@
 @property (assign, nonatomic) CGFloat urlAssetDuration;
 @property (strong, nonatomic) AVURLAsset *urlAsset;
 @property (strong, nonatomic) SPHVideoPlayer *videoPlayer;
+@property (assign, nonatomic) BOOL isPlaying;
 
+@property (assign, nonatomic) CGFloat playedProgress;
 @property (assign, nonatomic) CGFloat downloadedProgress;
 
 @end
@@ -77,10 +79,12 @@
     if ([self.videoPlayer isPlayerPlayVideo]) {
         [self.playStopButton setTitle:@"Play" forState:UIControlStateNormal];
         [self.videoPlayer pause];
+        self.isPlaying = NO;
     } else {
         [self.playStopButton setTitle:@"Pause" forState:UIControlStateNormal];
         [self.videoPlayer play];
         self.volumeSlider.value = self.videoPlayer.volume;
+        self.isPlaying = YES;
     }
 }
 
@@ -123,9 +127,7 @@
         self.videoProgressSlider.value = progress;
         NSLog(@"Progress - %f", progress * 100);
     }
-    if ((self.downloadedProgress - progress) > 0.1) {
-        [self enableControlls];
-    }
+    self.playedProgress = progress;
 }
 
 - (void)progressChangedToTime:(CMTime)time
@@ -137,6 +139,17 @@
 {
     NSLog(@"Downloaded - %f percentage", progress * 100);
     self.downloadedProgress = progress;
+    if (progress >= (self.playedProgress)) {
+        [self.downloadingActivityIndicator startAnimating];
+    } else {
+        [self.downloadingActivityIndicator stopAnimating];
+    }
+    if ((progress - self.playedProgress) > 0.1) {
+        [self enableControlls];
+        if (self.isPlaying) {
+            [self.videoPlayer play];
+        }
+    }
 }
 
 #pragma mark - UIConfiguration
@@ -166,8 +179,8 @@
 - (void)progressSliderTouchedUp
 {
     [self.videoPlayer pause];
-    [self disableControls];
-    [self.videoPlayer seekPositionAtProgress:self.videoProgressSlider.value];
+    [self.downloadingActivityIndicator startAnimating];
+    [self.videoPlayer seekPositionAtProgress:self.videoProgressSlider.value withPlayingStatus:self.isPlaying];
 }
 
 - (void)volumeSliderTouchedUp
@@ -204,11 +217,6 @@
     self.videoPlayer.delegate = nil;
     self.urlAsset = nil;
     self.videoPlayer = nil;
-}
-
-- (void)dealloc
-{
-    [self clearPlayer];
 }
 
 @end

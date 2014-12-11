@@ -15,6 +15,7 @@
 		ED45D35D1A37441F00D7914D /* SPHMathUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = ED45D35C1A37441F00D7914D /* SPHMathUtils.m */; };
 		EDA245991A383198004FD7C6 /* SPHInternetStatusChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = EDA245951A383198004FD7C6 /* SPHInternetStatusChecker.m */; };
 		EDA2459A1A383198004FD7C6 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = EDA245981A383198004FD7C6 /* Reachability.m */; };
+		EDA2459C1A386C1E004FD7C6 /* No_Image_Available.png in Resources */ = {isa = PBXBuildFile; fileRef = EDA2459B1A386C1E004FD7C6 /* No_Image_Available.png */; };
 		EDAC3A681A2C7F9E00EB6DE0 /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = EDAC3A661A2C7F9E00EB6DE0 /* Shader.vsh */; };
 		EDAC3A691A2C7F9E00EB6DE0 /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = EDAC3A671A2C7F9E00EB6DE0 /* Shader.fsh */; };
 		EDAC3A6D1A2C809500EB6DE0 /* SPHGLProgram.m in Sources */ = {isa = PBXBuildFile; fileRef = EDAC3A6C1A2C809500EB6DE0 /* SPHGLProgram.m */; };
@@ -34,11 +35,6 @@
 		EDCFC7051A2C671E00613D7B /* SPHAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCFC7041A2C671E00613D7B /* SPHAppDelegate.m */; };
 		EDCFC7081A2C671E00613D7B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EDCFC7061A2C671E00613D7B /* Main.storyboard */; };
 		EDCFC70D1A2C671E00613D7B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EDCFC70C1A2C671E00613D7B /* Images.xcassets */; };
-		EDCFC7141A2C671E00613D7B /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDCFC7131A2C671E00613D7B /* XCTest.framework */; };
-		EDCFC7151A2C671E00613D7B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDCFC6F41A2C671E00613D7B /* Foundation.framework */; };
-		EDCFC7161A2C671E00613D7B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDCFC6F81A2C671E00613D7B /* UIKit.framework */; };
-		EDCFC71E1A2C671F00613D7B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EDCFC71C1A2C671F00613D7B /* InfoPlist.strings */; };
-		EDCFC7201A2C671F00613D7B /* Sphere360Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCFC71F1A2C671F00613D7B /* Sphere360Tests.m */; };
 		EDCFC72A1A2C673100613D7B /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDCFC7291A2C673100613D7B /* GLKit.framework */; };
 		EDCFC7301A2C67F100613D7B /* SPHMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCFC72F1A2C67F100613D7B /* SPHMainViewController.m */; };
 		EDCFC7431A2C6A2B00613D7B /* GIR000009.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = EDCFC7421A2C6A2B00613D7B /* GIR000009.jpeg */; };
@@ -50,16 +46,6 @@
 		EDEFC8C51A2DAD7100E01E11 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDEFC8C41A2DAD7100E01E11 /* CoreMedia.framework */; };
 		EDFAC6D91A2C74290059BBD0 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDFAC6D81A2C74290059BBD0 /* OpenGLES.framework */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		EDCFC7171A2C671F00613D7B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = EDCFC6E91A2C671E00613D7B /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = EDCFC6F01A2C671E00613D7B;
-			remoteInfo = Sphere360;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		84A1B4231A35D69600B17A58 /* LiveIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LiveIcon.png; sourceTree = "<group>"; };
@@ -75,12 +61,12 @@
 		EDA245951A383198004FD7C6 /* SPHInternetStatusChecker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHInternetStatusChecker.m; sourceTree = "<group>"; };
 		EDA245971A383198004FD7C6 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		EDA245981A383198004FD7C6 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		EDA2459B1A386C1E004FD7C6 /* No_Image_Available.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = No_Image_Available.png; sourceTree = "<group>"; };
 		EDAC3A661A2C7F9E00EB6DE0 /* Shader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader.vsh; sourceTree = "<group>"; };
 		EDAC3A671A2C7F9E00EB6DE0 /* Shader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader.fsh; sourceTree = "<group>"; };
 		EDAC3A6B1A2C809500EB6DE0 /* SPHGLProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHGLProgram.h; sourceTree = "<group>"; };
 		EDAC3A6C1A2C809500EB6DE0 /* SPHGLProgram.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHGLProgram.m; sourceTree = "<group>"; };
 		EDAC3A731A2C861900EB6DE0 /* 3D.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = 3D.mp4; sourceTree = "<group>"; };
-		EDAC3A741A2C8B1200EB6DE0 /* Sphere.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sphere.h; sourceTree = "<group>"; };
 		EDAC3A761A2C94F800EB6DE0 /* SPHAnimationProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHAnimationProvider.h; sourceTree = "<group>"; };
 		EDAC3A771A2C94F800EB6DE0 /* SPHAnimationProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHAnimationProvider.m; sourceTree = "<group>"; };
 		EDAC3A7E1A2C986F00EB6DE0 /* SPHTextureProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHTextureProvider.h; sourceTree = "<group>"; };
@@ -105,7 +91,6 @@
 		EDCFC7041A2C671E00613D7B /* SPHAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SPHAppDelegate.m; sourceTree = "<group>"; };
 		EDCFC7071A2C671E00613D7B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		EDCFC70C1A2C671E00613D7B /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		EDCFC7121A2C671E00613D7B /* Sphere360Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Sphere360Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EDCFC7131A2C671E00613D7B /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		EDCFC71B1A2C671F00613D7B /* Sphere360Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Sphere360Tests-Info.plist"; sourceTree = "<group>"; };
 		EDCFC71D1A2C671F00613D7B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -123,6 +108,7 @@
 		EDCFEE1F1A31EB5B003ADA91 /* SPHVideoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHVideoViewController.h; sourceTree = "<group>"; };
 		EDCFEE201A31EB5B003ADA91 /* SPHVideoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHVideoViewController.m; sourceTree = "<group>"; };
 		EDCFEE221A31F50D003ADA91 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		EDD6CC7D1A39A48700F2D8E7 /* Sphere.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sphere.h; sourceTree = "<group>"; };
 		EDEFC8C41A2DAD7100E01E11 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		EDFAC6D31A2C6C4B0059BBD0 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		EDFAC6D81A2C74290059BBD0 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -146,22 +132,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		EDCFC70F1A2C671E00613D7B /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				EDCFC7141A2C671E00613D7B /* XCTest.framework in Frameworks */,
-				EDCFC7161A2C671E00613D7B /* UIKit.framework in Frameworks */,
-				EDCFC7151A2C671E00613D7B /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		84A1B4221A35D68E00B17A58 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				EDA2459B1A386C1E004FD7C6 /* No_Image_Available.png */,
 				84A1B4231A35D69600B17A58 /* LiveIcon.png */,
 				84A1B4241A35D69600B17A58 /* PhotoIcon.png */,
 				84A1B4251A35D69600B17A58 /* VideoIcon.png */,
@@ -303,7 +280,6 @@
 			isa = PBXGroup;
 			children = (
 				EDCFC6F11A2C671E00613D7B /* Sphere360.app */,
-				EDCFC7121A2C671E00613D7B /* Sphere360Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -417,7 +393,7 @@
 		EDCFC73E1A2C69A500613D7B /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				EDAC3A741A2C8B1200EB6DE0 /* Sphere.h */,
+				EDD6CC7D1A39A48700F2D8E7 /* Sphere.h */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -505,24 +481,6 @@
 			productReference = EDCFC6F11A2C671E00613D7B /* Sphere360.app */;
 			productType = "com.apple.product-type.application";
 		};
-		EDCFC7111A2C671E00613D7B /* Sphere360Tests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = EDCFC7261A2C671F00613D7B /* Build configuration list for PBXNativeTarget "Sphere360Tests" */;
-			buildPhases = (
-				EDCFC70E1A2C671E00613D7B /* Sources */,
-				EDCFC70F1A2C671E00613D7B /* Frameworks */,
-				EDCFC7101A2C671E00613D7B /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				EDCFC7181A2C671F00613D7B /* PBXTargetDependency */,
-			);
-			name = Sphere360Tests;
-			productName = Sphere360Tests;
-			productReference = EDCFC7121A2C671E00613D7B /* Sphere360Tests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -532,11 +490,6 @@
 				CLASSPREFIX = SPH;
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Kirill Gorbushko";
-				TargetAttributes = {
-					EDCFC7111A2C671E00613D7B = {
-						TestTargetID = EDCFC6F01A2C671E00613D7B;
-					};
-				};
 			};
 			buildConfigurationList = EDCFC6EC1A2C671E00613D7B /* Build configuration list for PBXProject "Sphere360" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -552,7 +505,6 @@
 			projectRoot = "";
 			targets = (
 				EDCFC6F01A2C671E00613D7B /* Sphere360 */,
-				EDCFC7111A2C671E00613D7B /* Sphere360Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -571,15 +523,8 @@
 				EDCFC7431A2C6A2B00613D7B /* GIR000009.jpeg in Resources */,
 				EDCFC6FF1A2C671E00613D7B /* InfoPlist.strings in Resources */,
 				EDCFC7081A2C671E00613D7B /* Main.storyboard in Resources */,
+				EDA2459C1A386C1E004FD7C6 /* No_Image_Available.png in Resources */,
 				EDAC3A681A2C7F9E00EB6DE0 /* Shader.vsh in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		EDCFC7101A2C671E00613D7B /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				EDCFC71E1A2C671F00613D7B /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -610,23 +555,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		EDCFC70E1A2C671E00613D7B /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				EDCFC7201A2C671F00613D7B /* Sphere360Tests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		EDCFC7181A2C671F00613D7B /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = EDCFC6F01A2C671E00613D7B /* Sphere360 */;
-			targetProxy = EDCFC7171A2C671F00613D7B /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		EDCFC6FD1A2C671E00613D7B /* InfoPlist.strings */ = {
@@ -758,46 +687,6 @@
 			};
 			name = Release;
 		};
-		EDCFC7271A2C671F00613D7B /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Sphere360.app/Sphere360";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Sphere360/Sphere360-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "Sphere360Tests/Sphere360Tests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = xctest;
-			};
-			name = Debug;
-		};
-		EDCFC7281A2C671F00613D7B /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Sphere360.app/Sphere360";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Sphere360/Sphere360-Prefix.pch";
-				INFOPLIST_FILE = "Sphere360Tests/Sphere360Tests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = xctest;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -815,15 +704,6 @@
 			buildConfigurations = (
 				EDCFC7241A2C671F00613D7B /* Debug */,
 				EDCFC7251A2C671F00613D7B /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		EDCFC7261A2C671F00613D7B /* Build configuration list for PBXNativeTarget "Sphere360Tests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				EDCFC7271A2C671F00613D7B /* Debug */,
-				EDCFC7281A2C671F00613D7B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

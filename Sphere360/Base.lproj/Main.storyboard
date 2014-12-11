@@ -109,7 +109,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="250" height="200"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fsE-tY-ZvQ" userLabel="thumbnail">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="No_Image_Available.png" translatesAutoresizingMaskIntoConstraints="NO" id="fsE-tY-ZvQ" userLabel="thumbnail">
                                                     <rect key="frame" x="0.0" y="0.0" width="250" height="160"/>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="250" translatesAutoresizingMaskIntoConstraints="NO" id="sRc-D0-7bg" userLabel="title">
@@ -358,6 +358,7 @@
     </scenes>
     <resources>
         <image name="LiveIcon.png" width="512" height="512"/>
+        <image name="No_Image_Available.png" width="300" height="300"/>
         <image name="PhotoIcon.png" width="512" height="512"/>
         <image name="VideoIcon.png" width="512" height="512"/>
     </resources>

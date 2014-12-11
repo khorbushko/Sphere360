@@ -13,9 +13,6 @@
 #import <CoreMedia/CoreMedia.h>
 #import "SPHMathUtils.h"
 
-static CGFloat const kDefStartY = -1.8f;
-static CGFloat const kDefStartX = -3.0f;
-
 static CGFloat const kMinimumZoomValue = 0.767f;
 static CGFloat const kMaximumZoomValue = 1.7f;
 
@@ -132,7 +129,6 @@ GLint uniforms[NUM_UNIFORMS];
             GLuint textureName = _texture.name;
             glDeleteTextures(1, &textureName);
         }
-        [EAGLContext setCurrentContext:self.context];
         _texture = textureInfo;
         if (outError){
             NSLog(@"GL Error = %u", glGetError());
@@ -164,8 +160,8 @@ GLint uniforms[NUM_UNIFORMS];
     
     if (self.isGyroModeActive) {
         modelViewMatrix = [SPHMathUtils GLKMatrixFromCATransform3D:[self rotationMatrixFromGyro]];
-        projectionMatrix = GLKMatrix4Rotate(projectionMatrix, -M_PI / 2, 1, 0, 0);
-        projectionMatrix = GLKMatrix4Rotate(projectionMatrix, kDefStartY, 0, 1, 0);
+//        modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, M_PI_2, 1, 0, 0);
+
     } else {
         projectionMatrix = GLKMatrix4Multiply(projectionMatrix, _cameraProjectionMatrix);
         modelViewMatrix = _currentProjectionMatrix;
@@ -184,6 +180,7 @@ GLint uniforms[NUM_UNIFORMS];
     glBindVertexArrayOES(_vertexArrayID);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glBlendFunc(GL_ONE, GL_ZERO);
     glUniformMatrix4fv(uniforms[UNIFORM_MVPMATRIX], 1, 0, _modelViewProjectionMatrix.m);
     if (_texture) {
         glBindTexture(GL_TEXTURE_2D, _texture.name);
@@ -239,7 +236,7 @@ GLint uniforms[NUM_UNIFORMS];
         if (!self.motionManager.isDeviceMotionActive) {
             self.isGyroModeActive = YES;
             self.motionManager.gyroUpdateInterval = 1 / 60;
-            [self.motionManager startDeviceMotionUpdates];
+            [self.motionManager startDeviceMotionUpdatesUsingReferenceFrame:CMAttitudeReferenceFrameXMagneticNorthZVertical];
         } else {
             [self.motionManager stopDeviceMotionUpdates];
             self.isGyroModeActive = NO;
@@ -251,41 +248,30 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (CATransform3D)rotationMatrixFromGyro
 {
-    CGFloat roll, yaw, pitch;
     CMAttitude *attitude = self.motionManager.deviceMotion.attitude;
-    
-//    CATransform3D rotationTransform = [SPHMathUtils CATransform3DMatrixFromCMRotationMatrix:attitude.rotationMatrix];
+    CATransform3D rotationTransform = [self CATransform3DMatrixFromCMRotationMatrix:attitude.rotationMatrix];
+//    CMQuaternion
 
-    CMQuaternion quat = self.motionManager.deviceMotion.attitude.quaternion;
-    roll = atan2(2*(quat.y*quat.w - quat.x*quat.z), 1 - 2*quat.y*quat.y - 2*quat.z*quat.z) ;
-    pitch = atan2(2*(quat.x*quat.w + quat.y*quat.z), 1 - 2*quat.x*quat.x - 2*quat.z*quat.z);
-    yaw = asin(2*quat.x*quat.y + 2*quat.w*quat.z);
-
-    CATransform3D rotationTransform = CATransform3DMakeRotation(attitude.roll, 0, 0, 1);
-    rotationTransform = CATransform3DRotate(rotationTransform, attitude.yaw, 0, 1, 0);
-    rotationTransform = CATransform3DRotate(rotationTransform, attitude.pitch, 1, 0, 0);
-    
-//    rotationMatrix.m00 = transform.m11;
-//    rotationMatrix.m01 = transform.m12;
-//    rotationMatrix.m02 = transform.m13;
-//    rotationMatrix.m03 = transform.m14;
-//    
-//    rotationMatrix.m10 = transform.m21;
-//    rotationMatrix.m11 = transform.m22;
-//    rotationMatrix.m12 = transform.m23;
-//    rotationMatrix.m13 = transform.m24;
-//    
-//    rotationMatrix.m20 = transform.m31;
-//    rotationMatrix.m21 = transform.m32;
-//    rotationMatrix.m22 = transform.m33;
-//    rotationMatrix.m23 = transform.m34;
-//    
-//    rotationMatrix.m30 = transform.m41;
-//    rotationMatrix.m31 = transform.m42;
-//    rotationMatrix.m32 = transform.m43;
-//    rotationMatrix.m33 = transform.m44;
-    
     return rotationTransform;
+}
+
+- (CATransform3D)CATransform3DMatrixFromCMRotationMatrix:(CMRotationMatrix)transform
+{
+    CATransform3D rotationMatrix = CATransform3DIdentity;
+    
+    rotationMatrix.m11 = transform.m11;
+    rotationMatrix.m12 = transform.m12;
+    rotationMatrix.m13 = transform.m13;
+    
+    rotationMatrix.m21 = transform.m21;
+    rotationMatrix.m22 = transform.m22;
+    rotationMatrix.m23 = transform.m23;
+    
+    rotationMatrix.m31 = transform.m31;
+    rotationMatrix.m32 = transform.m32;
+    rotationMatrix.m33 = transform.m33;
+    
+    return rotationMatrix;
 }
 
 #pragma mark - Touches
@@ -297,7 +283,7 @@ GLint uniforms[NUM_UNIFORMS];
     }
     pointX *= 0.004;
     pointY *= 0.004;
-    GLKMatrix4 rotatedMatrix = GLKMatrix4MakeRotation(pointX / self.zoomValue, 0, 1, 0);
+    GLKMatrix4 rotatedMatrix = GLKMatrix4MakeRotation(-pointX / self.zoomValue, 0, 1, 0);
     _currentProjectionMatrix = GLKMatrix4Multiply(_currentProjectionMatrix, rotatedMatrix);
     
     GLKMatrix4 cameraMatrix = GLKMatrix4MakeRotation(-pointY / self.zoomValue, 1, 0, 0);
@@ -455,8 +441,8 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (void)setInitialParameters
 {
-    _currentProjectionMatrix = GLKMatrix4MakeRotation(kDefStartY, 0, 1, 0);
-    _cameraProjectionMatrix = GLKMatrix4MakeRotation(kDefStartX, 1, 0, 0);
+    _currentProjectionMatrix = GLKMatrix4Identity;
+    _cameraProjectionMatrix = GLKMatrix4Identity;
     self.zoomValue = 1.0f;
 }
 
@@ -474,11 +460,6 @@ GLint uniforms[NUM_UNIFORMS];
         glDeleteTextures(1, &textureName);
     }
     _texture = nil;
-}
-
-- (void)dealloc
-{
-    [self tearDownGL];
 }
 
 @end
