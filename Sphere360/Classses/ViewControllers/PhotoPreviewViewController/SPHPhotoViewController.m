@@ -11,6 +11,7 @@
 @interface SPHPhotoViewController ()
 
 @property (weak, nonatomic) IBOutlet UIView *bottomView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomViewHeightConstraint;
 
 @end
 
@@ -34,7 +35,13 @@
 
 - (void)hideBottomBar
 {
-    [self hideBottomBarView:self.bottomView];
+    BOOL hidden = !self.navigationController.navigationBar.hidden;
+    [self.navigationController setNavigationBarHidden:hidden animated:YES];
+    CGFloat newHeight = hidden ? 0.0f : 60.0f;
+    [UIView animateWithDuration:0.26 animations:^{
+        self.bottomViewHeightConstraint.constant = newHeight;
+        [self.bottomView layoutIfNeeded];
+    }];
 }
 
 #pragma mark - IBActions

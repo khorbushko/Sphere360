@@ -133,6 +133,10 @@ static NSString *const BaseApiPath = @"http://api.360.tv/";
             [self.navigationController pushViewController:baseController animated:YES];
             break;
         }
+        case MediaTypeLive: {
+            //todo
+            break;
+        }
         default:
             break;
     }

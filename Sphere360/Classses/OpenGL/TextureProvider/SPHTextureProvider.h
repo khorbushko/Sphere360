@@ -8,9 +8,6 @@
 
 @interface SPHTextureProvider : NSObject
 
-+ (GLuint)getPoinerToTextureFrom:(UIImage *)image;
-+ (UIImage *)imageWithCVImageBuffer:(CVImageBufferRef)imageBuffer;
-+ (UIImage *)imageWithCVPixelBuffer:(CVPixelBufferRef)pixelBuffer;
 + (CGImageRef)imageWithCVPixelBufferUsingUIGraphicsContext:(CVPixelBufferRef)pixelBuffer;
 
 @end

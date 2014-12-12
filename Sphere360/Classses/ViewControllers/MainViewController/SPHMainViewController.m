@@ -34,7 +34,7 @@ static NSString *apiURL = @"http://api.360.tv/app.json";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.navigationItem.title = @"Menu";
+
     [self loadData];
     [self setupConstraints];
 }
@@ -53,10 +53,17 @@ static NSString *apiURL = @"http://api.360.tv/app.json";
     [self updateUIForOrientation:toInterfaceOrientation];
 }
 
-
 - (void)updateUIForOrientation:(UIInterfaceOrientation)orientation
 {
     [self updateConstraintsForOrientation:orientation];
+}
+
+#pragma mark - IBActions
+
+- (IBAction)liveButton:(id)sender
+{
+    NSString *title = [[[NSBundle mainBundle] localizedInfoDictionary] objectForKey:@"CFBundleDisplayName"];
+    [[[UIAlertView alloc] initWithTitle:title message:@"Live stream currently not avaliable" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
 }
 
 #pragma mark - Private
@@ -100,9 +107,10 @@ static NSString *apiURL = @"http://api.360.tv/app.json";
     NSPredicate *predicate;
     if ([segue.identifier isEqualToString:@"photo"]) {
         predicate = [NSPredicate predicateWithFormat:@"type LIKE 'photo'"];
-    } else {
+    } else if ([segue.identifier isEqualToString:@"video"]){
         predicate = [NSPredicate predicateWithFormat:@"type LIKE 'video'"];
     }
+    
     NSArray *content = [self.appJson filteredArrayUsingPredicate:predicate];
     if (content.count) {
         ((SPHContentListViewController *)segue.destinationViewController).dataSource = content;

@@ -16,6 +16,7 @@
 @property (weak, nonatomic) IBOutlet UISlider *volumeSlider;
 @property (weak, nonatomic) IBOutlet UIButton *gyroscopeButton;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *downloadingActivityIndicator;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomViewHeightConstraint;
 
 @property (assign, nonatomic) CGFloat urlAssetDuration;
 @property (strong, nonatomic) AVURLAsset *urlAsset;
@@ -64,7 +65,13 @@
 
 - (void)hideBottomBar
 {
-    [self hideBottomBarView:self.bottomView];
+    BOOL hidden = !self.navigationController.navigationBar.hidden;
+    [self.navigationController setNavigationBarHidden:hidden animated:YES];
+    CGFloat newHeight = hidden ? 0.0f : 60.0f;
+    [UIView animateWithDuration:0.26 animations:^{
+        self.bottomViewHeightConstraint.constant = newHeight;
+        [self.bottomView layoutIfNeeded];
+    }];
 }
 
 #pragma mark - IBActions
@@ -77,15 +84,14 @@
 - (IBAction)playStopButtonPress:(id)sender
 {
     if ([self.videoPlayer isPlaying]) {
-        [self.playStopButton setTitle:@"Play" forState:UIControlStateNormal];
         [self.videoPlayer pause];
         self.isPlaying = NO;
     } else {
-        [self.playStopButton setTitle:@"Pause" forState:UIControlStateNormal];
         [self.videoPlayer play];
         self.volumeSlider.value = self.videoPlayer.volume;
         self.isPlaying = YES;
     }
+    self.playStopButton.selected = !self.playStopButton.selected;
 }
 
 #pragma mark - Video
@@ -111,7 +117,7 @@
             [self setupTextureWithImage:[self.videoPlayer getCurrentFramePicture]];
         }
     }
-    [self drawArrayOfData];
+    [self drawArraysGL];
 }
 
 #pragma mark - SPHVideoPlayerDelegate
@@ -144,7 +150,7 @@
     } else {
         [self.downloadingActivityIndicator stopAnimating];
     }
-    if ((progress - self.playedProgress) > 0.1) {
+    if ((progress - self.playedProgress) > 0.03) {
         [self enableControlls];
         if (self.isPlaying) {
             [self.videoPlayer play];

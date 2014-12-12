@@ -10,4 +10,10 @@
 
 @implementation SPHContentCollectionViewCell
 
+- (void)prepareForReuse
+{
+    [super prepareForReuse];
+    self.thumbnailImageView.image = nil;
+}
+
 @end

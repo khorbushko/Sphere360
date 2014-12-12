@@ -6,14 +6,13 @@
 //  Copyright (c) 2014 Kirill Gorbushko. All rights reserved.
 //
 
-#import "SPHAnimationProvider.h"
 #import "SPHVideoPlayer.h"
 
-typedef enum {
+typedef NS_ENUM(NSInteger, MediaType) {
     MediaTypePhoto,
     MediaTypeVideo,
     MediaTypeLive
-} MediaType;
+};
 
 @interface SPHBaseViewController : GLKViewController
 
@@ -27,7 +26,6 @@ typedef enum {
 - (void)tapGesture;
 - (void)update;
 - (void)applyImageTexture;
-- (void)hideBottomBarView:(UIView *)bottomView;
-- (void)drawArrayOfData;
+- (void)drawArraysGL;
 
 @end

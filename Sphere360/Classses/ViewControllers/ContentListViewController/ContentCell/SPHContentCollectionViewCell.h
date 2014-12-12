@@ -6,8 +6,6 @@
 //  Copyright (c) 2014 Kirill Gorbushko. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-
 @interface SPHContentCollectionViewCell : UICollectionViewCell
 
 @property (weak, nonatomic) IBOutlet UIImageView *thumbnailImageView;

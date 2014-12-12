@@ -12,85 +12,6 @@
 
 @implementation SPHTextureProvider
 
-#pragma mark - Public
-
-#pragma mark - Image Operations
-
-+ (GLuint)getPoinerToTextureFrom:(UIImage *)image
-{
-    int	_width;
-	int	 _height;
-	void *_data;
-    
-    CGImageRef cgImage;
-    CGContextRef context;
-    CGColorSpaceRef	colorSpace;
-    
-    cgImage = [image CGImage];
-    
-    _width = (int)CGImageGetWidth(cgImage);
-    _height = (int)CGImageGetHeight(cgImage);
-    
-    colorSpace = CGColorSpaceCreateDeviceRGB();
-    _data = malloc(_width * _height * 4);
-    context = CGBitmapContextCreate(_data, _width, _height, 8, 4 * _width, colorSpace,
-                                    kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
-    CGColorSpaceRelease(colorSpace);
-    
-    CGContextTranslateCTM(context, 0, _height);
-    CGContextScaleCTM(context, 1.0, -1.0);
-    
-    CGContextClearRect(context, CGRectMake(0, 0, _width, _height));
-    CGContextDrawImage(context, CGRectMake(0, 0, _width, _height), cgImage);
-    
-    CGContextRelease(context);
-    
-    GLuint texturePointer = newTexture(_width, _height, _data);
-    
-    return texturePointer;
-}
-
-+ (UIImage *)imageWithCVImageBuffer:(CVImageBufferRef)imageBuffer
-{
-    CVPixelBufferLockBaseAddress(imageBuffer,0);
-    uint8_t *baseAddress = (uint8_t *)CVPixelBufferGetBaseAddress(imageBuffer);
-    size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
-    size_t width = CVPixelBufferGetWidth(imageBuffer);
-    size_t height = CVPixelBufferGetHeight(imageBuffer);
-    
-    //here was unlock
-    
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGContextRef newContext = CGBitmapContextCreate(baseAddress, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
-    CGImageRef newImage = CGBitmapContextCreateImage(newContext);
-    
-    CGContextRelease(newContext);
-    CGColorSpaceRelease(colorSpace);
-    
-    UIImage *image= [UIImage imageWithCGImage:newImage scale:1.0 orientation:UIImageOrientationRight];
-    CGImageRelease(newImage);
-    CVPixelBufferUnlockBaseAddress(imageBuffer,0);
-    return image;
-}
-
-+ (UIImage *)imageWithCVPixelBuffer:(CVPixelBufferRef)pixelBuffer
-{
-    CVPixelBufferLockBaseAddress(pixelBuffer, 0);
-    CIImage *ciImage = [CIImage imageWithCVPixelBuffer:pixelBuffer];
-    
-    CIContext *temporaryContext = [CIContext contextWithOptions:nil];
-    CGImageRef videoImage = [temporaryContext createCGImage:ciImage fromRect:CGRectMake(0, 0, CVPixelBufferGetWidth(pixelBuffer), CVPixelBufferGetHeight(pixelBuffer))];
-    
-    UIImage *image = [UIImage imageWithCGImage:videoImage];
-    CGImageRelease(videoImage);
-    
-    CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
-    CFRelease(pixelBuffer);
-    
-    return image;
-}
-
-//must Be faster `10 times than "imageWithCVPixelBuffer:(CVPixelBufferRef)pixelBuffer" -> stackoverflow
 + (CGImageRef)imageWithCVPixelBufferUsingUIGraphicsContext:(CVPixelBufferRef)pixelBuffer
 {
     CVPixelBufferLockBaseAddress(pixelBuffer, 0);
@@ -126,23 +47,6 @@
 //    CFRelease(pixelBuffer);
     
     return cgImage;
-}
-
-#pragma mark - Private
-
-#pragma mark - C
-
-GLuint newTexture(GLsizei width, GLsizei height, const GLvoid *data)
-{
-	GLuint newTexture;
-	glGenTextures(1, &newTexture);
-	glBindTexture(GL_TEXTURE_2D, newTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glGenerateMipmap(GL_TEXTURE_2D);
-	
-	return newTexture;
 }
 
 @end

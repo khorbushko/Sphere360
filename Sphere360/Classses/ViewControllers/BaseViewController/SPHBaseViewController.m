@@ -11,15 +11,13 @@
 #import <AVFoundation/AVFoundation.h>
 #import "SPHTextureProvider.h"
 #import <CoreMedia/CoreMedia.h>
-#import "SPHMathUtils.h"
 
 static CGFloat const kMinimumZoomValue = 0.767f;
 static CGFloat const kMaximumZoomValue = 1.7f;
-
 static CGFloat const kPreMinimumZoomValue = 0.85f;
 static CGFloat const kPreMaximumZoomValue = 1.45f;
 
-static CGFloat const kVelocityCoef = 0.01f;
+static CGFloat const kAdditionalMovementCoef = 0.01f;
 
 enum {
     UNIFORM_MVPMATRIX,
@@ -75,7 +73,7 @@ GLint uniforms[NUM_UNIFORMS];
     [self addGestures];
     [self setupGyroscope];
     
-    self.textureloader = [[GLKTextureLoader alloc] initWithSharegroup:self.context.sharegroup];
+    [self setupTextureLoader];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -84,16 +82,11 @@ GLint uniforms[NUM_UNIFORMS];
     [self tearDownGL];
 }
 
-- (void)dealloc
-{
-}
-
 #pragma mark - OpenGL Setup
 
 - (void)setupGL
 {
     [EAGLContext setCurrentContext:self.context];
-    
     [self buildProgram];
     
     glDisable(GL_DEPTH_TEST);
@@ -119,7 +112,7 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (void)applyImageTexture
 {
-    
+    //dummy
 }
 
 - (void)setupTextureWithImage:(CGImageRef)image
@@ -127,7 +120,6 @@ GLint uniforms[NUM_UNIFORMS];
     if (!image) {
         return;
     }
-
     NSDictionary *textureOption = @{GLKTextureLoaderOriginBottomLeft : @YES};
     [self.textureloader textureWithCGImage:image options:textureOption queue:NULL completionHandler:^(GLKTextureInfo *textureInfo, NSError *outError) {
         if (outError){
@@ -145,31 +137,32 @@ GLint uniforms[NUM_UNIFORMS];
     }];
 }
 
-#pragma mark - Draw & update methods
+#pragma mark - GLKViewDelegate & GLKVIewControllerDelegte
 
 - (void)update
 {
     if (!CGPointEqualToPoint(self.velocityValue, CGPointZero)) {
-        [self updateMovement];
+        [self setAdditionalMovement];
     }
     if (!self.isZooming) {
-        [self normalizeZoomValue];
+        [self updateZoomValue];
     }
     
     CGFloat FOVY = GLKMathDegreesToRadians(90) / self.zoomValue;
     float aspect = fabsf(self.view.bounds.size.width / self.view.bounds.size.height);
     
     CGFloat cameraDistanse = - (self.zoomValue - kMaximumZoomValue);
-    CATransform3D cameraTranslation = CATransform3DMakeTranslation(0, 0, -cameraDistanse / 2.0);
-    CATransform3D projectionMatrixCATransform = CATransform3DMakePerspective(FOVY, aspect, 0.1, 4.5);
-    projectionMatrixCATransform = CATransform3DConcat(cameraTranslation, projectionMatrixCATransform);
-    
-    GLKMatrix4 projectionMatrix = [SPHMathUtils GLKMatrixFromCATransform3D:projectionMatrixCATransform];
+    GLKMatrix4 cameraTranslation = GLKMatrix4MakeTranslation(0, 0, -cameraDistanse / 2.0);
+    GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(FOVY, aspect, 0.1, 2.4);
+    projectionMatrix = GLKMatrix4Multiply(projectionMatrix, cameraTranslation);
     GLKMatrix4 modelViewMatrix = GLKMatrix4Identity;
 
     if (self.isGyroModeActive) {
         CMQuaternion quat = self.motionManager.deviceMotion.attitude.quaternion;
         GLKQuaternion glQuat = GLKQuaternionMake(-quat.y, -quat.z, -quat.x, quat.w);
+        if (self.interfaceOrientation == UIInterfaceOrientationPortrait) {
+            projectionMatrix = GLKMatrix4Rotate(projectionMatrix, M_PI / 2, 0, 0, 1);
+        }
         modelViewMatrix = GLKMatrix4MakeWithQuaternion(glQuat);
         projectionMatrix = GLKMatrix4Rotate(projectionMatrix, M_PI / 2, 1, 0, 0);
         _modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
@@ -183,10 +176,10 @@ GLint uniforms[NUM_UNIFORMS];
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
 {
     [_program use];	
-    [self drawArrayOfData];
+    [self drawArraysGL];
 }
 
-- (void)drawArrayOfData
+- (void)drawArraysGL
 {
     glBindVertexArrayOES(_vertexArrayID);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -199,7 +192,7 @@ GLint uniforms[NUM_UNIFORMS];
     glDrawArrays(GL_TRIANGLES, 0, SphereNumVerts);
 }
 
-#pragma mark - OpenGL Program
+#pragma mark - OpenGL Setup
 
 - (void)buildProgram
 {
@@ -233,6 +226,11 @@ GLint uniforms[NUM_UNIFORMS];
     view.context = self.context;
 }
 
+- (void)setupTextureLoader
+{
+    self.textureloader = [[GLKTextureLoader alloc] initWithSharegroup:self.context.sharegroup];
+}
+
 #pragma mark - Gyroscope
 
 - (void)setupGyroscope
@@ -257,21 +255,6 @@ GLint uniforms[NUM_UNIFORMS];
     }
 }
 
-- (CATransform3D)rotationMatrixFromGyro
-{
-
-    return CATransform3DIdentity;
-}
-
-
-- (GLKQuaternion)quaternioFromGyro
-{
-    CMAttitude *attitude = self.motionManager.deviceMotion.attitude;
-    GLKQuaternion quaternion = GLKQuaternionMake(0, 0, 0, 1);
-    quaternion = GLKQuaternionMake(0, 0, 0, attitude.quaternion.w);
-    return quaternion;
-}
-
 #pragma mark - Touches
 
 - (void)moveToPointX:(CGFloat)pointX andPointY:(CGFloat)pointY
@@ -290,7 +273,7 @@ GLint uniforms[NUM_UNIFORMS];
 
 #pragma mark - Zoom
 
-- (void)normalizeZoomValue
+- (void)updateZoomValue
 {
     if (self.zoomValue > kPreMaximumZoomValue) {
         self.zoomValue *= 0.97;
@@ -317,7 +300,7 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (void)tapGesture
 {
-    [self hideShowNavigationBar];
+    //dummy
 }
 
 - (void)panGesture:(UIPanGestureRecognizer *)panGesture
@@ -358,16 +341,15 @@ GLint uniforms[NUM_UNIFORMS];
 
 #pragma mark - Velocity
 
-- (void)updateMovement
+- (void)setAdditionalMovement
 {
     self.prevTouchPoint = CGPointZero;
     self.velocityValue = CGPointMake(0.9 * self.velocityValue.x, 0.9 * self.velocityValue.y);
-    CGPoint nextPoint = CGPointMake(kVelocityCoef * self.velocityValue.x, kVelocityCoef * self.velocityValue.y);
+    CGPoint nextPoint = CGPointMake(kAdditionalMovementCoef * self.velocityValue.x, kAdditionalMovementCoef * self.velocityValue.y);
     
     if (fabsf(nextPoint.x) < 0.1 && fabsf(nextPoint.y) < 0.1) {
         self.velocityValue = CGPointZero;
     }
-    
     [self moveToPointX:nextPoint.x andPointY:nextPoint.y];
 }
 
@@ -384,34 +366,11 @@ GLint uniforms[NUM_UNIFORMS];
     [[[UIAlertView alloc] initWithTitle:title message:@"Gyroscope is not avaliable on your device" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
 }
 
-#pragma mark - Animation
-
-- (void)hideBottomBarView:(UIView *)bottomView
-{
-    CGPoint toValue = bottomView.center;
-    CGPoint fromValue = bottomView.center;
-    CABasicAnimation *animation;
-    if (self.navigationController.navigationBarHidden) {
-        toValue.y += bottomView.bounds.size.height;
-        animation = [SPHAnimationProvider animationForMovingViewFromValue:[NSValue valueWithCGPoint:fromValue] toValue:[NSValue valueWithCGPoint:toValue]  withDuration:0.25];
-    } else {
-        fromValue.y += bottomView.bounds.size.height;
-        animation = [SPHAnimationProvider animationForMovingViewFromValue:[NSValue valueWithCGPoint:fromValue] toValue:[NSValue valueWithCGPoint:toValue]  withDuration:0.25];
-    }
-    [bottomView.layer addAnimation:animation forKey:nil];
-    bottomView.layer.position = toValue;
-}
-
 #pragma mark - Private
 
 - (void)setEmptyImage
 {
     [self setupTextureWithImage:[[UIImage alloc] init].CGImage];
-}
-
-- (void)hideShowNavigationBar
-{
-    [self.navigationController setNavigationBarHidden:!self.navigationController.navigationBarHidden animated:YES];
 }
 
 - (void)addGestures
