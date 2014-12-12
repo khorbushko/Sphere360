@@ -16,7 +16,7 @@ static NSString *const BaseApiPath = @"http://api.360.tv/";
 #import "SPHInternetConnection.h"
 #import "MBProgressHUD.h"
 
-@interface SPHContentListViewController () <UICollectionViewDataSource, UICollectionViewDelegate>
+@interface SPHContentListViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 
@@ -72,13 +72,13 @@ static NSString *const BaseApiPath = @"http://api.360.tv/";
 
 - (void)applyPortraitDirection
 {
-    self.collectionView.contentInset = self.portraitInsets;
+    ((UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout).sectionInset = self.portraitInsets;
     ((UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout).scrollDirection = UICollectionViewScrollDirectionVertical;
 }
 
 - (void)applyLandscapeDirection
 {
-    self.collectionView.contentInset = self.landscapeInsets;
+    ((UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout).sectionInset = self.landscapeInsets;
     ((UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout).scrollDirection = UICollectionViewScrollDirectionHorizontal;
 }
 
