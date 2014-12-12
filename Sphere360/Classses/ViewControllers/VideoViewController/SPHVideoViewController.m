@@ -68,7 +68,7 @@
     BOOL hidden = !self.navigationController.navigationBar.hidden;
     [self.navigationController setNavigationBarHidden:hidden animated:YES];
     CGFloat newHeight = hidden ? 0.0f : 60.0f;
-    [UIView animateWithDuration:0.26 animations:^{
+    [UIView animateWithDuration:0.20 animations:^{
         self.bottomViewHeightConstraint.constant = newHeight;
         [self.bottomView layoutIfNeeded];
     }];
