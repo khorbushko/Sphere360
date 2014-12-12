@@ -6,9 +6,9 @@
 //  Copyright (c) 2014 Thinkmobiles. All rights reserved.
 //
 
-#import "SPHInternetStatusChecker.h"
+#import "SPHInternetConnection.h"
 
-@implementation SPHInternetStatusChecker
+@implementation SPHInternetConnection
 
 + (BOOL)isInternetAvaliable
 {

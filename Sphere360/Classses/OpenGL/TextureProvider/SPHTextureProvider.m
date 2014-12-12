@@ -119,12 +119,11 @@
         }
     }
     CGImageRef cgImage = CGBitmapContextCreateImage(context);
-//    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
 
     CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
-//    CVBufferRelease(pixelBuffer);
-    CFRelease(pixelBuffer);
+    CVBufferRelease(pixelBuffer);
+//    CFRelease(pixelBuffer);
     
     return cgImage;
 }

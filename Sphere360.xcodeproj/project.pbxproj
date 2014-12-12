@@ -12,8 +12,9 @@
 		84A1B4281A35D69600B17A58 /* VideoIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 84A1B4251A35D69600B17A58 /* VideoIcon.png */; };
 		84A1B42F1A35E38600B17A58 /* SPHContentListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 84A1B42E1A35E38600B17A58 /* SPHContentListViewController.m */; };
 		84A1B4321A35E39F00B17A58 /* SPHContentCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 84A1B4311A35E39F00B17A58 /* SPHContentCollectionViewCell.m */; };
+		84FC6C351A3B2AF50042A40F /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 84FC6C341A3B2AF50042A40F /* MBProgressHUD.m */; };
 		ED45D35D1A37441F00D7914D /* SPHMathUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = ED45D35C1A37441F00D7914D /* SPHMathUtils.m */; };
-		EDA245991A383198004FD7C6 /* SPHInternetStatusChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = EDA245951A383198004FD7C6 /* SPHInternetStatusChecker.m */; };
+		EDA245991A383198004FD7C6 /* SPHInternetConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = EDA245951A383198004FD7C6 /* SPHInternetConnection.m */; };
 		EDA2459A1A383198004FD7C6 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = EDA245981A383198004FD7C6 /* Reachability.m */; };
 		EDA2459C1A386C1E004FD7C6 /* No_Image_Available.png in Resources */ = {isa = PBXBuildFile; fileRef = EDA2459B1A386C1E004FD7C6 /* No_Image_Available.png */; };
 		EDAC3A681A2C7F9E00EB6DE0 /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = EDAC3A661A2C7F9E00EB6DE0 /* Shader.vsh */; };
@@ -55,10 +56,12 @@
 		84A1B42E1A35E38600B17A58 /* SPHContentListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHContentListViewController.m; sourceTree = "<group>"; };
 		84A1B4301A35E39F00B17A58 /* SPHContentCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHContentCollectionViewCell.h; sourceTree = "<group>"; };
 		84A1B4311A35E39F00B17A58 /* SPHContentCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHContentCollectionViewCell.m; sourceTree = "<group>"; };
+		84FC6C331A3B2AF50042A40F /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
+		84FC6C341A3B2AF50042A40F /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		ED45D35B1A37441F00D7914D /* SPHMathUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHMathUtils.h; sourceTree = "<group>"; };
 		ED45D35C1A37441F00D7914D /* SPHMathUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHMathUtils.m; sourceTree = "<group>"; };
-		EDA245941A383198004FD7C6 /* SPHInternetStatusChecker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHInternetStatusChecker.h; sourceTree = "<group>"; };
-		EDA245951A383198004FD7C6 /* SPHInternetStatusChecker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHInternetStatusChecker.m; sourceTree = "<group>"; };
+		EDA245941A383198004FD7C6 /* SPHInternetConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHInternetConnection.h; sourceTree = "<group>"; };
+		EDA245951A383198004FD7C6 /* SPHInternetConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHInternetConnection.m; sourceTree = "<group>"; };
 		EDA245971A383198004FD7C6 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		EDA245981A383198004FD7C6 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		EDA2459B1A386C1E004FD7C6 /* No_Image_Available.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = No_Image_Available.png; sourceTree = "<group>"; };
@@ -165,6 +168,23 @@
 			path = ContentCell;
 			sourceTree = "<group>";
 		};
+		84FC6C0E1A3B22E40042A40F /* MMProgressHUD */ = {
+			isa = PBXGroup;
+			children = (
+				84FC6C331A3B2AF50042A40F /* MBProgressHUD.h */,
+				84FC6C341A3B2AF50042A40F /* MBProgressHUD.m */,
+				84FC6C111A3B23360042A40F /* Source */,
+			);
+			path = MMProgressHUD;
+			sourceTree = "<group>";
+		};
+		84FC6C111A3B23360042A40F /* Source */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Source;
+			sourceTree = "<group>";
+		};
 		ED45D35A1A37440400D7914D /* MathUtils */ = {
 			isa = PBXGroup;
 			children = (
@@ -177,8 +197,8 @@
 		EDA245931A383198004FD7C6 /* InternetStatusChecker */ = {
 			isa = PBXGroup;
 			children = (
-				EDA245941A383198004FD7C6 /* SPHInternetStatusChecker.h */,
-				EDA245951A383198004FD7C6 /* SPHInternetStatusChecker.m */,
+				EDA245941A383198004FD7C6 /* SPHInternetConnection.h */,
+				EDA245951A383198004FD7C6 /* SPHInternetConnection.m */,
 			);
 			path = InternetStatusChecker;
 			sourceTree = "<group>";
@@ -410,6 +430,7 @@
 		EDCFEE021A31DBD5003ADA91 /* Others */ = {
 			isa = PBXGroup;
 			children = (
+				84FC6C0E1A3B22E40042A40F /* MMProgressHUD */,
 				EDA245931A383198004FD7C6 /* InternetStatusChecker */,
 				EDA245961A383198004FD7C6 /* Reachability */,
 				EDCFEE031A31DBD5003ADA91 /* VideoPlayer */,
@@ -541,12 +562,13 @@
 				EDCFC7301A2C67F100613D7B /* SPHMainViewController.m in Sources */,
 				EDAC3A921A2CAC7700EB6DE0 /* SPHNavigationController.m in Sources */,
 				ED45D35D1A37441F00D7914D /* SPHMathUtils.m in Sources */,
+				84FC6C351A3B2AF50042A40F /* MBProgressHUD.m in Sources */,
 				EDAC3A801A2C986F00EB6DE0 /* SPHTextureProvider.m in Sources */,
 				EDCFC7011A2C671E00613D7B /* main.m in Sources */,
 				EDCFEE1C1A31E52D003ADA91 /* SPHPhotoViewController.m in Sources */,
 				EDAC3A781A2C94F800EB6DE0 /* SPHAnimationProvider.m in Sources */,
 				EDCFEE211A31EB5B003ADA91 /* SPHVideoViewController.m in Sources */,
-				EDA245991A383198004FD7C6 /* SPHInternetStatusChecker.m in Sources */,
+				EDA245991A383198004FD7C6 /* SPHInternetConnection.m in Sources */,
 				EDCFEE191A31E1FC003ADA91 /* SPHBaseViewController.m in Sources */,
 				EDCFEE061A31DBD5003ADA91 /* SPHVideoPlayer.m in Sources */,
 				84A1B42F1A35E38600B17A58 /* SPHContentListViewController.m in Sources */,
@@ -666,7 +688,7 @@
 				GCC_PREFIX_HEADER = "Sphere360/Sphere360-Prefix.pch";
 				INFOPLIST_FILE = "Sphere360/Sphere360-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "4e189d42-91b3-4f69-92bf-30d1fa444b9a";
+				PROVISIONING_PROFILE = "f0d3cbeb-09ad-4e89-b9f9-7bb56b90b537";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -682,7 +704,7 @@
 				GCC_PREFIX_HEADER = "Sphere360/Sphere360-Prefix.pch";
 				INFOPLIST_FILE = "Sphere360/Sphere360-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "4e189d42-91b3-4f69-92bf-30d1fa444b9a";
+				PROVISIONING_PROFILE = "f0d3cbeb-09ad-4e89-b9f9-7bb56b90b537";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

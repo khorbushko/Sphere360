@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "Reachability.h"
 
-@interface SPHInternetStatusChecker : NSObject
+@interface SPHInternetConnection : NSObject
 
 + (BOOL)isInternetAvaliable;
 + (BOOL)is3GInternetAvaliable;

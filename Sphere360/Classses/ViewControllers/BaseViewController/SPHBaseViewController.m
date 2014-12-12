@@ -41,7 +41,6 @@ GLint uniforms[NUM_UNIFORMS];
     float _rotationY;
     
     GLuint texturePointer;
-    CGImageRef lastImage;
 }
 
 @property (strong, nonatomic) SPHGLProgram *program;
@@ -54,8 +53,6 @@ GLint uniforms[NUM_UNIFORMS];
 
 @property (strong, nonatomic) CMMotionManager *motionManager;
 @property (assign, nonatomic) BOOL isGyroModeActive;
-
-//@property (strong, nonatomic) UIImage *tempImage;
 @property (assign, nonatomic) BOOL isZooming;
 
 @property (strong, atomic) GLKTextureLoader *textureloader;
@@ -85,6 +82,10 @@ GLint uniforms[NUM_UNIFORMS];
 {
     [super viewWillDisappear:animated];
     [self tearDownGL];
+}
+
+- (void)dealloc
+{
 }
 
 #pragma mark - OpenGL Setup
@@ -123,26 +124,23 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (void)setupTextureWithImage:(CGImageRef)image
 {
-//    self.tempImage = [image copy];
-//    if (!self.tempImage) {
-//        return;
-//    }
     if (!image) {
-        image = lastImage;
+        return;
     }
 
-//    GLKTextureLoader *textureloader = [[GLKTextureLoader alloc] initWithSharegroup:self.context.sharegroup];
     NSDictionary *textureOption = @{GLKTextureLoaderOriginBottomLeft : @YES};
-    [self.textureloader textureWithCGImage:image/*self.tempImage.CGImage*/ options:textureOption queue:NULL completionHandler:^(GLKTextureInfo *textureInfo, NSError *outError) {
+    [self.textureloader textureWithCGImage:image options:textureOption queue:NULL completionHandler:^(GLKTextureInfo *textureInfo, NSError *outError) {
         if (outError){
             NSLog(@"GL Error = %u", glGetError());
         } else {
-            lastImage = image;
             if (_texture.name) {
                 GLuint textureName = _texture.name;
                 glDeleteTextures(1, &textureName);
             }
             _texture = textureInfo;
+            if (!self.sourceImage) {
+                CFRelease(image);
+            }
         }
     }];
 }
@@ -168,15 +166,12 @@ GLint uniforms[NUM_UNIFORMS];
     
     GLKMatrix4 projectionMatrix = [SPHMathUtils GLKMatrixFromCATransform3D:projectionMatrixCATransform];
     GLKMatrix4 modelViewMatrix = GLKMatrix4Identity;
-    
+
     if (self.isGyroModeActive) {
         CMQuaternion quat = self.motionManager.deviceMotion.attitude.quaternion;
-        GLKQuaternion glQuat = GLKQuaternionMake(-quat.y, quat.z, quat.x, quat.w);
+        GLKQuaternion glQuat = GLKQuaternionMake(-quat.y, -quat.z, -quat.x, quat.w);
         modelViewMatrix = GLKMatrix4MakeWithQuaternion(glQuat);
-//        modelViewMatrix = [SPHMathUtils GLKMatrixFromCATransform3D:[self rotationMatrixFromGyro]];
-        projectionMatrix = GLKMatrix4Rotate(projectionMatrix, -M_PI / 2, 1, 0, 0);
-//        projectionMatrix = GLKMatrix4Rotate(projectionMatrix, kDefStartY, 0, 1, 0);
-//        projectionMatrix = GLKMatrix4Multiply(projectionMatrix, GLKMatrix4MakeRotation(kDefStartX, 1, 0, 0));
+        projectionMatrix = GLKMatrix4Rotate(projectionMatrix, M_PI / 2, 1, 0, 0);
         _modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
     } else {
         projectionMatrix = GLKMatrix4Multiply(projectionMatrix, _cameraProjectionMatrix);
@@ -264,87 +259,10 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (CATransform3D)rotationMatrixFromGyro
 {
-    CMAttitude *attitude = self.motionManager.deviceMotion.attitude;
 
-    CMQuaternion quat = self.motionManager.deviceMotion.attitude.quaternion;
-    roll = atan2(2*(quat.y*quat.w - quat.x*quat.z), 1 - 2*quat.y*quat.y - 2*quat.z*quat.z) ;
-    pitch = atan2(2*(quat.x*quat.w + quat.y*quat.z), 1 - 2*quat.x*quat.x - 2*quat.z*quat.z);
-    yaw = asin(2*quat.x*quat.y + 2*quat.w*quat.z);
-    
-    CATransform3D rotationTransform = CATransform3DIdentity;
-    if (UIDeviceOrientationIsPortrait([UIDevice currentDevice].orientation)) {
-        rotationTransform = CATransform3DRotate(rotationTransform, -attitude.roll, 0, 1, 0);
-        rotationTransform = CATransform3DRotate(rotationTransform, -attitude.yaw, 1, 0, 0);
-        rotationTransform = CATransform3DRotate(rotationTransform, -attitude.pitch, 0, 0, 1);
-    } else {
-        rotationTransform = CATransform3DRotate(rotationTransform, attitude.roll, 0, 0, 1);
-        rotationTransform = CATransform3DRotate(rotationTransform, attitude.yaw, 0, 1, 0);
-        rotationTransform = CATransform3DRotate(rotationTransform, attitude.pitch, 1, 0, 0);
-    }
-//    rotationMatrix.m00 = transform.m11;
-//    rotationMatrix.m01 = transform.m12;
-//    rotationMatrix.m02 = transform.m13;
-//    rotationMatrix.m03 = transform.m14;
-//    
-//    rotationMatrix.m10 = transform.m21;
-//    rotationMatrix.m11 = transform.m22;
-//    rotationMatrix.m12 = transform.m23;
-//    rotationMatrix.m13 = transform.m24;
-//    
-//    rotationMatrix.m20 = transform.m31;
-//    rotationMatrix.m21 = transform.m32;
-//    rotationMatrix.m22 = transform.m33;
-//    rotationMatrix.m23 = transform.m34;
-//    
-//    rotationMatrix.m30 = transform.m41;
-//    rotationMatrix.m31 = transform.m42;
-//    rotationMatrix.m32 = transform.m43;
-//    rotationMatrix.m33 = transform.m44;
-    
-    NSLog(@"orientation - %@", UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation) ? @"Landscape" : @"Portrait");
-    CMRotationMatrix rotationMatrix = attitude.rotationMatrix;
-    CATransform3D transform = CATransform3DIdentity;
-    transform.m11 = rotationMatrix.m11;
-    transform.m12 = rotationMatrix.m12;
-    transform.m13 = rotationMatrix.m13;
-    transform.m21 = rotationMatrix.m21;
-    transform.m22 = rotationMatrix.m22;
-    transform.m23 = rotationMatrix.m23;
-    transform.m31 = rotationMatrix.m31;
-    transform.m32 = rotationMatrix.m32;
-    transform.m33 = rotationMatrix.m33;
-    
-    CATransform3D fixedTransform = transform;// CATransform3DRotate(transform, -M_PI /2, 0, 0, 0);
-//    fixedTransform = CATransform3DRotate(fixedTransform, M_PI / 2, 0, 1, 0);
-//    fixedTransform = CATransform3DRotate(fixedTransform, -M_PI / 2, 0, 0, 1);
-    CATransform3D transponsed = [self transposedMatrix:fixedTransform];
-
-    return transponsed;
+    return CATransform3DIdentity;
 }
 
-- (CATransform3D)transposedMatrix:(CATransform3D)transform
-{
-    CATransform3D transponsed;
-    
-    transponsed.m11 = transform.m11;
-    transponsed.m12 = transform.m21;
-    transponsed.m13 = transform.m31;
-    transponsed.m14 = transform.m41;
-    transponsed.m21 = transform.m12;
-    transponsed.m22 = transform.m22;
-    transponsed.m23 = transform.m32;
-    transponsed.m24 = transform.m42;
-    transponsed.m31 = transform.m13;
-    transponsed.m32 = transform.m23;
-    transponsed.m33 = transform.m33;
-    transponsed.m34 = transform.m43;
-    transponsed.m41 = transform.m14;
-    transponsed.m42 = transform.m24;
-    transponsed.m43 = transform.m34;
-    transponsed.m44 = transform.m44;
-    
-    return transponsed;
-}
 
 - (GLKQuaternion)quaternioFromGyro
 {
@@ -375,9 +293,9 @@ GLint uniforms[NUM_UNIFORMS];
 - (void)normalizeZoomValue
 {
     if (self.zoomValue > kPreMaximumZoomValue) {
-        self.zoomValue *= 0.95;
+        self.zoomValue *= 0.97;
     } else if (self.zoomValue < kPreMinimumZoomValue) {
-        self.zoomValue *= 1.05;
+        self.zoomValue *= 1.03;
     }
 }
 
@@ -522,8 +440,8 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (void)setInitialParameters
 {
-    _currentProjectionMatrix = GLKMatrix4MakeRotation(kDefStartY, 0, 1, 0);
-    _cameraProjectionMatrix = GLKMatrix4MakeRotation(kDefStartX, 1, 0, 0);
+    _currentProjectionMatrix = GLKMatrix4Identity;
+    _cameraProjectionMatrix = GLKMatrix4Identity;
     self.zoomValue = 1.2f;
 }
 

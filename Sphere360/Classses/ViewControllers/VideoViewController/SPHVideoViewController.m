@@ -51,7 +51,7 @@
 - (void)update
 {
     [super update];
-    if ([self.videoPlayer isPlayerPlayVideo]) {
+    if ([self.videoPlayer isPlaying]) {
         [self setNewTextureFromVideoPlayer];
     }
 }
@@ -76,7 +76,7 @@
 
 - (IBAction)playStopButtonPress:(id)sender
 {
-    if ([self.videoPlayer isPlayerPlayVideo]) {
+    if ([self.videoPlayer isPlaying]) {
         [self.playStopButton setTitle:@"Play" forState:UIControlStateNormal];
         [self.videoPlayer pause];
         self.isPlaying = NO;
@@ -93,10 +93,10 @@
 - (void)setupVideoPlayer
 {
     if (self.mediaType == MediaTypeVideo) {
-//        NSURL *urlToFile = [NSURL URLWithString:self.sourceURL];
+        NSURL *urlToFile = [NSURL URLWithString:self.sourceURL];
         //local resource
-        NSString *url = [[NSBundle mainBundle] pathForResource:@"3D" ofType:@"mp4"];
-        NSURL *urlToFile = [NSURL fileURLWithPath: url];
+//        NSString *url = [[NSBundle mainBundle] pathForResource:@"3D" ofType:@"mp4"];
+//        NSURL *urlToFile = [NSURL fileURLWithPath: url];
         
         self.videoPlayer = [[SPHVideoPlayer alloc] initVideoPlayerWithURL:urlToFile];
         [self.videoPlayer prepareToPlay];
@@ -116,21 +116,21 @@
 
 #pragma mark - SPHVideoPlayerDelegate
 
-- (void)isReadyToPlayVideo
+- (void)isReadyToPlay
 {
     [self enableControlls];
 }
 
-- (void)progressUpdateToTime:(CGFloat)progress
+- (void)progressDidUpdate:(CGFloat)progress
 {
-    if ([self.videoPlayer isPlayerPlayVideo]) {
+    if ([self.videoPlayer isPlaying]) {
         self.videoProgressSlider.value = progress;
         NSLog(@"Progress - %f", progress * 100);
     }
     self.playedProgress = progress;
 }
 
-- (void)progressChangedToTime:(CMTime)time
+- (void)progressTimeChanged:(CMTime)time
 {
     
 }
@@ -171,7 +171,7 @@
 
 - (void)progressSliderTouchedDown
 {
-    if ([self.videoPlayer isPlayerPlayVideo]) {
+    if ([self.videoPlayer isPlaying]) {
         [self.videoPlayer pause];
     }
 }
@@ -213,7 +213,6 @@
 - (void)clearPlayer
 {
     [self.videoPlayer stop];
-    [self.videoPlayer removeObserversFromPlayer];
     self.videoPlayer.delegate = nil;
     self.urlAsset = nil;
     self.videoPlayer = nil;

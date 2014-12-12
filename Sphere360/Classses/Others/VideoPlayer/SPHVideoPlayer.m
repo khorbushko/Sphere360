@@ -15,9 +15,10 @@ static const NSString *ItemStatusContext;
 
 @property (strong, nonatomic) AVPlayer *assetPlayer;
 @property (strong, nonatomic) AVPlayerItem *playerItem;
-@property (assign, nonatomic) CGFloat assetDuration;
 @property (strong, nonatomic) AVURLAsset *urlAsset;
 @property (strong, atomic) AVPlayerItemVideoOutput *videoOutput;
+
+@property (assign, nonatomic) CGFloat assetDuration;
 
 @end
 
@@ -37,7 +38,7 @@ static const NSString *ItemStatusContext;
 
 - (void)play
 {
-    if ((self.assetPlayer.currentItem != nil) && ([self.assetPlayer.currentItem status] == AVPlayerItemStatusReadyToPlay)) {
+    if ((self.assetPlayer.currentItem) && (self.assetPlayer.currentItem.status == AVPlayerItemStatusReadyToPlay)) {
         [self.assetPlayer play];
     }
 }
@@ -57,7 +58,7 @@ static const NSString *ItemStatusContext;
 
 - (void)setPlayerVolume:(CGFloat)volume
 {
-    self.assetPlayer.volume = volume > .0 ? volume : 0.0f;
+    self.assetPlayer.volume = volume > .0 ? MAX(volume, 0.7) : 0.0f;
     [self.assetPlayer play];
 }
 
@@ -72,7 +73,7 @@ static const NSString *ItemStatusContext;
     self.assetPlayer.rate =.0f;
 }
 
-- (BOOL)isPlayerPlayVideo
+- (BOOL)isPlaying
 {
     return self.assetPlayer.rate > 0 ? YES : NO;
 }
@@ -158,7 +159,7 @@ static const NSString *ItemStatusContext;
     } else if (status == AVPlayerItemStatusReadyToPlay) {
         NSLog(@"Player ready to play");
         self.volume = self.assetPlayer.volume;
-        [self.delegate isReadyToPlayVideo];
+        [self.delegate isReadyToPlay];
     } else {
         NSLog(@"Player do not tried to load new media resources for playback yet");
     }
@@ -204,7 +205,7 @@ static const NSString *ItemStatusContext;
 - (void)playerTimeDidChange:(CMTime)time
 {
     double timeNow = CMTimeGetSeconds(self.assetPlayer.currentTime);
-    [self.delegate progressUpdateToTime:(CGFloat) (timeNow / self.assetDuration)];
+    [self.delegate progressDidUpdate:(CGFloat) (timeNow / self.assetDuration)];
 }
 
 #pragma mark - Notification
@@ -242,7 +243,7 @@ static const NSString *ItemStatusContext;
 
     CMTime currentTime = [self.videoOutput itemTimeForHostTime:CACurrentMediaTime()];
     CGImageRef image;
-    [self.delegate progressChangedToTime:currentTime];
+    [self.delegate progressTimeChanged:currentTime];
     if (![self.videoOutput hasNewPixelBufferForItemTime:currentTime]) {
         return nil;
     }
@@ -253,7 +254,7 @@ static const NSString *ItemStatusContext;
     } else {
         return nil;
     }
-    [self.delegate progressUpdateToTime: CMTimeGetSeconds(currentTime)/self.assetDuration];
+    [self.delegate progressDidUpdate: CMTimeGetSeconds(currentTime)/self.assetDuration];
     return image;
 }
 

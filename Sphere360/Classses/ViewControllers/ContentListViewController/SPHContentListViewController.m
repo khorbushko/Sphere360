@@ -13,13 +13,17 @@ static NSString *const BaseApiPath = @"http://api.360.tv/";
 #import "SPHPhotoViewController.h"
 #import "SPHVideoViewController.h"
 #import "SPHBaseViewController.h"
-#import "SPHInternetStatusChecker.h"
+#import "SPHInternetConnection.h"
+#import "MBProgressHUD.h"
 
 @interface SPHContentListViewController () <UICollectionViewDataSource, UICollectionViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 
 @property (assign, nonatomic) MediaType mediaType;
+@property (assign, nonatomic) UIEdgeInsets landscapeInsets;
+@property (assign, nonatomic) UIEdgeInsets portraitInsets;
+@property (strong, nonatomic) MBProgressHUD *HUD;
 
 @end
 
@@ -31,9 +35,52 @@ static NSString *const BaseApiPath = @"http://api.360.tv/";
 {
     [super viewDidLoad];
     [self generateTitle];
+    self.landscapeInsets = UIEdgeInsetsMake(0, 20, 0, 0);
+    self.portraitInsets = UIEdgeInsetsMake(0, 0, 0, 0);
+    
+    self.HUD = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
+    [self.navigationController.view addSubview:self.HUD];
+    self.HUD.delegate = (id)self;
+    self.HUD.labelText = @"Loading";
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self updateUIForOrientation:self.interfaceOrientation];
+}
+
+#pragma mark - Rotation
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    [self updateUIForOrientation:toInterfaceOrientation];
 }
 
 #pragma mark - Private
+
+- (void)updateUIForOrientation:(UIInterfaceOrientation)orientation
+{
+    if (UIInterfaceOrientationIsPortrait(orientation)) {
+        [self applyPortraitDirection];
+    } else {
+        [self applyLandscapeDirection];
+    }
+    [self.collectionView reloadData];
+}
+
+- (void)applyPortraitDirection
+{
+    self.collectionView.contentInset = self.portraitInsets;
+    ((UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout).scrollDirection = UICollectionViewScrollDirectionVertical;
+}
+
+- (void)applyLandscapeDirection
+{
+    self.collectionView.contentInset = self.landscapeInsets;
+    ((UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout).scrollDirection = UICollectionViewScrollDirectionHorizontal;
+}
 
 - (void)generateTitle
 {
@@ -65,24 +112,30 @@ static NSString *const BaseApiPath = @"http://api.360.tv/";
     NSDictionary *dict = self.dataSource[indexPath.row];
     SPHBaseViewController *baseController;
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    SPHContentCollectionViewCell *cell = (SPHContentCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+    
     switch (self.mediaType) {
         case MediaTypePhoto: {
             baseController = [storyboard instantiateViewControllerWithIdentifier:@"photo"];
-            baseController.sourceImage = [UIImage getImageFromSourceStringURL:/*[[NSBundle mainBundle] pathForResource:@"GIR000009" ofType:@"jpeg"]];/*/[NSString stringWithFormat:@"%@%@", BaseApiPath, dict[@"path_high"]]];
+            baseController.mediaType = self.mediaType;
+            [self.HUD showAnimated:YES whileExecutingBlock:^{
+                baseController.sourceImage = [UIImage getImageFromSourceStringURL:/*[[NSBundle mainBundle] pathForResource:@"GIR000009" ofType:@"jpeg"]];/*/[NSString stringWithFormat:@"%@%@", BaseApiPath, dict[@"path_high"]]];
+
+            } completionBlock:^{
+                [self.HUD hide:YES afterDelay:2];
+                [self.navigationController pushViewController:baseController animated:YES];
+            }];
             break;
         }
         case MediaTypeVideo: {
             baseController = [storyboard instantiateViewControllerWithIdentifier:@"video"];
             baseController.sourceURL = [NSString stringWithFormat:@"http://player.vimeo.com/external/%@", dict[@"path_high"]];
+            baseController.mediaType = self.mediaType;
+            [self.navigationController pushViewController:baseController animated:YES];
             break;
         }
         default:
             break;
     }
-    baseController.mediaType = self.mediaType;
-    [self.navigationController pushViewController:baseController animated:YES];
-    [cell.downloadingActivityIndicator stopAnimating];
 }
 
 #pragma mark - UICollectionViewDataSource
@@ -106,12 +159,10 @@ static NSString *const BaseApiPath = @"http://api.360.tv/";
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([SPHInternetStatusChecker isInternetAvaliable]) {
-        SPHContentCollectionViewCell *cell = (SPHContentCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
-        [cell.downloadingActivityIndicator startAnimating];
+    if ([SPHInternetConnection isInternetAvaliable]) {
         [self performSelector:@selector(showContentAtIndex:) withObject:indexPath afterDelay:0.1];
     } else {
-        [SPHInternetStatusChecker notificationNoInternetAvaliable];
+        [SPHInternetConnection notificationNoInternetAvaliable];
     }
 }
 

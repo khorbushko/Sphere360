@@ -8,7 +8,6 @@
 
 #import "SPHMathUtils.h"
 
-static CGFloat const MUTolerance = 0.00001;
 
 @implementation SPHMathUtils
 
