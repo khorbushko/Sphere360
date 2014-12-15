@@ -81,6 +81,12 @@
     [super gyroscopeChoose];
 }
 
+- (IBAction)littlePlanitButtonPress:(id)sender
+{
+    [super turnPlanetMode];
+    ((UIButton *)sender).selected = !((UIButton *)sender).selected;
+}
+
 - (IBAction)playStopButtonPress:(id)sender
 {
     if ([self.videoPlayer isPlaying]) {

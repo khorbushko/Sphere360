@@ -23,6 +23,7 @@ typedef NS_ENUM(NSInteger, MediaType) {
 - (void)setupTextureWithImage:(CGImageRef)image;
 
 - (void)gyroscopeChoose;
+- (void)turnPlanetMode; //normal by default
 - (void)tapGesture;
 - (void)update;
 - (void)applyImageTexture;

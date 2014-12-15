@@ -12,9 +12,16 @@
 #import "SPHTextureProvider.h"
 #import <CoreMedia/CoreMedia.h>
 
-static CGFloat const kMinimumZoomValue = 0.767f;
+typedef NS_ENUM (NSInteger, PlanetMode) {
+    PlanetModeNormal,
+    PlanetModeLittlePlanet
+};
+
+static CGFloat const kMinimumLittlePlanetZoomValue = 0.7195f;
+static CGFloat const kPreMinimumLittlePlanetZoomValue = 0.7475f;
+static CGFloat const kMinimumZoomValue = 0.771f;
 static CGFloat const kMaximumZoomValue = 1.7f;
-static CGFloat const kPreMinimumZoomValue = 0.85f;
+static CGFloat const kPreMinimumZoomValue = 0.83f;
 static CGFloat const kPreMaximumZoomValue = 1.45f;
 
 static CGFloat const kAdditionalMovementCoef = 0.01f;
@@ -55,6 +62,8 @@ GLint uniforms[NUM_UNIFORMS];
 
 @property (strong, atomic) GLKTextureLoader *textureloader;
 
+@property (assign, nonatomic) PlanetMode planetMode;
+
 @end
 
 @implementation SPHBaseViewController
@@ -64,7 +73,7 @@ GLint uniforms[NUM_UNIFORMS];
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    
     [self setInitialParameters];
     
     [self setupContext];
@@ -148,12 +157,14 @@ GLint uniforms[NUM_UNIFORMS];
         [self updateZoomValue];
     }
     
-    CGFloat FOVY = GLKMathDegreesToRadians(90) / self.zoomValue;
+    CGFloat angle = self.planetMode ? 115.0f : 90.0f;
+    CGFloat near = self.planetMode ? 0.01f : 0.1f;
+    CGFloat FOVY = GLKMathDegreesToRadians(angle) / self.zoomValue;
     float aspect = fabsf(self.view.bounds.size.width / self.view.bounds.size.height);
     
     CGFloat cameraDistanse = - (self.zoomValue - kMaximumZoomValue);
     GLKMatrix4 cameraTranslation = GLKMatrix4MakeTranslation(0, 0, -cameraDistanse / 2.0);
-    GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(FOVY, aspect, 0.1, 2.4);
+    GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(FOVY, aspect, near, 2.4);
     projectionMatrix = GLKMatrix4Multiply(projectionMatrix, cameraTranslation);
     GLKMatrix4 modelViewMatrix = GLKMatrix4Identity;
 
@@ -255,6 +266,13 @@ GLint uniforms[NUM_UNIFORMS];
     }
 }
 
+#pragma mark - Public
+
+- (void)turnPlanetMode
+{
+    self.planetMode = self.planetMode ? PlanetModeNormal : PlanetModeLittlePlanet;
+}
+
 #pragma mark - Touches
 
 - (void)moveToPointX:(CGFloat)pointX andPointY:(CGFloat)pointY
@@ -275,9 +293,10 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (void)updateZoomValue
 {
+    CGFloat minValue = self.planetMode ? kPreMinimumLittlePlanetZoomValue : kPreMinimumZoomValue;
     if (self.zoomValue > kPreMaximumZoomValue) {
         self.zoomValue *= 0.97;
-    } else if (self.zoomValue < kPreMinimumZoomValue) {
+    } else if (self.zoomValue <  minValue) {
         self.zoomValue *= 1.03;
     }
 }
@@ -291,7 +310,7 @@ GLint uniforms[NUM_UNIFORMS];
         gesture.scale = self.zoomValue;
     } else if (gesture.state == UIGestureRecognizerStateChanged) {
         CGFloat zoom = gesture.scale;
-        zoom = MAX(MIN(zoom, kMaximumZoomValue), kMinimumZoomValue);
+        zoom = MAX(MIN(zoom, kMaximumZoomValue), self.planetMode ? kMinimumLittlePlanetZoomValue : kMinimumZoomValue);
         self.zoomValue = zoom;
     } else if (gesture.state == UIGestureRecognizerStateEnded) {
         self.isZooming = NO;
@@ -402,6 +421,7 @@ GLint uniforms[NUM_UNIFORMS];
     _currentProjectionMatrix = GLKMatrix4Identity;
     _cameraProjectionMatrix = GLKMatrix4Identity;
     self.zoomValue = 1.2f;
+    self.planetMode = PlanetModeNormal;
 }
 
 #pragma mark - Cleanup

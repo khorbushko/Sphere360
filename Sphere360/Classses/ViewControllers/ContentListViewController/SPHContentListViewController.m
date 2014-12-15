@@ -50,12 +50,10 @@ static NSString *const BaseApiPath = @"http://api.360.tv/";
     [self updateUIForOrientation:self.interfaceOrientation];
 }
 
-#pragma mark - Rotation
-
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+- (void)viewDidLayoutSubviews
 {
-    [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
-    [self updateUIForOrientation:toInterfaceOrientation];
+    [super viewDidLayoutSubviews];
+    [self updateUIForOrientation:self.interfaceOrientation];
 }
 
 #pragma mark - Private
@@ -118,7 +116,7 @@ static NSString *const BaseApiPath = @"http://api.360.tv/";
             baseController = [storyboard instantiateViewControllerWithIdentifier:@"photo"];
             baseController.mediaType = self.mediaType;
             [self.HUD showAnimated:YES whileExecutingBlock:^{
-                baseController.sourceImage = [UIImage getImageFromSourceStringURL:/*[[NSBundle mainBundle] pathForResource:@"GIR000009" ofType:@"jpeg"]];/*/[NSString stringWithFormat:@"%@%@", BaseApiPath, dict[@"path_high"]]];
+                baseController.sourceImage = [UIImage getImageFromSourceStringURL:/*[[NSBundle mainBundle] pathForResource:@"littleplanet" ofType:@"png"]];/*/[NSString stringWithFormat:@"%@%@", BaseApiPath, dict[@"path_high"]]];
 
             } completionBlock:^{
                 [self.HUD hide:YES afterDelay:2];

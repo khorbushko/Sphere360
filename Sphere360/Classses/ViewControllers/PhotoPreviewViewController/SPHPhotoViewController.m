@@ -25,13 +25,20 @@
     [self setupUI];
 }
 
-#pragma mark - LifeCycle
+#pragma mark - Override
 
 - (void)tapGesture
 {
     [super tapGesture];
     [self hideBottomBar];
 }
+
+- (void)applyImageTexture
+{
+    [self setupTextureWithImage:self.sourceImage.CGImage];
+}
+
+#pragma mark - Private
 
 - (void)hideBottomBar
 {
@@ -45,6 +52,11 @@
     }];
 }
 
+- (void)setupUI
+{
+    [self applyImageTexture];
+}
+
 #pragma mark - IBActions
 
 - (IBAction)gyroscopeButtonPress:(id)sender
@@ -52,14 +64,10 @@
     [super gyroscopeChoose];
 }
 
-- (void)setupUI
+- (IBAction)littlePlanitButtonPress:(id)sender
 {
-    [self applyImageTexture];
-}
-
-- (void)applyImageTexture
-{
-    [self setupTextureWithImage:self.sourceImage.CGImage];
+    [super turnPlanetMode];
+    ((UIButton *)sender).selected = !((UIButton *)sender).selected;
 }
 
 @end

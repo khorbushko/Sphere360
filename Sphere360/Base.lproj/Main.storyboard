@@ -189,6 +189,21 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="byI-VA-AZC">
                                 <rect key="frame" x="0.0" y="260" width="568" height="60"/>
                                 <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ufc-qR-ZVi">
+                                        <rect key="frame" x="480" y="15" width="30" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="30" id="c3K-iC-HQI"/>
+                                            <constraint firstAttribute="height" constant="30" id="gKH-Gf-f2Z"/>
+                                        </constraints>
+                                        <state key="normal" title="L">
+                                            <color key="titleColor" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="selected" title="N"/>
+                                        <connections>
+                                            <action selector="littlePlanitButtonPress:" destination="Ayf-fH-v40" eventType="touchUpInside" id="S56-FV-3nQ"/>
+                                        </connections>
+                                    </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Pl4-fH-F2s" userLabel="Gyroscope - UIButton">
                                         <rect key="frame" x="518" y="15" width="30" height="30"/>
                                         <constraints>
@@ -205,7 +220,9 @@
                                 </subviews>
                                 <color key="backgroundColor" red="0.97254901960784312" green="0.97254901960784312" blue="0.97254901960784312" alpha="0.84999999999999998" colorSpace="calibratedRGB"/>
                                 <constraints>
+                                    <constraint firstItem="Ufc-qR-ZVi" firstAttribute="top" secondItem="byI-VA-AZC" secondAttribute="top" constant="15" id="9xT-KO-AsL"/>
                                     <constraint firstAttribute="height" constant="60" id="FXt-HW-XyK"/>
+                                    <constraint firstItem="Pl4-fH-F2s" firstAttribute="leading" secondItem="Ufc-qR-ZVi" secondAttribute="trailing" constant="8" id="TCX-uU-Dm2"/>
                                     <constraint firstAttribute="trailing" secondItem="Pl4-fH-F2s" secondAttribute="trailing" constant="20" id="Trd-d1-TOu"/>
                                     <constraint firstItem="Pl4-fH-F2s" firstAttribute="top" secondItem="byI-VA-AZC" secondAttribute="top" constant="15" id="tS1-ST-dVh"/>
                                 </constraints>
@@ -249,7 +266,7 @@
             </objects>
             <point key="canvasLocation" x="1599" y="876"/>
         </scene>
-        <!--Video-->
+        <!--Video View Controller-->
         <scene sceneID="zGQ-VC-kYO">
             <objects>
                 <viewController storyboardIdentifier="video" id="AaC-I6-DZW" customClass="SPHVideoViewController" sceneMemberID="viewController">
@@ -272,10 +289,10 @@
                                 <rect key="frame" x="0.0" y="260" width="568" height="60"/>
                                 <subviews>
                                     <slider opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" continuous="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ltT-uf-ol8" userLabel="VideoProgress - Slider">
-                                        <rect key="frame" x="51" y="15" width="370" height="31"/>
+                                        <rect key="frame" x="51" y="15" width="332" height="31"/>
                                     </slider>
                                     <slider opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="10" continuous="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QS2-sr-xgk">
-                                        <rect key="frame" x="432" y="15" width="80" height="31"/>
+                                        <rect key="frame" x="394" y="15" width="80" height="31"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="76" id="S3A-of-RTu"/>
                                         </constraints>
@@ -308,17 +325,35 @@
                                             <action selector="playStopButtonPress:" destination="AaC-I6-DZW" eventType="touchUpInside" id="MZb-6M-Bq3"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="t3s-qf-nU2">
+                                        <rect key="frame" x="480" y="15" width="30" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="DZs-zJ-iPm"/>
+                                            <constraint firstAttribute="width" constant="30" id="R48-A1-uR4"/>
+                                        </constraints>
+                                        <state key="normal" title="L">
+                                            <color key="titleColor" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="selected" title="N"/>
+                                        <connections>
+                                            <action selector="littlePlanitButtonPress:" destination="AaC-I6-DZW" eventType="touchUpInside" id="UxV-1a-GYh"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" red="0.97254901959999995" green="0.97254901959999995" blue="0.97254901959999995" alpha="0.84999999999999998" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="yAf-yd-nAL" secondAttribute="trailing" constant="20" id="1UJ-F1-08r"/>
                                     <constraint firstItem="KUN-48-zWo" firstAttribute="leading" secondItem="slT-hP-TXf" secondAttribute="leading" constant="5" id="2gp-an-iQ4"/>
+                                    <constraint firstItem="t3s-qf-nU2" firstAttribute="top" secondItem="slT-hP-TXf" secondAttribute="top" constant="15" id="7LX-rE-KUq"/>
                                     <constraint firstItem="KUN-48-zWo" firstAttribute="top" secondItem="slT-hP-TXf" secondAttribute="top" constant="10" id="BoT-92-hwG"/>
                                     <constraint firstItem="ltT-uf-ol8" firstAttribute="leading" secondItem="KUN-48-zWo" secondAttribute="trailing" constant="8" id="F12-We-WNo"/>
-                                    <constraint firstItem="yAf-yd-nAL" firstAttribute="leading" secondItem="QS2-sr-xgk" secondAttribute="trailing" constant="8" id="dU9-FH-b9m"/>
+                                    <constraint firstItem="yAf-yd-nAL" firstAttribute="leading" secondItem="t3s-qf-nU2" secondAttribute="trailing" constant="8" id="Shd-3A-Sgj"/>
+                                    <constraint firstItem="t3s-qf-nU2" firstAttribute="leading" secondItem="QS2-sr-xgk" secondAttribute="trailing" constant="8" id="jax-uH-vIv"/>
                                     <constraint firstItem="yAf-yd-nAL" firstAttribute="top" secondItem="slT-hP-TXf" secondAttribute="top" constant="15" id="ni0-8z-fcm"/>
                                     <constraint firstItem="QS2-sr-xgk" firstAttribute="top" secondItem="slT-hP-TXf" secondAttribute="top" constant="15" id="nmL-Px-P4E"/>
                                     <constraint firstAttribute="height" constant="60" id="rFd-BN-JkI"/>
+                                    <constraint firstAttribute="bottom" secondItem="t3s-qf-nU2" secondAttribute="bottom" constant="15" id="rrP-MC-s1o"/>
                                     <constraint firstItem="QS2-sr-xgk" firstAttribute="leading" secondItem="ltT-uf-ol8" secondAttribute="trailing" constant="15" id="tA5-wU-tY2"/>
                                     <constraint firstItem="ltT-uf-ol8" firstAttribute="top" secondItem="slT-hP-TXf" secondAttribute="top" constant="15" id="xXv-6w-8MH"/>
                                 </constraints>
@@ -333,7 +368,7 @@
                             <constraint firstAttribute="trailing" secondItem="slT-hP-TXf" secondAttribute="trailing" id="war-ai-nyq"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Video" id="ugN-p8-aT6"/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <connections>
                         <outlet property="bottomView" destination="slT-hP-TXf" id="wTl-5Y-dFB"/>
