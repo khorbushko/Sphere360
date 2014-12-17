@@ -15,7 +15,6 @@
 		84A1B4281A35D69600B17A58 /* VideoIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 84A1B4251A35D69600B17A58 /* VideoIcon.png */; };
 		84A1B42F1A35E38600B17A58 /* SPHContentListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 84A1B42E1A35E38600B17A58 /* SPHContentListViewController.m */; };
 		84A1B4321A35E39F00B17A58 /* SPHContentCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 84A1B4311A35E39F00B17A58 /* SPHContentCollectionViewCell.m */; };
-		84F757B81A3EEE310065DB43 /* littleplanet.png in Resources */ = {isa = PBXBuildFile; fileRef = 84F757B71A3EEE310065DB43 /* littleplanet.png */; };
 		84FC6C351A3B2AF50042A40F /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 84FC6C341A3B2AF50042A40F /* MBProgressHUD.m */; };
 		EDA245991A383198004FD7C6 /* SPHInternetConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = EDA245951A383198004FD7C6 /* SPHInternetConnection.m */; };
 		EDA2459A1A383198004FD7C6 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = EDA245981A383198004FD7C6 /* Reachability.m */; };
@@ -62,7 +61,6 @@
 		84A1B42E1A35E38600B17A58 /* SPHContentListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHContentListViewController.m; sourceTree = "<group>"; };
 		84A1B4301A35E39F00B17A58 /* SPHContentCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHContentCollectionViewCell.h; sourceTree = "<group>"; };
 		84A1B4311A35E39F00B17A58 /* SPHContentCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHContentCollectionViewCell.m; sourceTree = "<group>"; };
-		84F757B71A3EEE310065DB43 /* littleplanet.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = littleplanet.png; sourceTree = "<group>"; };
 		84FC6C331A3B2AF50042A40F /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		84FC6C341A3B2AF50042A40F /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		EDA245941A383198004FD7C6 /* SPHInternetConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHInternetConnection.h; sourceTree = "<group>"; };
@@ -406,7 +404,6 @@
 		EDCFC73F1A2C69C000613D7B /* TestResourses */ = {
 			isa = PBXGroup;
 			children = (
-				84F757B71A3EEE310065DB43 /* littleplanet.png */,
 				EDCFC7421A2C6A2B00613D7B /* GIR000009.jpeg */,
 				EDAC3A731A2C861900EB6DE0 /* 3D.mp4 */,
 			);
@@ -535,7 +532,6 @@
 				EDCFC7081A2C671E00613D7B /* Main.storyboard in Resources */,
 				EDA2459C1A386C1E004FD7C6 /* No_Image_Available.png in Resources */,
 				EDAC3A681A2C7F9E00EB6DE0 /* Shader.vsh in Resources */,
-				84F757B81A3EEE310065DB43 /* littleplanet.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

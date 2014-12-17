@@ -25,6 +25,8 @@ static NSString *const BaseApiPath = @"http://api.360.tv/";
 @property (assign, nonatomic) UIEdgeInsets portraitInsets;
 @property (strong, nonatomic) MBProgressHUD *HUD;
 
+@property (strong, nonatomic) NSMutableDictionary *thumbnails;
+
 @end
 
 @implementation SPHContentListViewController
@@ -42,6 +44,8 @@ static NSString *const BaseApiPath = @"http://api.360.tv/";
     [self.navigationController.view addSubview:self.HUD];
     self.HUD.delegate = (id)self;
     self.HUD.labelText = @"Loading";
+    
+    [self loadThumbnails];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -57,6 +61,22 @@ static NSString *const BaseApiPath = @"http://api.360.tv/";
 }
 
 #pragma mark - Private
+
+- (void)loadThumbnails
+{
+    self.thumbnails = [[NSMutableDictionary alloc] init];
+    __weak SPHContentListViewController *weakSelf = self;
+    for (NSDictionary *dict in self.dataSource) {
+        NSString *filePath = [NSString stringWithFormat:@"%@%@", BaseApiPath, dict[@"thumb_path"]];
+        dispatch_async(dispatch_queue_create("queue", nil), ^{
+            NSString *key = dict[@"thumb_path"];
+            UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:filePath]]];
+            if (image) {
+                [weakSelf.thumbnails setObject:image forKey:key];
+            }
+        });
+    }
+}
 
 - (void)updateUIForOrientation:(UIInterfaceOrientation)orientation
 {
@@ -152,7 +172,11 @@ static NSString *const BaseApiPath = @"http://api.360.tv/";
     SPHContentCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"contentCell" forIndexPath:indexPath];
     
     NSDictionary *dict = self.dataSource[indexPath.row];
-    [self setImageWithPath:dict[@"thumb_path"] forView:cell.thumbnailImageView];
+    if (self.thumbnails[dict[@"thumb_path"]]) {
+        cell.thumbnailImageView.image = self.thumbnails[dict[@"thumb_path"]];
+    } else {
+        [self setImageWithPath:dict[@"thumb_path"] forView:cell.thumbnailImageView];
+    }
     cell.titleLabel.text = dict[@"title"];
     return cell;
 }
