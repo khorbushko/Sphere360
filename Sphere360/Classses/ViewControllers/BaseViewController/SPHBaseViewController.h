@@ -21,6 +21,7 @@ typedef NS_ENUM(NSInteger, MediaType) {
 @property (assign, nonatomic) MediaType mediaType;
 
 - (void)setupTextureWithImage:(CGImageRef)image;
+- (void)displayPixelBuffer:(CVPixelBufferRef)pixelBuffer;
 
 - (void)gyroscopeChoose;
 - (void)turnPlanetMode; //normal by default

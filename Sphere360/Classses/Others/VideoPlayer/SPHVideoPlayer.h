@@ -35,7 +35,7 @@
 - (BOOL)isPlaying;
 
 - (BOOL)canProvideFrame;
-- (CGImageRef)getCurrentFramePicture;
+- (CVPixelBufferRef)getCurrentFramePicture;
 
 - (void)removeObserversFromPlayer;
 

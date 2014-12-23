@@ -9,6 +9,6 @@ varying lowp vec2 v_texCoord;
 
 void main()
 {
-    v_texCoord = a_textureCoord;
+    v_texCoord = vec2(a_textureCoord.s, 1.0 - a_textureCoord.t);
     gl_Position = u_modelViewProjectionMatrix * a_position;
 }

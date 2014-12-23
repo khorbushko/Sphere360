@@ -103,7 +103,7 @@ static const NSString *ItemStatusContext;
     AVKeyValueStatus status = [self.urlAsset statusOfValueForKey:@"tracks" error:&error];
     if (status == AVKeyValueStatusLoaded) {
         self.assetDuration = CMTimeGetSeconds(self.urlAsset.duration);
-        NSDictionary* videoOutputOptions = @{ (id)kCVPixelBufferPixelFormatTypeKey : [NSNumber numberWithInt:kCVPixelFormatType_32BGRA] };
+        NSDictionary* videoOutputOptions = @{ (id)kCVPixelBufferPixelFormatTypeKey : @(kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange)};
         self.videoOutput = [[AVPlayerItemVideoOutput alloc] initWithPixelBufferAttributes:videoOutputOptions];
         self.playerItem = [AVPlayerItem playerItemWithAsset: self.urlAsset];
         
@@ -233,29 +233,16 @@ static const NSString *ItemStatusContext;
     return self.assetPlayer.status == AVPlayerItemStatusReadyToPlay;
 }
 
-- (CGImageRef)getCurrentFramePicture
+- (CVPixelBufferRef)getCurrentFramePicture
 {
-    /* uncomment for log progress review
-    CMTime outputItemTime = self.playerItem.currentTime;
-    CMTime assetDuration = self.playerItem.duration;
-    NSLog(@"Video : %f/%f - speed : %f", (float)outputItemTime.value / (float)outputItemTime.timescale, (float)assetDuration.value / (float)assetDuration.timescale, self.assetPlayer.rate);
-     */
-
     CMTime currentTime = [self.videoOutput itemTimeForHostTime:CACurrentMediaTime()];
-    CGImageRef image;
     [self.delegate progressTimeChanged:currentTime];
     if (![self.videoOutput hasNewPixelBufferForItemTime:currentTime]) {
-        return nil;
+        return 0;
     }
     CVPixelBufferRef buffer = [self.videoOutput copyPixelBufferForItemTime:currentTime itemTimeForDisplay:NULL];
-
-    if (buffer) {
-        image = [SPHTextureProvider imageWithCVPixelBufferUsingUIGraphicsContext:buffer];
-    } else {
-        return nil;
-    }
-    [self.delegate progressDidUpdate: CMTimeGetSeconds(currentTime)/self.assetDuration];
-    return image;
+    
+    return buffer;
 }
 
 #pragma mark - CleanUp

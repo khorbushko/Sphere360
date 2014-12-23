@@ -74,6 +74,11 @@ static NSString *const BaseApiPath = @"http://api.360.tv/";
             if (image) {
                 [weakSelf.thumbnails setObject:image forKey:key];
             }
+            if ([weakSelf.thumbnails allKeys].count == self.dataSource.count) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf.collectionView reloadData];
+                });
+            }
         });
     }
 }
@@ -112,19 +117,6 @@ static NSString *const BaseApiPath = @"http://api.360.tv/";
     self.navigationItem.title = [NSString stringWithFormat:@"%@ samples", title ? title : @"No"];
 }
 
-- (void)setImageWithPath:(NSString *)path forView:(UIImageView *)view
-{
-    NSString *filePath = [NSString stringWithFormat:@"%@%@", BaseApiPath, path];
-    
-    __block UIImageView *imageView = view;
-    dispatch_async(dispatch_queue_create("queue", nil), ^{
-        UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:filePath]]];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            imageView.image = image;
-        });
-    });
-}
-
 - (void)showContentAtIndex:(NSIndexPath *)indexPath
 {
     NSDictionary *dict = self.dataSource[indexPath.row];
@@ -136,7 +128,7 @@ static NSString *const BaseApiPath = @"http://api.360.tv/";
             baseController = [storyboard instantiateViewControllerWithIdentifier:@"photo"];
             baseController.mediaType = self.mediaType;
             [self.HUD showAnimated:YES whileExecutingBlock:^{
-                baseController.sourceImage = [UIImage getImageFromSourceStringURL:/*[[NSBundle mainBundle] pathForResource:@"littleplanet" ofType:@"png"]];/*/[NSString stringWithFormat:@"%@%@", BaseApiPath, dict[@"path_high"]]];
+                baseController.sourceImage = [UIImage getImageFromSourceStringURL:/*[[NSBundle mainBundle] pathForResource:@"GIR000009" ofType:@"jpeg"]];/*/[NSString stringWithFormat:@"%@%@", BaseApiPath, dict[@"path_high"]]];
 
             } completionBlock:^{
                 [self.HUD hide:YES afterDelay:2];
@@ -174,8 +166,6 @@ static NSString *const BaseApiPath = @"http://api.360.tv/";
     NSDictionary *dict = self.dataSource[indexPath.row];
     if (self.thumbnails[dict[@"thumb_path"]]) {
         cell.thumbnailImageView.image = self.thumbnails[dict[@"thumb_path"]];
-    } else {
-        [self setImageWithPath:dict[@"thumb_path"] forView:cell.thumbnailImageView];
     }
     cell.titleLabel.text = dict[@"title"];
     return cell;

@@ -51,10 +51,10 @@
 
 - (void)update
 {
-    [super update];
     if ([self.videoPlayer isPlaying]) {
         [self setNewTextureFromVideoPlayer];
     }
+    [super update];
 }
 
 - (void)tapGesture
@@ -120,10 +120,9 @@
 {
     if (self.videoPlayer) {
         if ([self.videoPlayer canProvideFrame]) {
-            [self setupTextureWithImage:[self.videoPlayer getCurrentFramePicture]];
+             [self displayPixelBuffer:[self.videoPlayer getCurrentFramePicture]];
         }
     }
-    [self drawArraysGL];
 }
 
 #pragma mark - SPHVideoPlayerDelegate
@@ -176,7 +175,6 @@
 - (void)setupVideoUI
 {
     [self setupSlider];
-    [self setupTextureWithImage:[[UIImage alloc] init].CGImage];
 }
 
 #pragma mark - Slider

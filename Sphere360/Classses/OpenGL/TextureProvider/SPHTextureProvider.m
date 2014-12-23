@@ -7,7 +7,6 @@
 //
 
 #import "SPHTextureProvider.h"
-#import <AVFoundation/AVFoundation.h>
 #import <CoreImage/CoreImage.h>
 
 @implementation SPHTextureProvider

@@ -22,7 +22,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self setupUI];
+    [self applyImageTexture];
 }
 
 #pragma mark - Override
@@ -50,11 +50,6 @@
 
         [self.bottomView layoutIfNeeded];
     }];
-}
-
-- (void)setupUI
-{
-    [self applyImageTexture];
 }
 
 #pragma mark - IBActions

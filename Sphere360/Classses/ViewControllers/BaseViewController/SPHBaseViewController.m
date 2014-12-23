@@ -18,20 +18,35 @@ typedef NS_ENUM (NSInteger, PlanetMode) {
 };
 
 static CGFloat const kMinimumLittlePlanetZoomValue = 0.7195f;
-static CGFloat const kPreMinimumLittlePlanetZoomValue = 0.7475f;
-static CGFloat const kMinimumZoomValue = 0.771f;
+static CGFloat const kPreMinimumLittlePlanetZoomValue = 0.7375f;
+static CGFloat const kMinimumZoomValue = 0.975f;
 static CGFloat const kMaximumZoomValue = 1.7f;
-static CGFloat const kPreMinimumZoomValue = 0.83f;
-static CGFloat const kPreMaximumZoomValue = 1.45f;
+static CGFloat const kPreMinimumZoomValue = 1.086f;
+static CGFloat const kPreMaximumZoomValue = 1.60f;
 
 static CGFloat const kAdditionalMovementCoef = 0.01f;
+
+static CGFloat const NormalAngle = 90.0f;
+static CGFloat const LittlePlanetAngle = 115.0f;
+
+static CGFloat const NormalNear = 0.1f;
+static CGFloat const LittlePlanetNear = 0.01f;;
 
 enum {
     UNIFORM_MVPMATRIX,
     UNIFORM_SAMPLER,
+    UNIFORM_Y,
+    UNIFORM_UV,
+    UNIFORM_COLOR_CONVERSION_MATRIX,
     NUM_UNIFORMS
 };
 GLint uniforms[NUM_UNIFORMS];
+
+static const GLfloat kColorConversion709[] = {
+    1.1643,  0.0000,  1.2802,
+    1.1643, -0.2148, -0.3806,
+    1.1643,  2.1280,  0.0000
+};
 
 @interface SPHBaseViewController () <AVAssetResourceLoaderDelegate, UIGestureRecognizerDelegate> {
     GLuint _vertexArrayID;
@@ -46,11 +61,22 @@ GLint uniforms[NUM_UNIFORMS];
     float _rotationY;
     
     GLuint texturePointer;
+    
+    unsigned int sphereVertices;
+    
+    const GLfloat *_preferredConversion;
+    
+    CVOpenGLESTextureRef _lumaTexture;
+    CVOpenGLESTextureRef _chromaTexture;
+    CVOpenGLESTextureCacheRef _videoTextureCache;
 }
 
 @property (strong, nonatomic) SPHGLProgram *program;
 @property (strong, nonatomic) EAGLContext *context;
 @property (strong, atomic) GLKTextureInfo *texture;
+
+@property (assign, nonatomic) CGFloat angle;
+@property (assign, nonatomic) CGFloat near;
 
 @property (assign, nonatomic) CGFloat zoomValue;
 @property (assign, nonatomic) CGPoint velocityValue;
@@ -73,6 +99,7 @@ GLint uniforms[NUM_UNIFORMS];
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.view.opaque = YES;
     
     [self setInitialParameters];
     
@@ -85,6 +112,11 @@ GLint uniforms[NUM_UNIFORMS];
     [self setupTextureLoader];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+}
+
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
@@ -95,11 +127,14 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (void)setupGL
 {
+    self.preferredFramesPerSecond = 60;
+    
     [EAGLContext setCurrentContext:self.context];
     [self buildProgram];
     
     glDisable(GL_DEPTH_TEST);
     glDepthMask(GL_FALSE);
+    glDisable(GL_CULL_FACE);
     
     glGenVertexArraysOES(1, &_vertexArrayID);
     glBindVertexArrayOES(_vertexArrayID);
@@ -115,6 +150,14 @@ GLint uniforms[NUM_UNIFORMS];
     glBufferData(GL_ARRAY_BUFFER, sizeof(SphereTexCoords), SphereTexCoords, GL_STATIC_DRAW);
     glEnableVertexAttribArray(_vertexTexCoordAttributeIndex);
     glVertexAttribPointer(_vertexTexCoordAttributeIndex, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, NULL);
+    
+    if (self.mediaType == MediaTypeVideo && !_videoTextureCache) {
+        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, _context, NULL, &_videoTextureCache);
+        if (err != noErr) {
+            NSLog(@"Error at CVOpenGLESTextureCacheCreate %d", err);
+            return;
+        }
+    }
 }
 
 #pragma mark - Textures
@@ -129,8 +172,7 @@ GLint uniforms[NUM_UNIFORMS];
     if (!image) {
         return;
     }
-    NSDictionary *textureOption = @{GLKTextureLoaderOriginBottomLeft : @YES};
-    [self.textureloader textureWithCGImage:image options:textureOption queue:NULL completionHandler:^(GLKTextureInfo *textureInfo, NSError *outError) {
+    [self.textureloader textureWithCGImage:image options:nil queue:NULL completionHandler:^(GLKTextureInfo *textureInfo, NSError *outError) {
         if (outError){
             NSLog(@"GL Error = %u", glGetError());
         } else {
@@ -157,8 +199,8 @@ GLint uniforms[NUM_UNIFORMS];
         [self updateZoomValue];
     }
     
-    CGFloat angle = self.planetMode ? 115.0f : 90.0f;
-    CGFloat near = self.planetMode ? 0.01f : 0.1f;
+    CGFloat angle = [self normalizedAngle];
+    CGFloat near = [self normalizedNear];
     CGFloat FOVY = GLKMathDegreesToRadians(angle) / self.zoomValue;
     float aspect = fabsf(self.view.bounds.size.width / self.view.bounds.size.height);
     
@@ -186,44 +228,61 @@ GLint uniforms[NUM_UNIFORMS];
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
 {
+    [super glkView:view drawInRect:rect];
     [_program use];	
     [self drawArraysGL];
 }
 
 - (void)drawArraysGL
 {
-    glBindVertexArrayOES(_vertexArrayID);
+    if (self.mediaType == MediaTypePhoto) {
+        glBindVertexArrayOES(_vertexArrayID);
+    }
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glBlendFunc(GL_ONE, GL_ZERO);
     glUniformMatrix4fv(uniforms[UNIFORM_MVPMATRIX], 1, 0, _modelViewProjectionMatrix.m);
-    if (_texture) {
+    if (self.mediaType == MediaTypePhoto && _texture) {
         glBindTexture(GL_TEXTURE_2D, _texture.name);
     }
-    glDrawArrays(GL_TRIANGLES, 0, SphereNumVerts);
+    if (self.mediaType == MediaTypeVideo) {
+        glUniform1i(uniforms[UNIFORM_Y], 0);
+        glUniform1i(uniforms[UNIFORM_UV], 1);
+    }
+    glDrawArrays(GL_TRIANGLES, 0, sphereVertices);
 }
 
 #pragma mark - OpenGL Setup
 
 - (void)buildProgram
 {
-    _program = [[SPHGLProgram alloc] initWithVertexShaderFilename:@"Shader" fragmentShaderFilename:@"Shader"];
+    if (self.mediaType == MediaTypePhoto) {
+        _program = [[SPHGLProgram alloc] initWithVertexShaderFilename:@"Shader" fragmentShaderFilename:@"Shader"];
+    } else if (self.mediaType == MediaTypeVideo) {
+        _program = [[SPHGLProgram alloc] initWithVertexShaderFilename:@"Shader" fragmentShaderFilename:@"ShaderVideo"];
+    }
     [_program addAttribute:@"a_position"];
     [_program addAttribute:@"a_textureCoord"];
     if (![_program link])
-	{
-		NSString *programLog = [_program programLog];
-		NSLog(@"Program link log: %@", programLog);
-		NSString *fragmentLog = [_program fragmentShaderLog];
-		NSLog(@"Fragment shader compile log: %@", fragmentLog);
-		NSString *vertexLog = [_program vertexShaderLog];
-		NSLog(@"Vertex shader compile log: %@", vertexLog);
-		_program = nil;
+    {
+        NSString *programLog = [_program programLog];
+        NSLog(@"Program link log: %@", programLog);
+        NSString *fragmentLog = [_program fragmentShaderLog];
+        NSLog(@"Fragment shader compile log: %@", fragmentLog);
+        NSString *vertexLog = [_program vertexShaderLog];
+        NSLog(@"Vertex shader compile log: %@", vertexLog);
+        _program = nil;
         NSAssert(NO, @"Falied to link Spherical shaders");
-	}
+    }
     _vertexTexCoordAttributeIndex = [_program attributeIndex:@"a_textureCoord"];
     uniforms[UNIFORM_MVPMATRIX] = [_program uniformIndex:@"u_modelViewProjectionMatrix"];
-    uniforms[UNIFORM_SAMPLER] = [_program uniformIndex:@"u_Sampler"];
+    if (self.mediaType == MediaTypePhoto) {
+        uniforms[UNIFORM_SAMPLER] = [_program uniformIndex:@"u_Sampler"];
+    } else if (self.mediaType == MediaTypeVideo) {
+        uniforms[UNIFORM_UV] = [_program uniformIndex:@"SamplerUV"];
+        uniforms[UNIFORM_Y] = [_program uniformIndex:@"SamplerY"];
+        uniforms[UNIFORM_COLOR_CONVERSION_MATRIX] = [_program uniformIndex:@"colorConversionMatrix"];
+    }
 }
 
 - (void)setupContext
@@ -235,6 +294,7 @@ GLint uniforms[NUM_UNIFORMS];
     }
     GLKView *view = (GLKView *)self.view;
     view.context = self.context;
+    _preferredConversion = kColorConversion709;
 }
 
 - (void)setupTextureLoader
@@ -266,11 +326,49 @@ GLint uniforms[NUM_UNIFORMS];
     }
 }
 
-#pragma mark - Public
+#pragma mark - SphereMode
 
 - (void)turnPlanetMode
 {
     self.planetMode = self.planetMode ? PlanetModeNormal : PlanetModeLittlePlanet;
+}
+
+- (CGFloat)normalizedAngle
+{
+    switch (self.planetMode) {
+        case PlanetModeNormal: {
+            if (self.angle > NormalAngle) {
+                self.angle--;
+            }
+            break;
+        }
+        case PlanetModeLittlePlanet: {
+            if (self.angle < LittlePlanetAngle) {
+                self.angle++;
+            }
+            break;
+        }
+    }
+    return self.angle;
+}
+
+- (CGFloat)normalizedNear
+{
+    switch (self.planetMode) {
+        case PlanetModeNormal: {
+            if (self.near < NormalNear) {
+                self.near+=0.005;
+            }
+            break;
+        }
+        case PlanetModeLittlePlanet: {
+            if (self.near > LittlePlanetNear) {
+                self.near-=0.005;
+            }
+            break;
+        }
+    }
+    return self.near;
 }
 
 #pragma mark - Touches
@@ -280,8 +378,8 @@ GLint uniforms[NUM_UNIFORMS];
     if (self.isGyroModeActive) {
         return;
     }
-    pointX *= 0.004;
-    pointY *= 0.004;
+    pointX *= 0.005;
+    pointY *= 0.005;
     GLKMatrix4 rotatedMatrix = GLKMatrix4MakeRotation(-pointX / self.zoomValue, 0, 1, 0);
     _currentProjectionMatrix = GLKMatrix4Multiply(_currentProjectionMatrix, rotatedMatrix);
     
@@ -295,9 +393,9 @@ GLint uniforms[NUM_UNIFORMS];
 {
     CGFloat minValue = self.planetMode ? kPreMinimumLittlePlanetZoomValue : kPreMinimumZoomValue;
     if (self.zoomValue > kPreMaximumZoomValue) {
-        self.zoomValue *= 0.97;
+        self.zoomValue *= 0.99;
     } else if (self.zoomValue <  minValue) {
-        self.zoomValue *= 1.03;
+        self.zoomValue *= 1.01;
     }
 }
 
@@ -422,6 +520,9 @@ GLint uniforms[NUM_UNIFORMS];
     _cameraProjectionMatrix = GLKMatrix4Identity;
     self.zoomValue = 1.2f;
     self.planetMode = PlanetModeNormal;
+    self.angle = NormalAngle;
+    self.near = NormalNear;
+    sphereVertices = SphereNumVerts;
 }
 
 #pragma mark - Cleanup
@@ -439,5 +540,74 @@ GLint uniforms[NUM_UNIFORMS];
     }
     _texture = nil;
 }
+
+#pragma mark - VideoTextures
+
+- (void)displayPixelBuffer:(CVPixelBufferRef)pixelBuffer
+{
+    CVReturn err;
+    if (pixelBuffer != NULL) {
+        int frameWidth = (int)CVPixelBufferGetWidth(pixelBuffer);
+        int frameHeight = (int)CVPixelBufferGetHeight(pixelBuffer);
+        
+        if (!_videoTextureCache) {
+            NSLog(@"No video texture cache");
+            return;
+        }
+        [self cleanUpTextures];
+        
+        //Create Y and UV textures from the pixel buffer. These textures will be drawn on the frame buffer
+        
+        //Y-plane.
+        glActiveTexture(GL_TEXTURE0);
+        err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, _videoTextureCache, pixelBuffer, NULL,  GL_TEXTURE_2D, GL_LUMINANCE, frameWidth, frameHeight, GL_LUMINANCE, GL_UNSIGNED_BYTE, 0, &_lumaTexture);
+        if (err) {
+            NSLog(@"Error at CVOpenGLESTextureCacheCreateTextureFromImage %d", err);
+        }
+        
+        glBindTexture(CVOpenGLESTextureGetTarget(_lumaTexture), CVOpenGLESTextureGetName(_lumaTexture));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        
+        // UV-plane.
+        glActiveTexture(GL_TEXTURE1);
+        err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, _videoTextureCache, pixelBuffer, NULL, GL_TEXTURE_2D, GL_LUMINANCE_ALPHA, frameWidth / 2, frameHeight / 2, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, 1, &_chromaTexture);
+        if (err) {
+            NSLog(@"Error at CVOpenGLESTextureCacheCreateTextureFromImage %d", err);
+        }
+        
+        glBindTexture(CVOpenGLESTextureGetTarget(_chromaTexture), CVOpenGLESTextureGetName(_chromaTexture));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        
+        glEnableVertexAttribArray(_vertexBufferID);
+        glBindFramebuffer(GL_FRAMEBUFFER, _vertexBufferID);
+        
+        CFRelease(pixelBuffer);
+        
+        glUniformMatrix3fv(uniforms[UNIFORM_COLOR_CONVERSION_MATRIX], 1, GL_FALSE, _preferredConversion);
+    }
+}
+
+- (void)cleanUpTextures
+{
+    if (_lumaTexture) {
+        CFRelease(_lumaTexture);
+        _lumaTexture = NULL;
+    }
+    
+    if (_chromaTexture) {
+        CFRelease(_chromaTexture);
+        _chromaTexture = NULL;
+    }
+    
+    // Periodic texture cache flush every frame
+    CVOpenGLESTextureCacheFlush(_videoTextureCache, 0);
+}
+
 
 @end
